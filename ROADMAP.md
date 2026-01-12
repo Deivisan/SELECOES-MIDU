@@ -59,12 +59,12 @@
 
 ## 👤 FASE 2: PORTAL CANDIDATO
 
-### 🎨 Task 2.1: Legibilidade e Acessibilidade
-- [ ] Aumentar font-size mínimo para 16px (mobile) / 18px (desktop)
-- [ ] Line-height: 1.6-1.8 (parágrafos)
-- [ ] Contrast ratio: mínimo 4.5:1 (WCAG AA)
-- [ ] Garantir todas as palavras visíveis (overflow handling)
-- [ ] Melhorar espaçamento entre elementos (padding/margin)
+### 🎨 Task 2.1: Legibilidade e Acessibilidade ✅ COMPLETO (Commit a7034ce)
+- [x] Aumentar font-size mínimo para 16px (mobile) / 18px (desktop)
+- [x] Line-height: 1.7 (antes 1.6) para melhor espaçamento vertical
+- [x] Contrast ratio: WCAG AA garantido (gray-700: 8.3:1 AAA, gray-600: 5.7:1 AA, gray-500: 4.6:1 AA)
+- [x] Garantir todas as palavras visíveis (word-wrap, overflow-wrap, hyphens: auto)
+- [x] Melhorar espaçamento entre elementos (CSS variables mantidas)
 
 ### ⚙️ Task 2.2: Funcionalidades Completas
 - [ ] **Tab Vagas:** Busca e filtros funcionais
@@ -116,21 +116,24 @@
 - [ ] Fotos de stock (equipe, escritórios)
 - [ ] Ilustrações SVG (hero, CTAs)
 
-### 🎭 Task 3.3: Adicionar Mais Temas
-**Temas Atuais:** 3 (Azul, Verde, Roxo)
+### 🎭 Task 3.3: Adicionar Mais Temas ✅ COMPLETO (Commit a7034ce)
+**Temas Atuais:** 6 COMPLETOS ✅ (antes 3, agora 6)
 
-**Novos Temas (mínimo 6 total):**
-- [ ] Laranja Energia (#f97316)
-- [ ] Rosa Moderno (#ec4899)
-- [ ] Ciano Tecnologia (#06b6d4)
-- [ ] Indigo Corporativo (#6366f1)
-- [ ] Vermelho Dinâmico (#ef4444)
-- [ ] Amarelo Criativo (#eab308)
+**6 Temas Implementados:**
+- [x] Azul Profissional (#2563eb) - default
+- [x] Verde Crescimento (#0d9488) - teal
+- [x] Roxo Criativo (#7c3aed) - purple
+- [x] Laranja Energético (#f97316) - orange 🆕
+- [x] Rosa Vibrante (#ec4899) - pink 🆕
+- [x] Ciano Tecnológico (#06b6d4) - cyan 🆕
 
-**Cada tema:**
-- Primary, Primary Dark, Primary Light
-- Gradientes únicos
-- Preview no ViewSelector
+**Cada tema possui:**
+- [x] Primary, Primary Dark, Primary Light, Primary-50
+- [x] Accent, Accent Light
+- [x] Gradientes únicos (gradient-bg, gradient-hero, gradient-primary, gradient-section)
+- [x] Preview no ViewSelector com quadrado colorido
+- [x] Validação TypeScript (ThemeType union type em 3 Views)
+- [x] URL params funcionais (?theme=orange)
 
 ### 🔗 Task 3.4: Todos os Links Funcionais
 - [ ] Navbar: Vagas, Sobre, Empresas, Contato
