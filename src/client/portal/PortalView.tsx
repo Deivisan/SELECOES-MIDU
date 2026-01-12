@@ -4,18 +4,24 @@ import type { Job } from '../../shared/types'
 import ViewSelector from '../../shared/components/ViewSelector'
 import '../../shared/styles/themes.css'
 
-type ThemeType = 'default' | 'teal' | 'purple'
+type ThemeType = 'default' | 'teal' | 'purple' | 'orange' | 'pink' | 'cyan'
 
 const themeLabels: Record<ThemeType, string> = {
   default: 'Azul',
   teal: 'Verde',
-  purple: 'Roxo'
+  purple: 'Roxo',
+  orange: 'Laranja',
+  pink: 'Rosa',
+  cyan: 'Ciano'
 }
 
 const themeColors: Record<ThemeType, string> = {
   default: '#2563eb',
   teal: '#0d9488',
-  purple: '#7c3aed'
+  purple: '#7c3aed',
+  orange: '#f97316',
+  pink: '#ec4899',
+  cyan: '#06b6d4'
 }
 
 export default function PortalView() {
@@ -29,7 +35,7 @@ export default function PortalView() {
     const themeParam = params.get('theme') as ThemeType
     const jobId = params.get('job')
     
-    if (themeParam && ['default', 'teal', 'purple'].includes(themeParam)) {
+    if (themeParam && ['default', 'teal', 'purple', 'orange', 'pink', 'cyan'].includes(themeParam)) {
       setTheme(themeParam)
     }
     

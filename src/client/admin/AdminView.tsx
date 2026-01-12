@@ -10,7 +10,7 @@ import VagaForm from '../../shared/components/VagaForm'
 import ViewSelector from '../../shared/components/ViewSelector'
 import '../../shared/styles/themes.css'
 
-type ThemeType = 'default' | 'teal' | 'purple'
+type ThemeType = 'default' | 'teal' | 'purple' | 'orange' | 'pink' | 'cyan'
 type SectionType = 'dashboard' | 'vagas' | 'candidatos' | 'relatorios'
 
 // Dados para gráficos
@@ -66,7 +66,7 @@ export default function AdminView() {
 
     const params = new URLSearchParams(window.location.search)
     const themeParam = params.get('theme') as ThemeType
-    if (themeParam && ['default', 'teal', 'purple'].includes(themeParam)) {
+    if (themeParam && ['default', 'teal', 'purple', 'orange', 'pink', 'cyan'].includes(themeParam)) {
       setTheme(themeParam)
     }
     setMounted(true)

@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 
 type ViewMode = 'public' | 'candidate' | 'admin'
-type ThemeType = 'default' | 'teal' | 'purple'
+type ThemeType = 'default' | 'teal' | 'purple' | 'orange' | 'pink' | 'cyan'
 
 interface ViewSelectorProps {
   theme: ThemeType
@@ -12,7 +12,10 @@ interface ViewSelectorProps {
 const themeColors: Record<ThemeType, { primary: string; name: string }> = {
   default: { primary: '#2563eb', name: 'Azul Profissional' },
   teal: { primary: '#0d9488', name: 'Verde Crescimento' },
-  purple: { primary: '#7c3aed', name: 'Roxo Criativo' }
+  purple: { primary: '#7c3aed', name: 'Roxo Criativo' },
+  orange: { primary: '#f97316', name: 'Laranja Energético' },
+  pink: { primary: '#ec4899', name: 'Rosa Vibrante' },
+  cyan: { primary: '#06b6d4', name: 'Ciano Tecnológico' }
 }
 
 const viewModes: Record<ViewMode, { icon: string; label: string; url: string; description: string }> = {
@@ -45,6 +48,10 @@ export default function ViewSelector({ theme, onThemeChange, onViewChange }: Vie
     const themeParam = currentParams.get('theme') || theme
     window.location.href = `${viewModes[view].url}?theme=${themeParam}`
   }
+
+  // Validar tema na URL
+  const isValidTheme = (t: string): t is ThemeType => 
+    ['default', 'teal', 'purple', 'orange', 'pink', 'cyan'].includes(t)
 
   return (
     <>
