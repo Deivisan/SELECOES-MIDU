@@ -55,8 +55,8 @@ const CONFIG = {
   // Opções de Lançamento do Navegador (Anti-Detecção Cloudflare)
   launchOptions: {
     headless: false,
-    executablePath: IS_TERMUX ? TERMUX_CHROMIUM_PATH : 'C:\\Program Files\\Google\\Chrome Dev\\Application\\chrome.exe',
-    channel: undefined, // Força executable path
+    executablePath: IS_TERMUX ? TERMUX_CHROMIUM_PATH : 'C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe',
+    channel: 'msedge', // Microsoft Edge
     args: [
       '--no-sandbox',
       '--disable-setuid-sandbox',
@@ -442,33 +442,27 @@ async function runScraper() {
     }
 
     metadata.engine = 'playwright';
+
+    // 🛡️ Configuração Anti-Cloudflare com Microsoft Edge
+    const { chromium } = require('playwright');
+    const browser = await chromium.launch({
+      headless: false,
+      channel: 'msedge',
+      executablePath: 'C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe',
+      viewport: { width: 1920, height: 1080 },
+      locale: 'pt-BR',
+      timezoneId: 'America/Sao_Paulo',
+      args: [
+        '--no-sandbox',
+        '--disable-setuid-sandbox',
+        '--disable-blink-features=AutomationControlled',
+        '--disable-features=IsolateOrigins,site-per-process',
+        '--disable-site-isolation-trials'
+      ]
+    });
     
-    // 🛡️ Configuração Anti-Cloudflare com perfil separado (não usar perfil padrão)
-    const userDataDir = path.join(process.cwd(), 'chrome-profile-scrape');
-    if (!fs.existsSync(userDataDir)) fs.mkdirSync(userDataDir, { recursive: true });
-    
-    const browser = await playwrightChromium.launchPersistentContext(
-      userDataDir,
-      {
-        headless: false,
-        executablePath: 'C:\\Program Files\\Google\\Chrome Dev\\Application\\chrome.exe',
-        viewport: { width: 1920, height: 1080 },
-        locale: 'pt-BR',
-        timezoneId: 'America/Sao_Paulo',
-        args: [
-          '--no-sandbox',
-          '--disable-setuid-sandbox',
-          '--disable-blink-features=AutomationControlled',
-          '--disable-features=IsolateOrigins,site-per-process',
-          '--disable-site-isolation-trials'
-        ]
-      }
-    );
-    
-    // PersistentContext já retorna páginas, pegar a primeira ou criar nova
-    const pages = browser.pages();
-    const page = pages.length > 0 ? pages[0] : await browser.newPage();
-    
+    const page = await browser.newPage();
+
     // 🎭 Remover navigator.webdriver (sinal de automação)
     await page.addInitScript(() => {
       Object.defineProperty(navigator, 'webdriver', { get: () => false });
@@ -480,8 +474,8 @@ async function runScraper() {
     try {
       console.log('🌐 Navegando para a página...');
       try {
-        await page.goto(CONFIG.targetUrl, { waitUntil: 'commit', timeout: 60000 });
-        console.log('✅ Página carregada (commit)');
+        await page.goto(CONFIG.targetUrl, { waitUntil: 'load', timeout: 60000 });
+        console.log('✅ Página carregada');
       } catch (e) {
         console.log('⚠️ Timeout no goto, continuando...', e.message);
       }
@@ -625,7 +619,14 @@ async function runScraper() {
 
   try {
     const wanted = (CONFIG.engine || 'auto').toLowerCase();
-    
+
+    // Windows + Edge: Priorizar Playwright
+    if (!IS_TERMUX && (wanted === 'auto' || wanted === 'playwright')) {
+      console.log('🎭 Usando Playwright + Microsoft Edge');
+      await runWithPlaywright();
+      return;
+    }
+
     // Puppeteer Stealth prioritário para Grok (melhor bypass Cloudflare)
     if (wanted === 'stealth' || wanted === 'puppeteer-stealth') {
       await runWithPuppeteerStealth();
@@ -640,18 +641,19 @@ async function runScraper() {
       return;
     }
 
-    // auto - priorizar Puppeteer Stealth se disponível
-    if (canUsePuppeteer()) {
-      console.log('🎭 Usando Puppeteer Stealth (bypass Cloudflare)');
-      await runWithPuppeteerStealth();
-      return;
-    }
-    if (canUsePlaywright()) {
+    // auto - priorizar Playwright no Windows, Puppeteer no Android
+    if (!IS_TERMUX && canUsePlaywright()) {
+      console.log('🎭 Usando Playwright (Desktop)');
       await runWithPlaywright();
       return;
     }
-    
-    throw new Error('Nenhuma engine disponível. Instale puppeteer-extra ou playwright-core.');
+    if (IS_TERMUX && canUsePuppeteer()) {
+      console.log('🎭 Usando Puppeteer Stealth (Android)');
+      await runWithPuppeteerStealth();
+      return;
+    }
+
+    throw new Error('Nenhuma engine disponível. Instale playwright ou puppeteer-extra.');
   } catch (err) {
     console.error(`💥 Erro Fatal: ${err.message}`);
     process.exitCode = 1;
