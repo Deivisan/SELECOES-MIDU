@@ -3,17 +3,24 @@ import { mockJobs } from '../../shared/data/mockData'
 import type { Job } from '../../shared/types'
 import '../../shared/styles/themes.css'
 
-type ThemeType = 'luxury' | 'playful' | 'editorial'
+type ThemeType = 'default' | 'teal' | 'purple'
 
 const themeLabels: Record<ThemeType, string> = {
-  luxury: 'Luxury',
-  playful: 'Playful',
-  editorial: 'Editorial'
+  default: 'Azul',
+  teal: 'Verde',
+  purple: 'Roxo'
+}
+
+const themeColors: Record<ThemeType, string> = {
+  default: '#2563eb',
+  teal: '#0d9488',
+  purple: '#7c3aed'
 }
 
 export default function PortalView() {
-  const [theme, setTheme] = useState<ThemeType>('luxury')
+  const [theme, setTheme] = useState<ThemeType>('default')
   const [selectedJob, setSelectedJob] = useState<Job | null>(null)
+  const [activeTab, setActiveTab] = useState<'vagas' | 'candidaturas' | 'perfil'>('vagas')
   const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
@@ -21,7 +28,7 @@ export default function PortalView() {
     const themeParam = params.get('theme') as ThemeType
     const jobId = params.get('job')
     
-    if (themeParam && ['luxury', 'playful', 'editorial'].includes(themeParam)) {
+    if (themeParam && ['default', 'teal', 'purple'].includes(themeParam)) {
       setTheme(themeParam)
     }
     
@@ -42,743 +49,386 @@ export default function PortalView() {
 
   if (!mounted) return null
 
-  const themeClass = theme === 'luxury' ? 'theme-luxury' : 
-                     theme === 'playful' ? 'theme-playful' : 'theme-editorial'
+  // Mock user data
+  const user = {
+    name: 'Maria Silva',
+    email: 'maria.silva@email.com',
+    applications: 5,
+    savedJobs: 3
+  }
 
   return (
-    <div className={themeClass}>
-      <div style={{ minHeight: '100vh' }}>
-        {/* Theme Switcher */}
-        <div style={{
-          position: 'fixed',
-          top: '1rem',
-          right: '1rem',
-          zIndex: 1000,
-          display: 'flex',
-          gap: '0.5rem',
-          padding: '0.5rem',
-          background: 'rgba(255,255,255,0.95)',
-          borderRadius: '8px',
-          backdropFilter: 'blur(10px)',
-          boxShadow: '0 2px 10px rgba(0,0,0,0.1)'
-        }}>
-          {(['luxury', 'playful', 'editorial'] as ThemeType[]).map((t) => (
-            <button
-              key={t}
-              onClick={() => changeTheme(t)}
-              style={{
-                padding: '0.5rem 1rem',
-                border: theme === t ? '2px solid #333' : '1px solid #ddd',
-                background: theme === t ? '#333' : 'transparent',
-                color: theme === t ? '#fff' : '#333',
-                borderRadius: '4px',
-                cursor: 'pointer',
-                fontSize: '0.75rem',
-                fontWeight: theme === t ? 700 : 400
-              }}
-            >
-              {themeLabels[t]}
-            </button>
-          ))}
+    <div className={`theme-${theme}`}>
+      {/* Theme Switcher */}
+      <div style={{
+        position: 'fixed',
+        bottom: '1.5rem',
+        right: '1.5rem',
+        zIndex: 1000,
+        display: 'flex',
+        gap: '0.5rem',
+        padding: '0.5rem',
+        background: 'rgba(255,255,255,0.95)',
+        borderRadius: '12px',
+        boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+        backdropFilter: 'blur(10px)'
+      }}>
+        {(['default', 'teal', 'purple'] as ThemeType[]).map((t) => (
+          <button
+            key={t}
+            onClick={() => changeTheme(t)}
+            title={themeLabels[t]}
+            style={{
+              width: '28px',
+              height: '28px',
+              borderRadius: '50%',
+              border: theme === t ? '3px solid #1f2937' : '2px solid transparent',
+              background: themeColors[t],
+              cursor: 'pointer',
+              transition: 'all 0.2s ease',
+              transform: theme === t ? 'scale(1.1)' : 'scale(1)'
+            }}
+          />
+        ))}
+      </div>
+
+      {/* NAVBAR */}
+      <nav className="navbar">
+        <a href="/public.html" className="navbar-brand">
+          <div className="navbar-logo">M</div>
+          <div>
+            <div className="navbar-title">Midu Group</div>
+            <div className="navbar-subtitle">Portal do Candidato</div>
+          </div>
+        </a>
+        <div className="navbar-nav">
+          <button 
+            className={`navbar-link ${activeTab === 'vagas' ? 'navbar-link-active' : ''}`}
+            onClick={() => { setActiveTab('vagas'); setSelectedJob(null); }}
+            style={{ background: 'none', border: 'none', cursor: 'pointer' }}
+          >
+            Explorar Vagas
+          </button>
+          <button 
+            className={`navbar-link ${activeTab === 'candidaturas' ? 'navbar-link-active' : ''}`}
+            onClick={() => { setActiveTab('candidaturas'); setSelectedJob(null); }}
+            style={{ background: 'none', border: 'none', cursor: 'pointer' }}
+          >
+            Minhas Candidaturas
+          </button>
+          <button 
+            className={`navbar-link ${activeTab === 'perfil' ? 'navbar-link-active' : ''}`}
+            onClick={() => { setActiveTab('perfil'); setSelectedJob(null); }}
+            style={{ background: 'none', border: 'none', cursor: 'pointer' }}
+          >
+            Meu Perfil
+          </button>
+          <div className="avatar">
+            {user.name.split(' ').map(n => n[0]).join('')}
+          </div>
         </div>
+      </nav>
 
-        {/* LUXURY THEME */}
-        {theme === 'luxury' && (
-          <>
-            <header style={{ 
-              padding: '2rem 3rem',
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              borderBottom: '1px solid #f0f0f0'
-            }}>
-              <a href="/public.html?theme=brutalist" style={{ textDecoration: 'none' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                  <span style={{
-                    fontFamily: "'Playfair Display', serif",
-                    fontSize: '1.75rem',
-                    fontWeight: 400,
-                    color: '#1a1a1a',
-                    letterSpacing: '0.1em'
-                  }}>MIDU</span>
-                  <span style={{
-                    fontSize: '0.7rem',
-                    color: '#b8860b',
-                    letterSpacing: '0.2em',
-                    textTransform: 'uppercase'
-                  }}>PORTAL</span>
-                </div>
-              </a>
-              <nav style={{ display: 'flex', gap: '3rem' }}>
-                <a href="#vagas" style={{ 
-                  textDecoration: 'none', 
-                  color: '#999',
-                  fontSize: '0.8rem',
-                  letterSpacing: '0.15em',
-                  textTransform: 'uppercase'
-                }}>Vagas</a>
-                <a href="#perfil" style={{ 
-                  textDecoration: 'none', 
-                  color: '#999',
-                  fontSize: '0.8rem',
-                  letterSpacing: '0.15em',
-                  textTransform: 'uppercase'
-                }}>Meu Perfil</a>
-              </nav>
-            </header>
+      <main style={{ minHeight: 'calc(100vh - 73px)' }}>
+        {/* JOB DETAIL VIEW */}
+        {selectedJob && (
+          <div style={{ padding: 'var(--space-8) var(--space-6)' }}>
+            <div className="container container-sm">
+              <button 
+                onClick={() => setSelectedJob(null)}
+                className="btn btn-ghost"
+                style={{ marginBottom: 'var(--space-6)' }}
+              >
+                ← Voltar às vagas
+              </button>
 
-            {selectedJob ? (
-              <main style={{ padding: '4rem 3rem', maxWidth: '900px', margin: '0 auto' }}>
-                <a 
-                  href="/portal.html?theme=luxury"
-                  onClick={(e) => { e.preventDefault(); setSelectedJob(null); }}
-                  style={{
-                    display: 'inline-block',
-                    marginBottom: '3rem',
-                    color: '#999',
-                    textDecoration: 'none',
-                    fontSize: '0.8rem',
-                    letterSpacing: '0.15em',
-                    textTransform: 'uppercase'
-                  }}
-                >
-                  ← Voltar às vagas
-                </a>
-
-                <div className="animate-fadeInUp">
-                  <span style={{
-                    display: 'inline-block',
-                    padding: '0.5rem 1rem',
-                    background: '#fafaf8',
-                    color: '#b8860b',
-                    fontSize: '0.7rem',
-                    letterSpacing: '0.2em',
-                    textTransform: 'uppercase',
-                    marginBottom: '2rem'
-                  }}>{selectedJob.category}</span>
-
-                  <h1 style={{
-                    fontFamily: "'Playfair Display', serif",
-                    fontSize: 'clamp(2rem, 5vw, 4rem)',
-                    fontWeight: 400,
-                    color: '#1a1a1a',
-                    marginBottom: '1rem',
-                    lineHeight: 1.1
-                  }}>{selectedJob.title}</h1>
-
-                  <p style={{
-                    fontSize: '1.125rem',
-                    color: '#666',
-                    marginBottom: '0.5rem'
-                  }}>{selectedJob.company}</p>
-
-                  <div style={{ 
-                    display: 'flex', 
-                    gap: '2rem', 
-                    marginBottom: '3rem',
-                    paddingBottom: '3rem',
-                    borderBottom: '1px solid #f0f0f0'
-                  }}>
-                    <span style={{ color: '#999', fontSize: '0.9rem' }}>📍 {selectedJob.location}</span>
-                    <span style={{ color: '#999', fontSize: '0.9rem' }}>{selectedJob.modality}</span>
-                    <span style={{ color: '#999', fontSize: '0.9rem' }}>{selectedJob.type}</span>
+              <div className="card animate-fadeInUp" style={{ padding: 'var(--space-8)' }}>
+                {/* Header */}
+                <div style={{ marginBottom: 'var(--space-6)' }}>
+                  <div style={{ display: 'flex', gap: 'var(--space-2)', marginBottom: 'var(--space-4)' }}>
+                    <span className="badge badge-primary">{selectedJob.type}</span>
+                    <span className="badge badge-neutral">{selectedJob.modality}</span>
+                    <span className="badge badge-neutral">{selectedJob.category}</span>
                   </div>
-
-                  {selectedJob.salary && (
-                    <p style={{
-                      fontFamily: "'Playfair Display', serif",
-                      fontSize: '1.5rem',
-                      color: '#b8860b',
-                      marginBottom: '3rem'
-                    }}>{selectedJob.salary}</p>
-                  )}
-
-                  <div style={{ marginBottom: '3rem' }}>
-                    <h3 style={{
-                      fontSize: '0.8rem',
-                      letterSpacing: '0.2em',
-                      textTransform: 'uppercase',
-                      color: '#999',
-                      marginBottom: '1.5rem'
-                    }}>Descrição</h3>
-                    <p style={{ 
-                      fontSize: '1.1rem', 
-                      lineHeight: 1.8, 
-                      color: '#333' 
-                    }}>{selectedJob.description}</p>
-                  </div>
-
-                  <div style={{ marginBottom: '3rem' }}>
-                    <h3 style={{
-                      fontSize: '0.8rem',
-                      letterSpacing: '0.2em',
-                      textTransform: 'uppercase',
-                      color: '#999',
-                      marginBottom: '1.5rem'
-                    }}>Requisitos</h3>
-                    <ul style={{ listStyle: 'none' }}>
-                      {selectedJob.requirements.map((req, i) => (
-                        <li key={i} style={{
-                          padding: '0.75rem 0',
-                          borderBottom: '1px solid #f5f5f5',
-                          color: '#333'
-                        }}>
-                          <span style={{ color: '#b8860b', marginRight: '1rem' }}>—</span>
-                          {req}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-
-                  <div style={{ marginBottom: '4rem' }}>
-                    <h3 style={{
-                      fontSize: '0.8rem',
-                      letterSpacing: '0.2em',
-                      textTransform: 'uppercase',
-                      color: '#999',
-                      marginBottom: '1.5rem'
-                    }}>Benefícios</h3>
-                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.75rem' }}>
-                      {selectedJob.benefits.map((benefit, i) => (
-                        <span key={i} style={{
-                          padding: '0.5rem 1rem',
-                          background: '#fafaf8',
-                          color: '#666',
-                          fontSize: '0.875rem'
-                        }}>{benefit}</span>
-                      ))}
-                    </div>
-                  </div>
-
-                  <button className="btn-primary" style={{ width: '100%', padding: '1.25rem' }}>
-                    CANDIDATAR-SE
-                  </button>
-                </div>
-              </main>
-            ) : (
-              <main style={{ padding: '6rem 3rem', textAlign: 'center' }}>
-                <h1 className="hero-title animate-fadeInUp" style={{ marginBottom: '1rem' }}>
-                  Portal do Candidato
-                </h1>
-                <p style={{ 
-                  color: '#999', 
-                  fontSize: '1.1rem',
-                  maxWidth: '500px',
-                  margin: '0 auto 4rem'
-                }}>
-                  Explore oportunidades selecionadas e candidate-se com elegância
-                </p>
-
-                <div style={{ 
-                  display: 'grid', 
-                  gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-                  gap: '2rem',
-                  maxWidth: '1000px',
-                  margin: '0 auto'
-                }}>
-                  {mockJobs.slice(0, 6).map((job, i) => (
-                    <div 
-                      key={job.id}
-                      className={`card animate-fadeInUp stagger-${(i % 6) + 1}`}
-                      style={{ padding: '2rem', cursor: 'pointer', textAlign: 'left' }}
-                      onClick={() => setSelectedJob(job)}
-                    >
-                      <span style={{
-                        fontSize: '0.7rem',
-                        color: '#b8860b',
-                        letterSpacing: '0.15em',
-                        textTransform: 'uppercase'
-                      }}>{job.category}</span>
-                      <h3 style={{
-                        fontFamily: "'Playfair Display', serif",
-                        fontSize: '1.25rem',
-                        fontWeight: 400,
-                        margin: '1rem 0 0.5rem'
-                      }}>{job.title}</h3>
-                      <p style={{ color: '#666', marginBottom: '0.5rem' }}>{job.company}</p>
-                      <p style={{ color: '#999', fontSize: '0.875rem' }}>📍 {job.location}</p>
-                    </div>
-                  ))}
-                </div>
-              </main>
-            )}
-
-            <footer style={{
-              padding: '3rem',
-              textAlign: 'center',
-              borderTop: '1px solid #f0f0f0',
-              color: '#999',
-              fontSize: '0.8rem',
-              letterSpacing: '0.1em'
-            }}>
-              © 2026 MIDU GROUP
-            </footer>
-          </>
-        )}
-
-        {/* PLAYFUL THEME */}
-        {theme === 'playful' && (
-          <>
-            <header style={{ 
-              padding: '1.5rem 2rem',
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center'
-            }}>
-              <a href="/public.html?theme=organic" style={{ textDecoration: 'none' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                  <div style={{
-                    width: '45px',
-                    height: '45px',
-                    background: 'linear-gradient(135deg, #ff6b6b 0%, #feca57 50%, #4ecdc4 100%)',
-                    borderRadius: '12px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    color: 'white',
-                    fontFamily: "'Outfit', sans-serif",
-                    fontSize: '1.25rem',
-                    fontWeight: 800
-                  }}>M</div>
-                  <span style={{
-                    fontFamily: "'Outfit', sans-serif",
-                    fontSize: '1.25rem',
-                    fontWeight: 800,
-                    color: '#2d2d2d'
-                  }}>midu</span>
-                </div>
-              </a>
-              <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
-                <span style={{
-                  padding: '0.5rem 1rem',
-                  background: '#fff9f0',
-                  borderRadius: '100px',
-                  fontSize: '0.875rem'
-                }}>👋 Olá, Visitante!</span>
-                <button className="btn-primary">Entrar</button>
-              </div>
-            </header>
-
-            {selectedJob ? (
-              <main style={{ padding: '2rem', maxWidth: '800px', margin: '0 auto' }}>
-                <a 
-                  href="#"
-                  onClick={(e) => { e.preventDefault(); setSelectedJob(null); }}
-                  style={{
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    gap: '0.5rem',
-                    marginBottom: '2rem',
-                    color: '#ff6b6b',
-                    textDecoration: 'none',
-                    fontWeight: 600,
-                    fontSize: '0.9rem'
-                  }}
-                >
-                  ← Voltar às vagas
-                </a>
-
-                <div className="card animate-fadeInUp" style={{ padding: '2.5rem' }}>
-                  <div style={{ 
-                    display: 'flex', 
-                    gap: '0.75rem', 
-                    marginBottom: '1.5rem',
-                    flexWrap: 'wrap'
-                  }}>
-                    <span style={{
-                      padding: '0.5rem 1rem',
-                      background: '#ff6b6b',
-                      color: 'white',
-                      borderRadius: '100px',
-                      fontSize: '0.8rem',
-                      fontWeight: 600
-                    }}>{selectedJob.type}</span>
-                    <span style={{
-                      padding: '0.5rem 1rem',
-                      background: '#4ecdc4',
-                      color: 'white',
-                      borderRadius: '100px',
-                      fontSize: '0.8rem',
-                      fontWeight: 600
-                    }}>{selectedJob.modality}</span>
-                  </div>
-
-                  <h1 className="hero-title" style={{ 
-                    fontSize: 'clamp(1.5rem, 4vw, 2.5rem)',
-                    marginBottom: '0.75rem'
-                  }}>{selectedJob.title}</h1>
-
-                  <p style={{
-                    fontSize: '1.125rem',
-                    color: '#666',
-                    marginBottom: '0.5rem'
-                  }}>🏢 {selectedJob.company}</p>
-
-                  <p style={{
-                    color: '#999',
-                    marginBottom: '1.5rem'
-                  }}>📍 {selectedJob.location}</p>
-
-                  {selectedJob.salary && (
-                    <p style={{
-                      fontSize: '1.5rem',
-                      fontWeight: 800,
-                      color: '#4ecdc4',
-                      marginBottom: '2rem',
-                      padding: '1rem',
-                      background: 'linear-gradient(135deg, rgba(78,205,196,0.1), rgba(254,202,87,0.1))',
-                      borderRadius: '12px'
-                    }}>💰 {selectedJob.salary}</p>
-                  )}
-
-                  <div style={{ marginBottom: '2rem' }}>
-                    <h3 style={{
-                      fontFamily: "'Outfit', sans-serif",
-                      fontWeight: 700,
-                      color: '#ff6b6b',
-                      marginBottom: '1rem'
-                    }}>📝 O que você vai fazer</h3>
-                    <p style={{ lineHeight: 1.8, color: '#555' }}>{selectedJob.description}</p>
-                  </div>
-
-                  <div style={{ marginBottom: '2rem' }}>
-                    <h3 style={{
-                      fontFamily: "'Outfit', sans-serif",
-                      fontWeight: 700,
-                      color: '#a855f7',
-                      marginBottom: '1rem'
-                    }}>✨ O que buscamos</h3>
-                    <ul style={{ listStyle: 'none' }}>
-                      {selectedJob.requirements.map((req, i) => (
-                        <li key={i} style={{
-                          padding: '0.75rem 0',
-                          display: 'flex',
-                          alignItems: 'flex-start',
-                          gap: '0.75rem',
-                          color: '#555'
-                        }}>
-                          <span>✓</span>
-                          {req}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-
-                  <div style={{ marginBottom: '2.5rem' }}>
-                    <h3 style={{
-                      fontFamily: "'Outfit', sans-serif",
-                      fontWeight: 700,
-                      color: '#4ecdc4',
-                      marginBottom: '1rem'
-                    }}>🎁 Benefícios</h3>
-                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
-                      {selectedJob.benefits.map((benefit, i) => (
-                        <span key={i} style={{
-                          padding: '0.5rem 1rem',
-                          background: 'linear-gradient(135deg, #fff9f0, #fef6e4)',
-                          borderRadius: '100px',
-                          fontSize: '0.875rem',
-                          color: '#666'
-                        }}>{benefit}</span>
-                      ))}
-                    </div>
-                  </div>
-
-                  <button className="btn-primary" style={{ width: '100%', padding: '1.25rem', fontSize: '1rem' }}>
-                    🚀 Quero me Candidatar!
-                  </button>
-                </div>
-              </main>
-            ) : (
-              <main style={{ padding: '3rem 2rem', textAlign: 'center' }}>
-                <div style={{ marginBottom: '3rem' }}>
-                  <h1 className="hero-title animate-fadeInUp" style={{ marginBottom: '1rem' }}>
-                    Encontre seu
-                    <br />
-                    trabalho dos sonhos! ✨
+                  
+                  <h1 className="text-h1" style={{ marginBottom: 'var(--space-3)' }}>
+                    {selectedJob.title}
                   </h1>
+                  
                   <p style={{ 
-                    color: '#666', 
-                    fontSize: '1.1rem',
-                    maxWidth: '400px',
-                    margin: '0 auto'
+                    fontSize: '1.125rem', 
+                    fontWeight: 500, 
+                    color: 'var(--color-primary)',
+                    marginBottom: 'var(--space-2)'
                   }}>
-                    Vagas incríveis esperando por você
+                    {selectedJob.company}
+                  </p>
+                  
+                  <p className="text-body" style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                      <circle cx="12" cy="10" r="3"></circle>
+                    </svg>
+                    {selectedJob.location}
                   </p>
                 </div>
 
-                <div style={{ 
-                  display: 'grid', 
-                  gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-                  gap: '1.5rem',
-                  maxWidth: '1000px',
-                  margin: '0 auto'
-                }}>
-                  {mockJobs.slice(0, 6).map((job, i) => (
-                    <div 
-                      key={job.id}
-                      className={`card animate-fadeInUp stagger-${(i % 6) + 1}`}
-                      style={{ padding: '1.5rem', cursor: 'pointer', textAlign: 'left' }}
-                      onClick={() => setSelectedJob(job)}
-                    >
-                      <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1rem' }}>
-                        <span style={{
-                          padding: '0.25rem 0.75rem',
-                          background: '#ff6b6b',
-                          color: 'white',
-                          borderRadius: '100px',
-                          fontSize: '0.7rem',
-                          fontWeight: 600
-                        }}>{job.type}</span>
-                        <span style={{
-                          padding: '0.25rem 0.75rem',
-                          background: '#4ecdc4',
-                          color: 'white',
-                          borderRadius: '100px',
-                          fontSize: '0.7rem',
-                          fontWeight: 600
-                        }}>{job.modality}</span>
-                      </div>
-                      <h3 style={{
-                        fontFamily: "'Outfit', sans-serif",
-                        fontSize: '1.125rem',
-                        fontWeight: 700,
-                        marginBottom: '0.5rem',
-                        color: '#2d2d2d'
-                      }}>{job.title}</h3>
-                      <p style={{ color: '#666', marginBottom: '0.25rem' }}>{job.company}</p>
-                      <p style={{ color: '#999', fontSize: '0.875rem', marginBottom: '1rem' }}>📍 {job.location}</p>
-                      {job.salary && (
-                        <p style={{ fontWeight: 700, color: '#4ecdc4' }}>{job.salary}</p>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              </main>
-            )}
-
-            <footer style={{
-              padding: '2rem',
-              textAlign: 'center',
-              color: '#999'
-            }}>
-              Feito com 💜 pelo Midu Group © 2026
-            </footer>
-          </>
-        )}
-
-        {/* EDITORIAL THEME */}
-        {theme === 'editorial' && (
-          <>
-            <header style={{ 
-              padding: '2rem 3rem',
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'flex-end',
-              borderBottom: '2px solid #0f0f0f'
-            }}>
-              <a href="/public.html?theme=retro" style={{ textDecoration: 'none' }}>
-                <h1 style={{
-                  fontFamily: "'Instrument Serif', serif",
-                  fontSize: '2.5rem',
-                  fontStyle: 'italic',
-                  color: '#0f0f0f'
-                }}>Midu</h1>
-              </a>
-              <nav style={{ display: 'flex', gap: '3rem', alignItems: 'flex-end' }}>
-                <a href="#" style={{ 
-                  textDecoration: 'none', 
-                  color: '#0f0f0f',
-                  fontSize: '0.9rem',
-                  borderBottom: '1px solid transparent'
-                }}>Oportunidades</a>
-                <a href="#" style={{ 
-                  textDecoration: 'none', 
-                  color: '#6c757d',
-                  fontSize: '0.9rem'
-                }}>Sobre</a>
-              </nav>
-            </header>
-
-            {selectedJob ? (
-              <main style={{ padding: '4rem 3rem', maxWidth: '800px' }}>
-                <a 
-                  href="#"
-                  onClick={(e) => { e.preventDefault(); setSelectedJob(null); }}
-                  style={{
-                    display: 'inline-block',
-                    marginBottom: '3rem',
-                    color: '#e63946',
-                    textDecoration: 'none',
-                    fontStyle: 'italic'
-                  }}
-                >
-                  ← Voltar
-                </a>
-
-                <article className="animate-fadeInUp">
-                  <header style={{ marginBottom: '3rem' }}>
-                    <p style={{
-                      fontFamily: "'Instrument Serif', serif",
-                      fontStyle: 'italic',
-                      color: '#e63946',
-                      fontSize: '1.125rem',
-                      marginBottom: '1rem'
-                    }}>{selectedJob.category}</p>
-                    
-                    <h1 className="hero-title" style={{ marginBottom: '2rem' }}>
-                      {selectedJob.title}
-                    </h1>
-
-                    <div style={{ 
-                      display: 'flex', 
-                      gap: '2rem',
-                      paddingTop: '1.5rem',
-                      borderTop: '1px solid #e0e0e0'
-                    }}>
-                      <div>
-                        <p style={{ fontSize: '0.75rem', color: '#999', marginBottom: '0.25rem' }}>EMPRESA</p>
-                        <p style={{ fontWeight: 500 }}>{selectedJob.company}</p>
-                      </div>
-                      <div>
-                        <p style={{ fontSize: '0.75rem', color: '#999', marginBottom: '0.25rem' }}>LOCAL</p>
-                        <p style={{ fontWeight: 500 }}>{selectedJob.location}</p>
-                      </div>
-                      <div>
-                        <p style={{ fontSize: '0.75rem', color: '#999', marginBottom: '0.25rem' }}>TIPO</p>
-                        <p style={{ fontWeight: 500 }}>{selectedJob.type} • {selectedJob.modality}</p>
-                      </div>
-                    </div>
-                  </header>
-
-                  {selectedJob.salary && (
-                    <p style={{
-                      fontFamily: "'Instrument Serif', serif",
-                      fontSize: '2rem',
-                      fontStyle: 'italic',
-                      color: '#1d3557',
-                      marginBottom: '3rem',
-                      paddingBottom: '2rem',
-                      borderBottom: '1px solid #e0e0e0'
-                    }}>{selectedJob.salary}</p>
-                  )}
-
-                  <div style={{ marginBottom: '3rem' }}>
-                    <h2 style={{
-                      fontFamily: "'Instrument Serif', serif",
-                      fontSize: '1.5rem',
-                      fontStyle: 'italic',
-                      marginBottom: '1.5rem'
-                    }}>A Posição</h2>
-                    <p style={{ 
-                      fontSize: '1.125rem', 
-                      lineHeight: 1.9, 
-                      color: '#333' 
-                    }}>{selectedJob.description}</p>
-                  </div>
-
-                  <div style={{ marginBottom: '3rem' }}>
-                    <h2 style={{
-                      fontFamily: "'Instrument Serif', serif",
-                      fontSize: '1.5rem',
-                      fontStyle: 'italic',
-                      marginBottom: '1.5rem'
-                    }}>Requisitos</h2>
-                    {selectedJob.requirements.map((req, i) => (
-                      <div key={i} className="card" style={{ marginBottom: '0' }}>
-                        <span style={{ color: '#e63946', marginRight: '1rem' }}>0{i + 1}</span>
-                        {req}
-                      </div>
-                    ))}
-                  </div>
-
-                  <div style={{ marginBottom: '4rem' }}>
-                    <h2 style={{
-                      fontFamily: "'Instrument Serif', serif",
-                      fontSize: '1.5rem',
-                      fontStyle: 'italic',
-                      marginBottom: '1.5rem'
-                    }}>Oferecemos</h2>
-                    <p style={{ fontSize: '1.1rem', color: '#555' }}>
-                      {selectedJob.benefits.join(' • ')}
+                {/* Salary */}
+                {selectedJob.salary && (
+                  <div style={{ 
+                    padding: 'var(--space-4)', 
+                    background: 'var(--color-success-light)',
+                    borderRadius: 'var(--radius-md)',
+                    marginBottom: 'var(--space-6)'
+                  }}>
+                    <p className="text-small" style={{ marginBottom: 'var(--space-1)' }}>Faixa Salarial</p>
+                    <p style={{ fontSize: '1.25rem', fontWeight: 700, color: 'var(--color-success)' }}>
+                      {selectedJob.salary}
                     </p>
                   </div>
+                )}
 
-                  <button className="btn-primary" style={{ fontSize: '1rem' }}>
-                    Candidatar-se a esta posição
-                  </button>
-                </article>
-              </main>
-            ) : (
-              <main style={{ padding: '6rem 3rem' }}>
-                <div style={{ maxWidth: '800px', marginBottom: '4rem' }}>
-                  <h1 className="hero-title animate-fadeInUp">
-                    Oportunidades
-                  </h1>
-                  <p style={{ 
-                    fontFamily: "'Instrument Serif', serif",
-                    fontStyle: 'italic',
-                    fontSize: '1.5rem',
-                    color: '#6c757d',
-                    marginTop: '1rem'
-                  }}>
-                    Posições abertas no Midu Group
-                  </p>
+                {/* Description */}
+                <div style={{ marginBottom: 'var(--space-6)' }}>
+                  <h3 className="text-h3" style={{ marginBottom: 'var(--space-3)' }}>Descrição da Vaga</h3>
+                  <p className="text-body" style={{ lineHeight: 1.8 }}>{selectedJob.description}</p>
                 </div>
 
-                <div style={{ maxWidth: '900px' }}>
-                  {mockJobs.slice(0, 6).map((job, i) => (
-                    <div 
-                      key={job.id}
-                      className={`card animate-fadeInUp stagger-${(i % 6) + 1}`}
-                      style={{ cursor: 'pointer', display: 'grid', gridTemplateColumns: '1fr auto', alignItems: 'center' }}
-                      onClick={() => setSelectedJob(job)}
-                    >
-                      <div>
-                        <p style={{
-                          fontFamily: "'Instrument Serif', serif",
-                          fontStyle: 'italic',
-                          color: '#e63946',
-                          marginBottom: '0.5rem'
-                        }}>{job.category}</p>
-                        <h3 style={{
-                          fontFamily: "'Instrument Serif', serif",
-                          fontSize: '1.5rem',
-                          fontWeight: 400
-                        }}>{job.title}</h3>
-                        <p style={{ color: '#6c757d', marginTop: '0.5rem' }}>
-                          {job.company} — {job.location}
-                        </p>
-                      </div>
-                      <div style={{ textAlign: 'right' }}>
-                        <p style={{ 
-                          fontFamily: "'Instrument Serif', serif",
-                          fontStyle: 'italic',
-                          color: '#1d3557'
-                        }}>{job.modality}</p>
-                        <p style={{ color: '#999', fontSize: '0.875rem' }}>{job.type}</p>
+                {/* Requirements */}
+                <div style={{ marginBottom: 'var(--space-6)' }}>
+                  <h3 className="text-h3" style={{ marginBottom: 'var(--space-3)' }}>Requisitos</h3>
+                  <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: 'var(--space-3)' }}>
+                    {selectedJob.requirements.map((req, i) => (
+                      <li key={i} style={{ 
+                        display: 'flex', 
+                        alignItems: 'flex-start', 
+                        gap: 'var(--space-3)',
+                        padding: 'var(--space-3)',
+                        background: 'var(--color-gray-50)',
+                        borderRadius: 'var(--radius-md)'
+                      }}>
+                        <span style={{ color: 'var(--color-primary)', fontWeight: 600 }}>✓</span>
+                        <span className="text-body">{req}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                {/* Benefits */}
+                <div style={{ marginBottom: 'var(--space-8)' }}>
+                  <h3 className="text-h3" style={{ marginBottom: 'var(--space-3)' }}>Benefícios</h3>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 'var(--space-2)' }}>
+                    {selectedJob.benefits.map((benefit, i) => (
+                      <span key={i} className="tag">{benefit}</span>
+                    ))}
+                  </div>
+                </div>
+
+                {/* CTA */}
+                <div style={{ 
+                  display: 'flex', 
+                  gap: 'var(--space-4)',
+                  paddingTop: 'var(--space-6)',
+                  borderTop: '1px solid var(--color-gray-200)'
+                }}>
+                  <button className="btn btn-primary btn-lg" style={{ flex: 1 }}>
+                    Candidatar-se Agora
+                  </button>
+                  <button className="btn btn-secondary btn-lg">
+                    Salvar Vaga
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* JOBS LIST VIEW */}
+        {!selectedJob && activeTab === 'vagas' && (
+          <div style={{ padding: 'var(--space-8) var(--space-6)' }}>
+            <div className="container">
+              {/* Welcome Banner */}
+              <div className="card animate-fadeInUp" style={{ 
+                padding: 'var(--space-8)',
+                background: 'var(--gradient-hero)',
+                marginBottom: 'var(--space-8)'
+              }}>
+                <h2 className="text-h1">Olá, {user.name.split(' ')[0]}! 👋</h2>
+                <p className="text-body" style={{ marginTop: 'var(--space-2)', maxWidth: '500px' }}>
+                  Você tem {user.applications} candidaturas ativas e {user.savedJobs} vagas salvas.
+                  Continue explorando novas oportunidades!
+                </p>
+              </div>
+
+              {/* Jobs Section */}
+              <div style={{ marginBottom: 'var(--space-6)' }}>
+                <h2 className="text-h2">Vagas Recomendadas</h2>
+                <p className="text-body" style={{ marginTop: 'var(--space-1)' }}>
+                  Baseadas no seu perfil e interesses
+                </p>
+              </div>
+
+              <div className="grid grid-jobs">
+                {mockJobs.slice(0, 6).map((job, i) => (
+                  <div 
+                    key={job.id}
+                    className={`job-card animate-fadeInUp delay-${Math.min((i % 5) + 1, 5) * 100}`}
+                    onClick={() => setSelectedJob(job)}
+                  >
+                    <div className="job-card-header">
+                      <div className="job-card-badges">
+                        <span className="badge badge-primary">{job.type}</span>
+                        <span className="badge badge-neutral">{job.modality}</span>
                       </div>
                     </div>
-                  ))}
-                </div>
-              </main>
-            )}
-
-            <footer style={{
-              padding: '3rem',
-              borderTop: '2px solid #0f0f0f',
-              display: 'flex',
-              justifyContent: 'space-between'
-            }}>
-              <span style={{
-                fontFamily: "'Instrument Serif', serif",
-                fontStyle: 'italic'
-              }}>Midu Group © 2026</span>
-              <span style={{ color: '#999' }}>Bahia, Brasil</span>
-            </footer>
-          </>
+                    <h3 className="job-card-title">{job.title}</h3>
+                    <p className="job-card-company">{job.company}</p>
+                    <p className="job-card-location">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                        <circle cx="12" cy="10" r="3"></circle>
+                      </svg>
+                      {job.location}
+                    </p>
+                    {job.salary && (
+                      <p className="job-card-salary">{job.salary}</p>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
         )}
-      </div>
+
+        {/* APPLICATIONS VIEW */}
+        {!selectedJob && activeTab === 'candidaturas' && (
+          <div style={{ padding: 'var(--space-8) var(--space-6)' }}>
+            <div className="container">
+              <h2 className="text-h1" style={{ marginBottom: 'var(--space-2)' }}>
+                Minhas Candidaturas
+              </h2>
+              <p className="text-body" style={{ marginBottom: 'var(--space-8)' }}>
+                Acompanhe o status das suas candidaturas
+              </p>
+
+              <div className="card" style={{ overflow: 'hidden' }}>
+                <table className="table">
+                  <thead>
+                    <tr>
+                      <th>Vaga</th>
+                      <th>Empresa</th>
+                      <th>Data</th>
+                      <th>Status</th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {mockJobs.slice(0, 5).map((job, i) => {
+                      const statuses = ['Em análise', 'Entrevista', 'Aprovado', 'Em análise', 'Reprovado']
+                      const statusColors = {
+                        'Em análise': 'badge-warning',
+                        'Entrevista': 'badge-primary',
+                        'Aprovado': 'badge-success',
+                        'Reprovado': 'badge-error'
+                      }
+                      const status = statuses[i]
+                      return (
+                        <tr key={job.id}>
+                          <td style={{ fontWeight: 500 }}>{job.title}</td>
+                          <td>{job.company}</td>
+                          <td className="text-muted">
+                            {new Date(Date.now() - i * 86400000 * 3).toLocaleDateString('pt-BR')}
+                          </td>
+                          <td>
+                            <span className={`badge ${statusColors[status as keyof typeof statusColors]}`}>
+                              {status}
+                            </span>
+                          </td>
+                          <td>
+                            <button 
+                              className="btn btn-ghost btn-sm"
+                              onClick={() => setSelectedJob(job)}
+                            >
+                              Ver detalhes
+                            </button>
+                          </td>
+                        </tr>
+                      )
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* PROFILE VIEW */}
+        {!selectedJob && activeTab === 'perfil' && (
+          <div style={{ padding: 'var(--space-8) var(--space-6)' }}>
+            <div className="container container-sm">
+              <h2 className="text-h1" style={{ marginBottom: 'var(--space-8)' }}>
+                Meu Perfil
+              </h2>
+
+              <div className="card animate-fadeInUp" style={{ padding: 'var(--space-8)', marginBottom: 'var(--space-6)' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-6)', marginBottom: 'var(--space-6)' }}>
+                  <div className="avatar avatar-lg">
+                    {user.name.split(' ').map(n => n[0]).join('')}
+                  </div>
+                  <div>
+                    <h3 className="text-h2">{user.name}</h3>
+                    <p className="text-body">{user.email}</p>
+                  </div>
+                </div>
+
+                <div style={{ 
+                  display: 'grid', 
+                  gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))',
+                  gap: 'var(--space-4)',
+                  paddingTop: 'var(--space-6)',
+                  borderTop: '1px solid var(--color-gray-200)'
+                }}>
+                  <div className="stat-card">
+                    <div className="stat-value stat-value-primary">{user.applications}</div>
+                    <div className="stat-label">Candidaturas</div>
+                  </div>
+                  <div className="stat-card">
+                    <div className="stat-value stat-value-primary">{user.savedJobs}</div>
+                    <div className="stat-label">Vagas Salvas</div>
+                  </div>
+                  <div className="stat-card">
+                    <div className="stat-value stat-value-primary">85%</div>
+                    <div className="stat-label">Perfil Completo</div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="card animate-fadeInUp delay-100" style={{ padding: 'var(--space-6)' }}>
+                <h3 className="text-h3" style={{ marginBottom: 'var(--space-4)' }}>Completude do Perfil</h3>
+                <div className="progress" style={{ marginBottom: 'var(--space-3)' }}>
+                  <div className="progress-bar" style={{ width: '85%' }}></div>
+                </div>
+                <p className="text-small">
+                  Complete seu perfil para aumentar suas chances de ser encontrado por recrutadores.
+                </p>
+                <button className="btn btn-primary" style={{ marginTop: 'var(--space-4)' }}>
+                  Completar Perfil
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+      </main>
+
+      {/* FOOTER */}
+      <footer className="footer">
+        <div className="container">
+          <div className="footer-brand">Midu Group</div>
+          <p className="footer-text">
+            © 2026 Midu Group — Portal do Candidato
+          </p>
+        </div>
+      </footer>
     </div>
   )
 }
