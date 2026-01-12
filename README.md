@@ -1,198 +1,212 @@
-# 📐 SELECOES-MIDU - Metodologia Scrappy + Workspace de Capturas
+# 🎯 Midu Group - Plataforma de Recrutamento e Seleção
 
-## 🎯 Conceito
+Plataforma web profissional para recrutamento e seleção de profissionais na Bahia, desenvolvida para **Daniel Duarte** (Midu Group).
 
-Este repositório serve como **Workspace Centralizado** para desenvolvimento via Capturas (Scrapping). Toda criação de scripts, ferramentas e documentação deve ser feita **mediante captura prévia** de conversas/interações com IA.
+[![Deploy to GitHub Pages](https://github.com/deivisan/SELECOES-MIDU/workflows/Deploy%20to%20GitHub%20Pages/badge.svg)](https://github.com/deivisan/SELECOES-MIDU/actions)
+
+## 🚀 Demo Online
+
+**Live Preview:** https://deivisan.github.io/SELECOES-MIDU/public.html
+
+### URLs das Páginas:
+- **Landing Page Pública:** `/public.html`
+- **Portal do Candidato:** `/portal.html`
+- **Dashboard Admin:** `/admin.html`
 
 ---
 
-## 🔄 Workflow Principal
+## 🎨 Design System
 
-### Etapa 1: Captura com Metodologia Scrappy
-Antes de qualquer desenvolvimento, capturar a conversa/interação:
+### 3 Temas Profissionais com Cores Vibrantes
+
+| Tema | Cor Primária | Gradiente | Uso |
+|------|--------------|-----------|-----|
+| **Default (Azul)** | `#2563eb` | Azul profundo → Azul escuro | Confiança, profissionalismo |
+| **Teal (Verde)** | `#0d9488` | Verde-água → Verde escuro | Crescimento, modernidade |
+| **Purple (Roxo)** | `#7c3aed` | Roxo criativo → Roxo escuro | Inovação, criatividade |
+
+**NOTA:** Todos os temas têm **backgrounds com gradientes coloridos** (ZERO branco puro).
+
+---
+
+## 🏢 Empresas Parceiras Reais (BA)
+
+A plataforma apresenta vagas de empresas baianas de destaque:
+
+- **Ford Motor Company** (Camaçari)
+- **Braskem** (Camaçari - Polo Petroquímico)
+- **Petrobras** (Salvador)
+- **Suzano S.A.** (Mucuri - Papel e Celulose)
+- **BRF S.A.** (Feira de Santana - Alimentos)
+- **Midu Group** (Feira de Santana)
+
+---
+
+## 📋 Sobre a Midu Group
+
+**Fundador:** Daniel Duarte  
+**Especialização:** Recrutamento e Seleção com foco em DEI (Diversidade, Equidade e Inclusão)  
+**Certificações:**
+- Administrative Human Resources (LinkedIn)
+- Equity First: The Path to Inclusion and Belonging
+- Foundations of Diversity, Equity, Inclusion, and Belonging
+- Strategic Human Resources
+- HR Recruiting Communication Strategies
+
+### Missão
+Facilitar processos seletivos de alta qualidade, reduzindo tempo de contratação e aumentando a taxa de acerto no match entre empresas e profissionais.
+
+### Diferencial
+Combinamos **tecnologia moderna** com **olhar humano especializado**. Utilizamos plataformas digitais para agilidade, mas mantemos entrevistas estruturadas e avaliações comportamentais conduzidas por psicólogos e especialistas em RH.
+
+---
+
+## 🛠️ Stack Técnica
+
+- **Runtime:** Bun 1.3+ (NÃO Node.js)
+- **Framework:** React 19
+- **Build Tool:** Vite 7.3.1
+- **Styling:** CSS puro com design system + TailwindCSS 3
+- **Linguagem:** TypeScript 5.8+
+- **Deploy:** GitHub Pages (CI/CD automático)
+
+---
+
+## 🚀 Desenvolvimento Local
+
+### Pré-requisitos
 ```bash
-cd SELECOES-MIDU
-bun scrape.js <URL_DO_CHAT>
+# Instalar Bun (se ainda não tiver)
+curl -fsSL https://bun.sh/install | bash
+
+# Verificar instalação
+bun --version
 ```
 
-**Output gerado:**
-- `captures/c2hhcmQtMg_xxx.json` - Dados estruturados
-- `captures/c2hhcmQtMg_xxx.md` - Markdown formatado
-- `captures/c2hhcmQtMg_xxx.html` - HTML completo
-- `captures/c2hhcmQtMg_xxx.png` - Screenshot
-
-### Etapa 2: Análise da Captura
-IA (DevSan/DevSan Max) lê a captura e:
-1. Identifica blocos de código
-2. Detecta comandos de terminal
-3. Entende o contexto completo da conversa
-4. Identifica requisitos técnicos
-
-### Etapa 3: Desenvolvimento no Workspace
-APÓS análise da captura, IA cria/altera scripts:
+### Instalar Dependências
 ```bash
-cd SELECOES-MIDU
-# Scripts criados/modificados aqui
-bun run <script>
+bun install
 ```
 
-**Arquivos de desenvolvimento:**
-- `scrape.js` - Script de scraping principal
-- `test-*.js` - Testes unitários
-- `utils/` - Funções auxiliares
-- `playwright-edge-prompt.md` - Prompts técnicos
-
-### Etapa 4: Documentação
-Toda alteração deve ser documentada:
+### Rodar Dev Server
 ```bash
-git add .
-git commit -m "Descreve mudança baseada em captura c2hhcmQtMg_xxx"
-git push
+bun run dev
 ```
 
----
+Acesse: `http://localhost:3000/public.html`
 
-## 📋 Regras do Workspace
+### Build para Produção
+```bash
+bun run build
+```
 
-### ✅ SEMPRE FAZER
-1. **Capturar antes de codar** - Usar scrape.js em toda URL
-2. **Commitar com referência** - Incluir ID da captura no commit message
-3. **Documentar** - Atualizar READMEs e STATUS-*
-4. **Testar** - Scripts de teste devem ser executados antes de commitar
-
-### ❌ NUNCA FAZER
-1. Criar código sem captura prévia
-2. Commitar sem documentação
-3. Alterar scrape.js sem testar
-4. Deixar código sem comentários
+Saída em: `dist/`
 
 ---
 
-## 🎓 Link Inicial (Grok)
+## 📦 Deploy no GitHub Pages
 
-**Conversa inicial que gerou este workflow:**
-- URL: https://grok.com/share/c2hhcmQtMg_6dd55899-b70b-4eee-93b4-8266010f646d
-- Status: ⏳ Captura pendente (Edge travando)
+### Passo 1: Habilitar GitHub Pages
+1. Vá em **Settings** do repositório
+2. Navegue até **Pages** (menu lateral)
+3. Em **Source**, selecione: **GitHub Actions**
+4. Salve
+
+### Passo 2: Executar Workflow
+O deploy acontece automaticamente ao fazer `git push` na branch `main`.
+
+Para verificar o status:
+1. Vá na aba **Actions** do repositório
+2. Aguarde o workflow **"Deploy to GitHub Pages"** concluir (⏳ ~2 minutos)
+3. Acesse: `https://deivisan.github.io/SELECOES-MIDU/public.html`
 
 ---
 
-## 📂 Estrutura do Repo
+## 📂 Estrutura do Projeto
 
 ```
 SELECOES-MIDU/
-├── README.md                    # Este arquivo
-├── STATUS-PLAYWRIGHT.md        # Status detalhado Playwright + Edge
-├── playwright-edge-prompt.md     # Prompt técnico para IA
-├── Metodologia-Scrape.md       # Metodologia de scraping
-├── scrape.js                   # Script principal (documentado)
-├── test-*.js                  # Testes unitários
-├── captures/                   # 📦 Todas as capturas aqui
-│   ├── c2hhcmQtMg_*.json     # Dados estruturados
-│   ├── c2hhcmQtMg_*.md       # Markdowns
-│   ├── c2hhcmQtMg_*.html     # HTMLs brutos
-│   └── c2hhcmQtMg_*.png     # Screenshots
-└── .git/                      # Controle de versão
+├── .github/
+│   └── workflows/
+│       └── deploy.yml          # CI/CD automático
+├── src/
+│   ├── client/
+│   │   ├── public/
+│   │   │   ├── main.tsx
+│   │   │   └── PublicView.tsx  # Landing page
+│   │   ├── portal/
+│   │   │   ├── main.tsx
+│   │   │   └── PortalView.tsx  # Portal candidato
+│   │   └── admin/
+│   │       ├── main.tsx
+│   │       └── AdminView.tsx   # Dashboard admin
+│   └── shared/
+│       ├── data/
+│       │   └── mockData.ts     # Vagas, empresas, categorias
+│       ├── types/
+│       │   └── index.ts        # TypeScript types
+│       └── styles/
+│           └── themes.css      # Design system completo
+├── public.html
+├── portal.html
+├── admin.html
+├── vite.config.ts
+├── tailwind.config.js
+├── package.json
+└── README.md
 ```
 
 ---
 
-## 🔧 Como Contribuir
+## 🎨 Animações Profissionais
 
-### Workflow Padrão
+- **fadeInUp:** Entrada suave de baixo para cima
+- **slideInLeft/Right:** Deslizamento lateral
+- **scaleIn:** Zoom suave
+- **pulse:** Pulsação suave
+- **float:** Flutuação contínua
+
+Todas com delays escalonados (100ms-800ms) para efeito cascata.
+
+---
+
+## 🔧 Scripts Disponíveis
+
 ```bash
-# 1. Capturar conversa
-bun scrape.js <URL>
-
-# 2. Analisar captura
-# (IA lê captures/c2hhcmQtMg_xxx.md)
-
-# 3. Desenvolver/scriptar
-# (IA cria/altera scripts baseado na captura)
-
-# 4. Testar
-bun test-*.js
-
-# 5. Documentar e commitar
-git add .
-git commit -m "Implements X based on capture c2hhcmQtMg_xxx"
-git push
+bun run dev        # Dev server (porta 3000)
+bun run build      # Build produção
+bun run preview    # Preview build local
+bun run lint       # Rodar ESLint
 ```
 
-### Naming Convention
-- **Capturas:** `c2hhcmQtMg_<timestamp>.<ext>`
-- **Testes:** `test-<funcionalidade>.js`
-- **Scripts:** `<descrição>.js` (ex: `scrape-edge.js`)
-- **Docs:** `<NOME>-PROMPT.md`, `<NOME>-STATUS.md`
+---
+
+## 📝 Changelog
+
+### v2.0.0 (2026-01-12)
+- ✅ **Cores vibrantes** em todos os temas (gradientes azul/verde/roxo)
+- ✅ Removido "Miranda + Duarte" (agora só "Midu Group")
+- ✅ **Seção "Sobre"** com informações reais de Daniel Duarte
+- ✅ **Empresas baianas reais** (Ford, Braskem, Petrobras, Suzano, BRF)
+- ✅ **Animações profissionais** (8 tipos com delays)
+- ✅ **GitHub Pages** configurado (deploy automático)
+
+### v1.0.0 (2026-01-11)
+- ✅ Design system profissional (3 temas sutis)
+- ✅ 3 páginas completas (Public, Portal, Admin)
+- ✅ 10 vagas mock da Bahia
+- ✅ Sistema de filtros e busca
 
 ---
 
-## 🎯 Próximas Tarefas
+## 📞 Contato
 
-### Prioridade Alta (Edge + Playwright)
-- [ ] Resolver travamento Edge com Playwright
-- [ ] Testar `launchPersistentContext` com perfil separado
-- [ ] Implementar teste Cloudflare completo
-- [ ] Capturar link inicial do Grok (c2hhcmQtMg_6dd55899...)
-
-### Prioridade Média (Workspace)
-- [ ] Criar estrutura `utils/` para funções auxiliares
-- [ ] Implementar testes automatizados
-- [ ] Documentar cada função do scrape.js
-
-### Prioridade Baixa (Organização)
-- [ ] Criar script `clean-captures.js` para limpeza
-- [ ] Adicionar `package.json` com scripts de desenvolvimento
-- [ ] Criar CONTRIBUTING.md
+**Desenvolvido por:** Deivison Santana (@deivisan)  
+**Cliente:** Daniel Duarte (Midu Group)  
+**Região:** Bahia, Brasil  
 
 ---
 
-## 🔐 Segurança
+## 📄 Licença
 
-### ⚠️ AVISO IMPORTANTE
-- **NUNCA** commitar tokens, senhas ou dados sensíveis no SELECOES-MIDU
-- Dados sensíveis vão para **DevBank** (repo privado)
-- Este repo é **PÚBLICO** e não contém dados pessoais
-
-### Dados Sensíveis (DevBank)
-- Tokens de API
-- Senhas de serviços
-- Credenciais de banco
-- Chaves privadas
-- Dados pessoais
-
----
-
-## 📊 Status Atual
-
-| Componente | Status |
-|------------|--------|
-| Repo criado | ✅ |
-| Metodologia Scrappy | ✅ |
-| scrape.js | ✅ |
-| Prompt Playwright | ✅ |
-| Testes Edge | ⚠️ Detecção OK, execução falhando |
-| Captura inicial Grok | ⏳ Pendente (Edge trava) |
-| Workspace ativo | ✅ |
-
----
-
-## 📝 Notas para Próxima IA
-
-**Contexto de Desenvolvimento:**
-1. Edge é detectado em `C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe`
-2. Playwright abre Edge visivelmente, mas não executa comandos
-3. Possível conflito com perfil existente em uso
-4. Precisa testar `launchPersistentContext` com perfil separado em `SELECOES-MIDU/chrome-profile-scrape/`
-
-**Solução Sugerida:**
-1. Usar `chromium.launchPersistentContext()` ao invés de `launch()`
-2. Criar perfil separado para scraping
-3. Fechar todas instâncias Edge antes de executar
-4. Testar com `channel: 'msedge'` sem `executablePath`
-
----
-
-**Autor:** Deivison Santana (@deivisan)
-**Repo:** https://github.com/Deivisan/SELECOES-MIDU
-**Status:** Público - Workspace de Capturas para Desenvolvimento
-**Última atualização:** 12/01/2026
+© 2026 Midu Group — Todos os direitos reservados.

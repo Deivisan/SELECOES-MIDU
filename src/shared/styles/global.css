@@ -1,0 +1,31 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply font-sans antialiased;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-midu-blue hover:bg-blue-700 text-white font-medium py-2 px-4 rounded transition-colors;
+  }
+  
+  .btn-secondary {
+    @apply bg-midu-green hover:bg-green-700 text-white font-medium py-2 px-4 rounded transition-colors;
+  }
+  
+  .btn-accent {
+    @apply bg-midu-orange hover:bg-orange-600 text-white font-medium py-2 px-4 rounded transition-colors;
+  }
+  
+  .card-hover {
+    @apply transition-all duration-300 hover:shadow-xl hover:-translate-y-1;
+  }
+  
+  .job-card {
+    @apply bg-white rounded-lg shadow-md p-6 card-hover border border-gray-100;
+  }
+}
