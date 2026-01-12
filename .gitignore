@@ -1,36 +1,24 @@
-# dependencies (bun install)
-node_modules
-bun.lock
+# Dependencies
+node_modules/
+bun.lockb
 
-# output
-out
-dist
-*.tgz
+# Build outputs
+dist/
 
-# code coverage
-coverage
-*.lcov
+# Development templates (não devem ir pro GitHub Pages)
+# Os HTMLs de produção estão em dist/
+admin.html
+portal.html
+public.html
 
-# logs
-logs
-*.log
-report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
-
-# dotenv environment variable files
+# Environment
 .env
-.env.development.local
-.env.test.local
-.env.production.local
 .env.local
 
-# caches
-.eslintcache
-.cache
-*.tsbuildinfo
-.vite
+# Editor
+.vscode/
+.idea/
 
-# IntelliJ based IDEs
-.idea
-
-# Finder (MacOS) folder config
+# OS
 .DS_Store
+Thumbs.db
