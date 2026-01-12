@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="refresh" content="0; url=/SELECOES-MIDU/public.html">
+  <title>Midu Group - Redirecionando...</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      text-align: center;
+    }
+    .loader {
+      font-size: 1.5rem;
+      font-weight: 600;
+    }
+    .spinner {
+      width: 50px;
+      height: 50px;
+      border: 5px solid rgba(255,255,255,0.3);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 20px auto;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+  <div>
+    <div class="spinner"></div>
+    <div class="loader">Carregando Midu Group...</div>
+    <p style="margin-top: 10px; font-size: 0.9rem; opacity: 0.9;">
+      Redirecionando para a plataforma
+    </p>
+  </div>
+  <script>
+    // Fallback caso meta refresh não funcione
+    setTimeout(() => {
+      window.location.href = '/SELECOES-MIDU/public.html';
+    }, 100);
+  </script>
+</body>
+</html>

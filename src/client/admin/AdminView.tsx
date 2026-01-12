@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { mockJobs, mockAdmin } from '../../shared/data/mockData'
+import ViewSelector from '../../shared/components/ViewSelector'
 import '../../shared/styles/themes.css'
 
 type ThemeType = 'default' | 'teal' | 'purple'
@@ -75,38 +76,12 @@ export default function AdminView() {
 
   return (
     <div className={`theme-${theme}`}>
-      {/* Theme Switcher */}
-      <div style={{
-        position: 'fixed',
-        bottom: '1.5rem',
-        right: '1.5rem',
-        zIndex: 1000,
-        display: 'flex',
-        gap: '0.5rem',
-        padding: '0.5rem',
-        background: 'rgba(255,255,255,0.95)',
-        borderRadius: '12px',
-        boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
-        backdropFilter: 'blur(10px)'
-      }}>
-        {(['default', 'teal', 'purple'] as ThemeType[]).map((t) => (
-          <button
-            key={t}
-            onClick={() => changeTheme(t)}
-            title={themeLabels[t]}
-            style={{
-              width: '28px',
-              height: '28px',
-              borderRadius: '50%',
-              border: theme === t ? '3px solid #1f2937' : '2px solid transparent',
-              background: themeColors[t],
-              cursor: 'pointer',
-              transition: 'all 0.2s ease',
-              transform: theme === t ? 'scale(1.1)' : 'scale(1)'
-            }}
-          />
-        ))}
-      </div>
+      {/* View Selector with Theme Switcher */}
+      <ViewSelector 
+        theme={theme} 
+        onThemeChange={changeTheme}
+        onViewChange={() => {}}
+      />
 
       {!isLoggedIn ? (
         /* LOGIN SCREEN */
