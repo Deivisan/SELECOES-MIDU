@@ -4,6 +4,9 @@ import {
   XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Cell 
 } from 'recharts'
 import { mockJobs } from '../../shared/data/mockData'
+import type { Job } from '../../shared/types'
+import VagasTable from '../../shared/components/VagasTable'
+import VagaForm from '../../shared/components/VagaForm'
 import ViewSelector from '../../shared/components/ViewSelector'
 import '../../shared/styles/themes.css'
 
@@ -652,16 +655,140 @@ function KPICard({ icon, label, value, trend, trendUp, color }: {
   )
 }
 
-/* ==================== VAGAS SECTION (Placeholder) ==================== */
+/* ==================== VAGAS SECTION (CRUD Completo) ==================== */
 function VagasSection() {
+  const [vagas, setVagas] = useState<Job[]>([
+    {
+      id: '1',
+      title: 'Desenvolvedor Full Stack Sênior',
+      company: 'Ford Brasil',
+      location: 'Salvador, BA',
+      type: 'CLT',
+      modality: 'Híbrido',
+      category: 'Tecnologia',
+      salary: 'R$ 8.000 - R$ 12.000',
+      description: 'Desenvolvimento de sistemas web modernos',
+      requirements: ['5+ anos React', 'TypeScript', 'Node.js'],
+      responsibilities: ['Desenvolver features', 'Code review', 'Mentoria'],
+      benefits: ['Plano de saúde', 'VR/VA', 'Home office'],
+      postedAt: new Date('2026-01-10'),
+      isActive: true
+    },
+    {
+      id: '2',
+      title: 'Analista de Marketing Digital',
+      company: 'Midu Group',
+      location: 'Feira de Santana, BA',
+      type: 'PJ',
+      modality: 'Remoto',
+      category: 'Marketing',
+      salary: 'R$ 4.000 - R$ 6.000',
+      description: 'Gestão de campanhas digitais',
+      requirements: ['2+ anos marketing', 'Google Ads', 'Meta Ads'],
+      responsibilities: ['Criar campanhas', 'Analisar métricas', 'Otimizar conversões'],
+      benefits: ['Horário flexível', 'Equipamento fornecido'],
+      postedAt: new Date('2026-01-08'),
+      isActive: true
+    }
+  ])
+  
+  const [editingVaga, setEditingVaga] = useState<Job | null>(null)
+  const [showForm, setShowForm] = useState(false)
+  
+  const handleCreate = () => {
+    setEditingVaga(null)
+    setShowForm(true)
+  }
+  
+  const handleEdit = (vaga: Job) => {
+    setEditingVaga(vaga)
+    setShowForm(true)
+  }
+  
+  const handleSave = (vagaData: Partial<Job>) => {
+    if (editingVaga) {
+      // Atualizar vaga existente
+      setVagas(prev => prev.map(v => 
+        v.id === editingVaga.id 
+          ? { ...v, ...vagaData } as Job
+          : v
+      ))
+    } else {
+      // Criar nova vaga
+      const newVaga: Job = {
+        id: Date.now().toString(),
+        ...vagaData as Omit<Job, 'id'>
+      }
+      setVagas(prev => [newVaga, ...prev])
+    }
+    setShowForm(false)
+    setEditingVaga(null)
+  }
+  
+  const handleDelete = (id: string) => {
+    if (confirm('Tem certeza que deseja excluir esta vaga?')) {
+      setVagas(prev => prev.filter(v => v.id !== id))
+    }
+  }
+  
+  const handleToggleActive = (id: string) => {
+    setVagas(prev => prev.map(v => 
+      v.id === id ? { ...v, isActive: !v.isActive } : v
+    ))
+  }
+  
+  const handleCancel = () => {
+    setShowForm(false)
+    setEditingVaga(null)
+  }
+
   return (
     <div>
-      <h1 style={{ fontSize: '2rem', fontWeight: 700, marginBottom: '2rem' }}>💼 Gestão de Vagas</h1>
-      <div className="card" style={{ padding: '3rem', textAlign: 'center' }}>
-        <div style={{ fontSize: '4rem', marginBottom: '1rem' }}>🚧</div>
-        <h3 style={{ fontSize: '1.5rem', fontWeight: 700, marginBottom: '1rem' }}>Em Desenvolvimento</h3>
-        <p style={{ color: 'var(--color-gray-600)' }}>CRUD completo de vagas será implementado em breve</p>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
+        <h1 style={{ fontSize: '2rem', fontWeight: 700 }}>💼 Gestão de Vagas</h1>
+        <button 
+          className="btn btn-lg"
+          onClick={handleCreate}
+          style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}
+        >
+          ➕ Nova Vaga
+        </button>
       </div>
+
+      {/* Stats */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem', marginBottom: '2rem' }}>
+        <div className="card" style={{ padding: '1.5rem' }}>
+          <div style={{ fontSize: '0.875rem', color: 'var(--color-gray-600)', marginBottom: '0.5rem' }}>Total de Vagas</div>
+          <div style={{ fontSize: '2rem', fontWeight: 700, color: 'var(--color-gray-900)' }}>{vagas.length}</div>
+        </div>
+        <div className="card" style={{ padding: '1.5rem' }}>
+          <div style={{ fontSize: '0.875rem', color: 'var(--color-gray-600)', marginBottom: '0.5rem' }}>Vagas Ativas</div>
+          <div style={{ fontSize: '2rem', fontWeight: 700, color: '#10b981' }}>{vagas.filter(v => v.isActive).length}</div>
+        </div>
+        <div className="card" style={{ padding: '1.5rem' }}>
+          <div style={{ fontSize: '0.875rem', color: 'var(--color-gray-600)', marginBottom: '0.5rem' }}>Vagas Inativas</div>
+          <div style={{ fontSize: '2rem', fontWeight: 700, color: '#6b7280' }}>{vagas.filter(v => !v.isActive).length}</div>
+        </div>
+      </div>
+
+      {/* Tabela */}
+      <div className="card" style={{ padding: '0', overflow: 'hidden' }}>
+        <VagasTable 
+          vagas={vagas}
+          onEdit={handleEdit}
+          onDelete={handleDelete}
+          onToggleActive={handleToggleActive}
+        />
+      </div>
+
+      {/* Modal Form */}
+      {showForm && (
+        <VagaForm 
+          vaga={editingVaga || undefined}
+          onSave={handleSave}
+          onCancel={handleCancel}
+        />
+      )}
     </div>
   )
 }
