@@ -1,101 +1,124 @@
 # 🎯 Midu Group - Plataforma de Recrutamento e Seleção
 
-> **Conectando Talentos** - Sistema inteligente de gestão de vagas e currículos
+Plataforma web profissional para recrutamento e seleção de profissionais na Bahia, desenvolvida para **Daniel Duarte** (Midu Group).
 
----
+[![Deploy to GitHub Pages](https://github.com/deivisan/SELECOES-MIDU/workflows/Deploy%20to%20GitHub%20Pages/badge.svg)](https://github.com/deivisan/SELECOES-MIDU/actions)
 
-## 📊 Sobre o Projeto
+## 🚀 Demo Online
 
-**Midu Group** é uma plataforma moderna de recrutamento e seleção desenvolvida para Daniel Duarte (líder RH, Bahia). O nome "Midu" representa a união de **Mi**randa + **Du**arte, simbolizando parceria e expertise em gestão de talentos.
+**Live Preview:** https://deivisan.github.io/SELECOES-MIDU/public.html
 
-### 🎯 Objetivo
-Criar uma solução completa para:
-- Empresas postarem vagas qualificadas
-- Candidatos encontrarem oportunidades alinhadas ao perfil
-- RH gerenciar processos seletivos com eficiência
-- Banco de dados inteligente de currículos
-
----
-
-## 🚀 Stack Tecnológica
-
-### **Runtime & Build**
-- ✅ **Bun** - Runtime JS/TS ultrarrápido (substitui Node.js)
-- ✅ **TypeScript** - Tipagem estática para robustez
-- ✅ **Vite** - Build otimizado e HMR instantâneo
-
-### **Frontend** (A Definir)
-- 🔄 **Opção 1:** React + TailwindCSS
-- 🔄 **Opção 2:** Vue 3 + UnoCSS
-- 🔄 **Opção 3:** Svelte + DaisyUI
-- 📱 **Mobile-first** obrigatório
-
-### **Backend**
-- ✅ **Hono** - Framework web ultrarrápido pra Bun
-- ✅ **MongoDB Atlas** - Banco de dados de currículos
-- ✅ **JWT** - Autenticação segura
-- ✅ **Firebase Storage** - Armazenamento de CVs (LGPD-compliant)
-
-### **Deploy**
-- ✅ **GitHub Pages** - Demo estática inicial
-- 🔄 **Vercel/Cloudflare Pages** - Produção com backend
-- 🔄 **MongoDB Atlas** - Free tier (512MB)
-
----
-
-## 🎨 Visualizações Planejadas
-
-### 1️⃣ **Público Geral** (Landing Page)
-- Hero section com barra de busca central
-- Cards de vagas em destaque
-- Filtros: localização, área, salário
-- Call-to-action: "Candidate-se" ou "Conheça o Midu"
-
-### 2️⃣ **Candidatos** (Portal de Vagas)
-- Lista completa de vagas com filtros avançados
-- Detalhes da vaga em modal dinâmico
-- Formulário de candidatura:
-  - Dados básicos (nome, email, telefone)
-  - Upload CV (PDF, max 5MB)
-  - Perguntas específicas da vaga (opcional)
-- Cadastro opcional (perfil persistente)
-
-### 3️⃣ **Admin RH** (Painel Daniel)
-- Dashboard analítico:
-  - Vagas abertas
-  - Total de candidaturas
-  - Estatísticas por período
-- Gerenciamento de vagas (CRUD completo)
-- Visualização de candidatos:
-  - Lista por vaga
-  - Filtros (nome, skill, data)
-  - Download CV
-  - Etapas: triagem → entrevista → aprovado/reprovado
-- Kanban visual (futuro)
+### URLs das Páginas:
+- **Landing Page Pública:** `/public.html`
+- **Portal do Candidato:** `/portal.html`
+- **Dashboard Admin:** `/admin.html`
 
 ---
 
 ## 🎨 Design System
 
-### **Paleta de Cores** (Baseada no perfil RH)
-```css
---primary: #007BFF;      /* Azul confiança */
---success: #28A745;      /* Verde crescimento */
---warning: #FD7E14;      /* Laranja energia */
---background: #F8F9FA;   /* Off-white clean */
---text: #212529;         /* Texto principal */
+### 3 Temas Profissionais com Cores Vibrantes
+
+| Tema | Cor Primária | Gradiente | Uso |
+|------|--------------|-----------|-----|
+| **Default (Azul)** | `#2563eb` | Azul profundo → Azul escuro | Confiança, profissionalismo |
+| **Teal (Verde)** | `#0d9488` | Verde-água → Verde escuro | Crescimento, modernidade |
+| **Purple (Roxo)** | `#7c3aed` | Roxo criativo → Roxo escuro | Inovação, criatividade |
+
+**NOTA:** Todos os temas têm **backgrounds com gradientes coloridos** (ZERO branco puro).
+
+---
+
+## 🏢 Empresas Parceiras Reais (BA)
+
+A plataforma apresenta vagas de empresas baianas de destaque:
+
+- **Ford Motor Company** (Camaçari)
+- **Braskem** (Camaçari - Polo Petroquímico)
+- **Petrobras** (Salvador)
+- **Suzano S.A.** (Mucuri - Papel e Celulose)
+- **BRF S.A.** (Feira de Santana - Alimentos)
+- **Midu Group** (Feira de Santana)
+
+---
+
+## 📋 Sobre a Midu Group
+
+**Fundador:** Daniel Duarte  
+**Especialização:** Recrutamento e Seleção com foco em DEI (Diversidade, Equidade e Inclusão)  
+**Certificações:**
+- Administrative Human Resources (LinkedIn)
+- Equity First: The Path to Inclusion and Belonging
+- Foundations of Diversity, Equity, Inclusion, and Belonging
+- Strategic Human Resources
+- HR Recruiting Communication Strategies
+
+### Missão
+Facilitar processos seletivos de alta qualidade, reduzindo tempo de contratação e aumentando a taxa de acerto no match entre empresas e profissionais.
+
+### Diferencial
+Combinamos **tecnologia moderna** com **olhar humano especializado**. Utilizamos plataformas digitais para agilidade, mas mantemos entrevistas estruturadas e avaliações comportamentais conduzidas por psicólogos e especialistas em RH.
+
+---
+
+## 🛠️ Stack Técnica
+
+- **Runtime:** Bun 1.3+ (NÃO Node.js)
+- **Framework:** React 19
+- **Build Tool:** Vite 7.3.1
+- **Styling:** CSS puro com design system + TailwindCSS 3
+- **Linguagem:** TypeScript 5.8+
+- **Deploy:** GitHub Pages (CI/CD automático)
+
+---
+
+## 🚀 Desenvolvimento Local
+
+### Pré-requisitos
+```bash
+# Instalar Bun (se ainda não tiver)
+curl -fsSL https://bun.sh/install | bash
+
+# Verificar instalação
+bun --version
 ```
 
-### **Princípios**
-- ✅ Mobile-first (70% acesso mobile Brasil)
-- ✅ Animações leves (hover, fade-in)
-- ✅ Acessibilidade (WCAG 2.1 AA)
-- ✅ Performance (Lighthouse 90+)
+### Instalar Dependências
+```bash
+bun install
+```
 
-### **Inspirações**
-- Gupy (IA visual, clean, cards dinâmicos)
-- Vagas.com (filtros simples, mobile otimizado)
-- LinkedIn Jobs (profissional, badges, clareza)
+### Rodar Dev Server
+```bash
+bun run dev
+```
+
+Acesse: `http://localhost:3000/public.html`
+
+### Build para Produção
+```bash
+bun run build
+```
+
+Saída em: `dist/`
+
+---
+
+## 📦 Deploy no GitHub Pages
+
+### Passo 1: Habilitar GitHub Pages
+1. Vá em **Settings** do repositório
+2. Navegue até **Pages** (menu lateral)
+3. Em **Source**, selecione: **GitHub Actions**
+4. Salve
+
+### Passo 2: Executar Workflow
+O deploy acontece automaticamente ao fazer `git push` na branch `main`.
+
+Para verificar o status:
+1. Vá na aba **Actions** do repositório
+2. Aguarde o workflow **"Deploy to GitHub Pages"** concluir (⏳ ~2 minutos)
+3. Acesse: `https://deivisan.github.io/SELECOES-MIDU/public.html`
 
 ---
 
@@ -103,91 +126,87 @@ Criar uma solução completa para:
 
 ```
 SELECOES-MIDU/
+├── .github/
+│   └── workflows/
+│       └── deploy.yml          # CI/CD automático
 ├── src/
-│   ├── client/              # Frontend (3 visualizações)
-│   │   ├── public/          # Landing page pública
-│   │   ├── portal/          # Portal candidatos
-│   │   └── admin/           # Painel RH
-│   ├── server/              # Backend Bun + Hono
-│   │   ├── routes/          # API endpoints
-│   │   ├── models/          # Schemas MongoDB
-│   │   ├── middleware/      # Auth, CORS, etc
-│   │   └── utils/           # Helpers
-│   └── shared/              # Types, constants
-├── public/                  # Assets estáticos
-│   ├── images/              # Fotos Daniel, logos
-│   └── fonts/               # Tipografia custom
-├── temp/                    # Arquivos de scraping (histórico)
-├── package.json             # Bun dependencies
-├── tsconfig.json            # TypeScript config
-├── vite.config.ts           # Build config
-└── README.md                # Este arquivo
+│   ├── client/
+│   │   ├── public/
+│   │   │   ├── main.tsx
+│   │   │   └── PublicView.tsx  # Landing page
+│   │   ├── portal/
+│   │   │   ├── main.tsx
+│   │   │   └── PortalView.tsx  # Portal candidato
+│   │   └── admin/
+│   │       ├── main.tsx
+│   │       └── AdminView.tsx   # Dashboard admin
+│   └── shared/
+│       ├── data/
+│       │   └── mockData.ts     # Vagas, empresas, categorias
+│       ├── types/
+│       │   └── index.ts        # TypeScript types
+│       └── styles/
+│           └── themes.css      # Design system completo
+├── public.html
+├── portal.html
+├── admin.html
+├── vite.config.ts
+├── tailwind.config.js
+├── package.json
+└── README.md
 ```
 
 ---
 
-## 🔐 Compliance e Segurança
+## 🎨 Animações Profissionais
 
-### **LGPD (Lei Geral de Proteção de Dados)**
-- ✅ Consentimento explícito pra armazenar CV
-- ✅ Direito de exclusão de dados (endpoint `/api/candidatos/:id/delete`)
-- ✅ Criptografia em trânsito (HTTPS) e repouso (MongoDB encryption)
-- ✅ Logs de acesso aos dados sensíveis
+- **fadeInUp:** Entrada suave de baixo para cima
+- **slideInLeft/Right:** Deslizamento lateral
+- **scaleIn:** Zoom suave
+- **pulse:** Pulsação suave
+- **float:** Flutuação contínua
 
-### **Autenticação**
-- ✅ JWT com refresh tokens
-- ✅ Senha hash (bcrypt)
-- ✅ Rate limiting (prevenir brute force)
+Todas com delays escalonados (100ms-800ms) para efeito cascata.
 
 ---
 
-## 🚀 Como Começar
+## 🔧 Scripts Disponíveis
 
 ```bash
-# Instalar Bun (se não tiver)
-curl -fsSL https://bun.sh/install | bash
-
-# Instalar dependências
-bun install
-
-# Rodar dev server
-bun run dev
-
-# Build pra produção
-bun run build
-
-# Deploy GitHub Pages
-bun run deploy
+bun run dev        # Dev server (porta 3000)
+bun run build      # Build produção
+bun run preview    # Preview build local
+bun run lint       # Rodar ESLint
 ```
 
 ---
 
-## 📝 Documentação Adicional
+## 📝 Changelog
 
-- 📋 [**STACK-DECISION.md**](./STACK-DECISION.md) - Decisões técnicas detalhadas
-- 💬 [**temp/CONVERSA-GROK-COMPLETA.md**](./temp/CONVERSA-GROK-COMPLETA.md) - Conversa original com requisitos
-- 🗂️ [**temp/**](./temp/) - Histórico de scraping e metodologias
+### v2.0.0 (2026-01-12)
+- ✅ **Cores vibrantes** em todos os temas (gradientes azul/verde/roxo)
+- ✅ Removido "Miranda + Duarte" (agora só "Midu Group")
+- ✅ **Seção "Sobre"** com informações reais de Daniel Duarte
+- ✅ **Empresas baianas reais** (Ford, Braskem, Petrobras, Suzano, BRF)
+- ✅ **Animações profissionais** (8 tipos com delays)
+- ✅ **GitHub Pages** configurado (deploy automático)
+
+### v1.0.0 (2026-01-11)
+- ✅ Design system profissional (3 temas sutis)
+- ✅ 3 páginas completas (Public, Portal, Admin)
+- ✅ 10 vagas mock da Bahia
+- ✅ Sistema de filtros e busca
 
 ---
 
 ## 📞 Contato
 
-**Desenvolvedor:** Deivison Santana (@deivisan)  
-**Cliente:** Daniel Duarte - Midu Group  
-**Repo:** https://github.com/Deivisan/SELECOES-MIDU  
-**Data Início:** 12/01/2026  
-**Status:** ✅ Stack consolidada - Pronto pra desenvolvimento
+**Desenvolvido por:** Deivison Santana (@deivisan)  
+**Cliente:** Daniel Duarte (Midu Group)  
+**Região:** Bahia, Brasil  
 
 ---
 
-## 🎯 Próximos Passos
+## 📄 Licença
 
-- [x] Estrutura de pastas planejada
-- [x] Stack tecnológica definida
-- [x] Documentação consolidada
-- [ ] Inicializar projeto Bun + Vite + React
-- [ ] Criar 3 apps básicas (public, portal, admin)
-- [ ] Setup TailwindCSS + DaisyUI
-- [ ] Mock 10 vagas de teste
-
-**🚀 Aguardando confirmação para iniciar desenvolvimento!**
+© 2026 Midu Group — Todos os direitos reservados.
