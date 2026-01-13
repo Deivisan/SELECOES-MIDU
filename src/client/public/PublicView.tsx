@@ -142,57 +142,6 @@ export default function PublicView() {
         </div>
       </section>
 
-      {/* EMPRESAS PARCEIRAS */}
-      <section id="empresas" style={{ 
-        padding: 'var(--space-16) var(--space-6)',
-        background: 'var(--color-white)'
-      }}>
-        <div className="container">
-          <div className="text-center mb-8 animate-fadeInUp">
-            <h2 className="text-h1" style={{ marginBottom: 'var(--space-4)' }}>
-              Empresas Parceiras
-            </h2>
-            <p className="text-body" style={{ fontSize: '1.125rem' }}>
-              Trabalhamos com as principais empresas da Bahia e do Brasil
-            </p>
-          </div>
-
-          <div className="grid grid-4 gap-6">
-            {[
-              { name: 'Cacau do Sul', sector: 'Agronegócio', location: 'Ilhéus, BA' },
-              { name: 'Sertão Tech', sector: 'Tecnologia', location: 'Feira de Santana, BA' },
-              { name: 'Vento Forte', sector: 'Energia Renovável', location: 'Caetité, BA' },
-              { name: 'Bahia Log', sector: 'Logística', location: 'Simões Filho, BA' },
-              { name: 'Mineral Minério', sector: 'Mineração', location: 'Jacobina, BA' },
-              { name: 'Costa Mar Hotel', sector: 'Turismo', location: 'Porto Seguro, BA' },
-              { name: 'Recôncavo Agro', sector: 'Agrícola', location: 'Santo Antônio de Jesus, BA' },
-              { name: 'Porto Digital Salvador', sector: 'Inovação', location: 'Salvador, BA' }
-            ].map((company, i) => (
-              <div key={company.name} className={`card p-6 text-center animate-scaleIn delay-${(i + 2) * 100}`}>
-                <div style={{ 
-                  fontSize: '2rem',
-                  fontWeight: 700,
-                  color: 'var(--color-primary)',
-                  marginBottom: 'var(--space-2)'
-                }}>
-                  {company.name}
-                </div>
-                <div className="badge badge-neutral" style={{ marginBottom: '0.5rem' }}>{company.sector}</div>
-                <div style={{ fontSize: '0.8125rem', color: 'var(--color-gray-500)' }}>
-                  📍 {company.location}
-                </div>
-              </div>
-            ))}
-          </div>
-          
-          <div className="text-center mt-12 animate-fadeInUp">
-            <a href="/SELECOES-MIDU/empresas.html" className="btn btn-lg">
-              Ver Todas as Parcerias
-            </a>
-          </div>
-        </div>
-      </section>
-
 
       {/* CATEGORIES */}
       <section style={{ padding: 'var(--space-8) var(--space-6)', background: 'var(--gradient-section)' }}>
