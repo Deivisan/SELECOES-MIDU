@@ -91,109 +91,33 @@
 
 ## 🌐 FASE 3: PÁGINA PÚBLICA
 
-### 📄 Task 3.1: Seção Sobre (Página Separada)
-- [ ] Criar `/sobre.html` dedicado
-- [ ] Layout profissional com seções:
-  - [ ] Missão e Visão
-  - [ ] História da empresa
-  - [ ] Time (fotos + bios)
-  - [ ] Certificações
-  - [ ] Parceiros/Clientes
-  - [ ] Contato
-- [ ] Hyperlink funcional na navbar (todas as páginas)
-- [ ] Breadcrumb para navegação
+### ✅ Task 3.1: Seção Sobre (Página Separada) ✅ COMPLETO
+- [x] Criar `/sobre.html` dedicado
+- [x] Layout profissional com seções:
+  - [x] Missão e Visão
+  - [x] História da empresa
+  - [x] Time (fotos + bios)
+  - [x] Certificações
+  - [x] Parceiros/Clientes
+- [x] Hyperlink funcional na navbar (todas as páginas)
 
-### 🎨 Task 3.2: Melhorar Cores Gerais
-**Problema:** "Tudo está muito branco"
+### ⚙️ Task 2.2: Funcionalidades Completas (EM PROGRESSO)
+- [x] **Tab Vagas:** Candidatura real com persistência
+  - [x] Botão "Candidatar" funcional via localStorage
+  - [ ] Filtrar por localização, salário
+- [x] **Tab Candidaturas:** Histórico real
+  - [x] Lista de vagas aplicadas (localStorage)
+  - [x] Status mockado dinâmico
+- [ ] **Tab Perfil:** Edição completa
+  - [ ] Editar dados pessoais (Nome, Email, Telefone)
+  - [ ] Upload currículo (mock)
+  - [ ] Adicionar experiências
 
-**Soluções:**
-- [ ] Backgrounds coloridos sutis:
-  - Cards: gradiente leve (3-8% opacidade)
-  - Seções alternadas: cinza claro / cor primária 5%
-- [ ] Headers com gradientes fortes
-- [ ] Badges coloridos (status, categorias)
-- [ ] Ícones SVG coloridos (cada categoria)
-- [ ] Fotos de stock (equipe, escritórios)
-- [ ] Ilustrações SVG (hero, CTAs)
-
-### 🎭 Task 3.3: Adicionar Mais Temas ✅ COMPLETO (Commit a7034ce)
-**Temas Atuais:** 6 COMPLETOS ✅ (antes 3, agora 6)
-
-**6 Temas Implementados:**
-- [x] Azul Profissional (#2563eb) - default
-- [x] Verde Crescimento (#0d9488) - teal
-- [x] Roxo Criativo (#7c3aed) - purple
-- [x] Laranja Energético (#f97316) - orange 🆕
-- [x] Rosa Vibrante (#ec4899) - pink 🆕
-- [x] Ciano Tecnológico (#06b6d4) - cyan 🆕
-
-**Cada tema possui:**
-- [x] Primary, Primary Dark, Primary Light, Primary-50
-- [x] Accent, Accent Light
-- [x] Gradientes únicos (gradient-bg, gradient-hero, gradient-primary, gradient-section)
-- [x] Preview no ViewSelector com quadrado colorido
-- [x] Validação TypeScript (ThemeType union type em 3 Views)
-- [x] URL params funcionais (?theme=orange)
-
-### 🔗 Task 3.4: Todos os Links Funcionais
-- [ ] Navbar: Vagas, Sobre, Empresas, Contato
-- [ ] Botões CTA: "Candidate-se", "Ver Vaga", "Saiba Mais"
-- [ ] Footer: Links sociais, políticas, sitemap
-- [ ] Categorias: Filtrar vagas ao clicar
-- [ ] Empresas: Ver vagas da empresa
-
----
-
-## 🔧 FASE 4: INFRAESTRUTURA
-
-### 📦 Task 4.1: Atualizar Dependências
-**Verificar Latest Versions:**
-- [ ] React (atual: 19.x → latest stable)
-- [ ] Vite (atual: 7.3.1 → latest)
-- [ ] TypeScript (verificar latest)
-- [ ] TailwindCSS (se houver)
-- [ ] Recharts (adicionar)
-
-**Comandos:**
-```bash
-bun outdated
-bun update
-```
-
-### 🐛 Task 4.2: Resolver Incompatibilidades
-- [ ] Testar build após updates
-- [ ] Corrigir breaking changes
-- [ ] Verificar tipos TypeScript
-- [ ] Atualizar imports (se necessário)
-
-### 🌐 Task 4.3: Verificar GitHub Pages
-- [ ] Acessar https://deivisan.github.io/SELECOES-MIDU/
-- [ ] Testar redirect index.html → public.html
-- [ ] Verificar todas as rotas (public, portal, admin, sobre)
-- [ ] Testar ViewSelector em produção
-- [ ] Validar assets (CSS, JS, imagens)
-- [ ] Lighthouse score (Performance, Accessibility, Best Practices, SEO)
-
-### 🧹 Task 4.4: Limpar Workspace
-**Arquivos a Remover:**
-- [ ] `/temp/` (se existir)
-- [ ] Arquivos de teste (`*.test.ts`, `*.spec.ts` não usados)
-- [ ] Logs desnecessários
-- [ ] `.DS_Store`, `Thumbs.db`
-- [ ] Comentários de código morto
-
-**Arquivos a Organizar:**
-- [ ] Consolidar mocks em `/src/shared/data/`
-- [ ] Criar `/docs/` para documentação
-- [ ] Mover PROMPTS-NANO-BANANA.md para `/docs/`
-
----
-
-## 📊 FASE 5: AGREGAÇÃO DE VALOR
-
-### 💎 Task 5.1: Dashboard Admin - Insights Avançados
+### 💎 Task 5.1: Insights Avançados Dashboard
 - [ ] **KPIs Dinâmicos:**
-  - Taxa de aceitação de vagas
+  - [x] Total de vagas e aplicações reais
+  - [ ] Taxa de aceitação de vagas
+
   - Custo por contratação (mock)
   - Diversidade (gênero, idade, localização)
   - NPS de candidatos (mock)

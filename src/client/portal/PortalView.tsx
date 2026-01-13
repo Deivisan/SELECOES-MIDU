@@ -30,13 +30,23 @@ export default function PortalView() {
   const [activeTab, setActiveTab] = useState<'vagas' | 'candidaturas' | 'perfil'>('vagas')
   const [mounted, setMounted] = useState(false)
   const [myApplications, setMyApplications] = useState<string[]>([])
+  const [userProfile, setUserProfile] = useState({
+    name: 'Maria Silva',
+    email: 'maria.silva@email.com',
+    phone: '(75) 99999-9999',
+    linkedin: 'linkedin.com/in/mariasilva',
+    bio: 'Profissional de RH com 5 anos de experiência.'
+  })
+  const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null)
 
   useEffect(() => {
-    // Carregar candidaturas do localStorage
-    const saved = localStorage.getItem('midu_candidaturas')
-    if (saved) {
-      setMyApplications(JSON.parse(saved))
-    }
+    // Carregar candidaturas
+    const savedApps = localStorage.getItem('midu_candidaturas')
+    if (savedApps) setMyApplications(JSON.parse(savedApps))
+
+    // Carregar perfil
+    const savedProfile = localStorage.getItem('midu_profile')
+    if (savedProfile) setUserProfile(JSON.parse(savedProfile))
 
     const params = new URLSearchParams(window.location.search)
     const themeParam = params.get('theme') as ThemeType
@@ -61,23 +71,32 @@ export default function PortalView() {
     window.history.replaceState({}, '', `?${params.toString()}`)
   }
 
+  const showToast = (message: string, type: 'success' | 'error' = 'success') => {
+    setToast({ message, type })
+    setTimeout(() => setToast(null), 3000)
+  }
+
   const handleApply = (jobId: string) => {
     if (!myApplications.includes(jobId)) {
       const updated = [...myApplications, jobId]
       setMyApplications(updated)
       localStorage.setItem('midu_candidaturas', JSON.stringify(updated))
-      alert('Candidatura enviada com sucesso!')
+      showToast('Candidatura enviada com sucesso! 🚀')
     } else {
-      alert('Você já se candidatou a esta vaga.')
+      showToast('Você já se candidatou a esta vaga.', 'error')
     }
+  }
+
+  const handleSaveProfile = (e: React.FormEvent) => {
+    e.preventDefault()
+    localStorage.setItem('midu_profile', JSON.stringify(userProfile))
+    showToast('Perfil atualizado com sucesso! ✨')
   }
 
   if (!mounted) return null
 
-  // Mock user data
   const user = {
-    name: 'Maria Silva',
-    email: 'maria.silva@email.com',
+    ...userProfile,
     applications: myApplications.length,
     savedJobs: 3
   }
@@ -423,7 +442,65 @@ export default function PortalView() {
                 </div>
               </div>
 
-              <div className="card animate-fadeInUp delay-100" style={{ padding: 'var(--space-6)' }}>
+              <div className="card animate-fadeInUp delay-100" style={{ padding: 'var(--space-8)' }}>
+                <h3 className="text-h3" style={{ marginBottom: 'var(--space-6)' }}>Editar Dados Pessoais</h3>
+                <form onSubmit={handleSaveProfile}>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--space-4)', marginBottom: 'var(--space-4)' }}>
+                    <div className="form-control">
+                      <label className="label">Nome Completo</label>
+                      <input 
+                        type="text" 
+                        className="input" 
+                        value={userProfile.name} 
+                        onChange={e => setUserProfile({...userProfile, name: e.target.value})}
+                      />
+                    </div>
+                    <div className="form-control">
+                      <label className="label">E-mail</label>
+                      <input 
+                        type="email" 
+                        className="input" 
+                        value={userProfile.email} 
+                        onChange={e => setUserProfile({...userProfile, email: e.target.value})}
+                      />
+                    </div>
+                  </div>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--space-4)', marginBottom: 'var(--space-4)' }}>
+                    <div className="form-control">
+                      <label className="label">Telefone</label>
+                      <input 
+                        type="text" 
+                        className="input" 
+                        value={userProfile.phone} 
+                        onChange={e => setUserProfile({...userProfile, phone: e.target.value})}
+                      />
+                    </div>
+                    <div className="form-control">
+                      <label className="label">LinkedIn</label>
+                      <input 
+                        type="text" 
+                        className="input" 
+                        value={userProfile.linkedin} 
+                        onChange={e => setUserProfile({...userProfile, linkedin: e.target.value})}
+                      />
+                    </div>
+                  </div>
+                  <div className="form-control" style={{ marginBottom: 'var(--space-6)' }}>
+                    <label className="label">Bio Profissional</label>
+                    <textarea 
+                      className="input" 
+                      style={{ height: '100px', paddingTop: '10px' }}
+                      value={userProfile.bio} 
+                      onChange={e => setUserProfile({...userProfile, bio: e.target.value})}
+                    ></textarea>
+                  </div>
+                  <button type="submit" className="btn btn-primary">
+                    Salvar Alterações
+                  </button>
+                </form>
+              </div>
+
+              <div className="card animate-fadeInUp delay-200" style={{ padding: 'var(--space-6)', marginTop: 'var(--space-6)' }}>
                 <h3 className="text-h3" style={{ marginBottom: 'var(--space-4)' }}>Completude do Perfil</h3>
                 <div className="progress" style={{ marginBottom: 'var(--space-3)' }}>
                   <div className="progress-bar" style={{ width: '85%' }}></div>
@@ -449,6 +526,29 @@ export default function PortalView() {
           </p>
         </div>
       </footer>
+
+      {/* TOAST NOTIFICATION */}
+      {toast && (
+        <div style={{
+          position: 'fixed',
+          bottom: '2rem',
+          left: '50%',
+          transform: 'translateX(-50%)',
+          padding: '1rem 2rem',
+          borderRadius: 'var(--radius-md)',
+          background: toast.type === 'success' ? 'var(--color-success)' : 'var(--color-error)',
+          color: 'white',
+          fontWeight: 600,
+          boxShadow: 'var(--shadow-lg)',
+          zIndex: 10000,
+          display: 'flex',
+          alignItems: 'center',
+          gap: '0.75rem',
+          animation: 'fadeInUp 0.3s ease-out'
+        }}>
+          {toast.type === 'success' ? '✅' : '❌'} {toast.message}
+        </div>
+      )}
     </div>
   )
 }

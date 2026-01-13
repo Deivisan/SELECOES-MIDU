@@ -88,25 +88,57 @@ export default function SobreView() {
 
             <div className="card p-8 mt-8 animate-fadeInUp delay-400">
               <h2 className="text-h2 mb-6">Daniel Duarte</h2>
-              <p className="text-body mb-6">
-                Consultor de RH e Especialista em Recrutamento com foco em Diversidade e Inclusão. 
-                Daniel traz uma abordagem estratégica e humana para o mercado da Bahia, utilizando 
-                metodologias validadas internacionalmente para encontrar o melhor match entre 
-                candidatos e empresas.
-              </p>
-              <div className="grid grid-2 gap-4">
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: 'var(--space-8)', alignItems: 'center' }}>
+                <div style={{ 
+                  aspectRatio: '1/1', 
+                  background: 'var(--color-primary-light)', 
+                  borderRadius: 'var(--radius-lg)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: '4rem'
+                }}>
+                  👨‍💼
+                </div>
+                <div>
+                  <p className="text-body mb-6">
+                    Consultor de RH e Especialista em Recrutamento com foco em Diversidade e Inclusão. 
+                    Daniel traz uma abordagem estratégica e humana para o mercado da Bahia, utilizando 
+                    metodologias validadas internacionalmente para encontrar o melhor match entre 
+                    candidatos e empresas.
+                  </p>
+                  <div className="grid grid-2 gap-4">
+                    {[
+                      'Administrative Human Resources (LinkedIn)',
+                      'Equity First: Inclusion and Belonging',
+                      'Strategic Human Resources',
+                      'HR Recruiting Communication Strategies'
+                    ].map((cert, i) => (
+                      <div key={i} className="badge badge-neutral" style={{ padding: 'var(--space-3)', height: 'auto', textAlign: 'left', background: 'var(--color-gray-100)', color: 'var(--color-gray-700)', border: 'none' }}>
+                        {cert}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <section style={{ marginTop: 'var(--space-16)', textAlign: 'center' }}>
+              <h2 className="text-h1 mb-8">Por que escolher a Midu?</h2>
+              <div className="grid grid-3 gap-8">
                 {[
-                  'Administrative Human Resources (LinkedIn)',
-                  'Equity First: Inclusion and Belonging',
-                  'Strategic Human Resources',
-                  'HR Recruiting Communication Strategies'
-                ].map((cert, i) => (
-                  <div key={i} className="badge badge-neutral" style={{ padding: 'var(--space-3)', height: 'auto', textAlign: 'left' }}>
-                    {cert}
+                  { icon: '🚀', title: 'Agilidade', desc: 'Processos seletivos otimizados com tecnologia de ponta.' },
+                  { icon: '🤝', title: 'Humanização', desc: 'Foco no potencial humano e cultura organizacional.' },
+                  { icon: '💎', title: 'Qualidade', desc: 'Candidatos rigorosamente selecionados e avaliados.' }
+                ].map((item, i) => (
+                  <div key={i} className="card p-6 animate-fadeInUp" style={{ animationDelay: `${(i+5)*100}ms` }}>
+                    <div style={{ fontSize: '3rem', marginBottom: 'var(--space-4)' }}>{item.icon}</div>
+                    <h3 className="text-h3 mb-2">{item.title}</h3>
+                    <p className="text-body">{item.desc}</p>
                   </div>
                 ))}
               </div>
-            </div>
+            </section>
           </div>
         </section>
       </main>
