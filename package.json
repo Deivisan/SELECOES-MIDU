@@ -6,7 +6,7 @@
   "private": true,
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "vite build && echo \"\" > dist/.nojekyll",
     "preview": "vite preview"
   },
   "devDependencies": {
