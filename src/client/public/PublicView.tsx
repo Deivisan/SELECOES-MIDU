@@ -69,7 +69,7 @@ export default function PublicView() {
 
       {/* NAVBAR */}
       <nav className="navbar">
-        <a href="/" className="navbar-brand">
+        <a href="/SELECOES-MIDU/public.html" className="navbar-brand">
           <div className="navbar-logo">M</div>
           <div>
             <div className="navbar-title">Midu Group</div>
@@ -79,7 +79,7 @@ export default function PublicView() {
         <div className="navbar-nav">
           <a href="#vagas" className="navbar-link">Vagas</a>
           <a href="/SELECOES-MIDU/sobre.html" className="navbar-link">Sobre</a>
-          <a href="#empresas" className="navbar-link">Empresas</a>
+          <a href="/SELECOES-MIDU/empresas.html" className="navbar-link">Empresas Parceiras</a>
           <a href="/SELECOES-MIDU/portal.html" className="btn btn-primary">
             Portal do Candidato
           </a>
@@ -159,30 +159,40 @@ export default function PublicView() {
 
           <div className="grid grid-4 gap-6">
             {[
-              { name: 'Ford', sector: 'Automotivo' },
-              { name: 'Braskem', sector: 'Químico' },
-              { name: 'Petrobras', sector: 'Energia' },
-              { name: 'Suzano', sector: 'Papel e Celulose' },
-              { name: 'BRF', sector: 'Alimentos' },
-              { name: 'Localiza', sector: 'Mobilidade' },
-              { name: 'C&A', sector: 'Varejo' },
-              { name: 'Ambev', sector: 'Bebidas' }
+              { name: 'Cacau do Sul', sector: 'Agronegócio', location: 'Ilhéus, BA' },
+              { name: 'Sertão Tech', sector: 'Tecnologia', location: 'Feira de Santana, BA' },
+              { name: 'Vento Forte', sector: 'Energia Renovável', location: 'Caetité, BA' },
+              { name: 'Bahia Log', sector: 'Logística', location: 'Simões Filho, BA' },
+              { name: 'Mineral Minério', sector: 'Mineração', location: 'Jacobina, BA' },
+              { name: 'Costa Mar Hotel', sector: 'Turismo', location: 'Porto Seguro, BA' },
+              { name: 'Recôncavo Agro', sector: 'Agrícola', location: 'Santo Antônio de Jesus, BA' },
+              { name: 'Porto Digital Salvador', sector: 'Inovação', location: 'Salvador, BA' }
             ].map((company, i) => (
               <div key={company.name} className={`card p-6 text-center animate-scaleIn delay-${(i + 2) * 100}`}>
                 <div style={{ 
-                  fontSize: '2.5rem',
+                  fontSize: '2rem',
                   fontWeight: 700,
                   color: 'var(--color-primary)',
                   marginBottom: 'var(--space-2)'
                 }}>
                   {company.name}
                 </div>
-                <div className="badge badge-neutral">{company.sector}</div>
+                <div className="badge badge-neutral" style={{ marginBottom: '0.5rem' }}>{company.sector}</div>
+                <div style={{ fontSize: '0.8125rem', color: 'var(--color-gray-500)' }}>
+                  📍 {company.location}
+                </div>
               </div>
             ))}
           </div>
+          
+          <div className="text-center mt-12 animate-fadeInUp">
+            <a href="/SELECOES-MIDU/empresas.html" className="btn btn-lg">
+              Ver Todas as Parcerias
+            </a>
+          </div>
         </div>
       </section>
+
 
       {/* CATEGORIES */}
       <section style={{ padding: 'var(--space-8) var(--space-6)', background: 'var(--gradient-section)' }}>
@@ -223,7 +233,7 @@ export default function PublicView() {
             {filteredJobs.map((job, i) => (
               <a 
                 key={job.id}
-                href={`/portal.html?theme=${theme}&job=${job.id}`}
+                href={`/SELECOES-MIDU/portal.html?theme=${theme}&job=${job.id}`}
                 style={{ textDecoration: 'none' }}
                 className={`animate-fadeInUp delay-${Math.min((i % 6) + 1, 6) * 100}`}
               >
@@ -286,8 +296,8 @@ export default function PublicView() {
           }}>
             Crie seu perfil gratuitamente e candidate-se às melhores vagas da Bahia.
           </p>
-          <a 
-            href="/portal.html" 
+            <a 
+            href="/SELECOES-MIDU/portal.html" 
             className="btn btn-lg"
             style={{ 
               background: 'white', 

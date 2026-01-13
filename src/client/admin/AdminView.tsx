@@ -58,8 +58,10 @@ export default function AdminView() {
   const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
+    console.log('AdminView: Iniciando montagem...')
     // Verificar sessão persistida
     const session = localStorage.getItem('admin_session')
+    console.log('AdminView: Sessão encontrada:', session)
     if (session === 'authenticated') {
       setIsLoggedIn(true)
     }
@@ -70,6 +72,7 @@ export default function AdminView() {
       setTheme(themeParam)
     }
     setMounted(true)
+    console.log('AdminView: Montagem concluída.')
   }, [])
 
   const handleLogin = (e: React.FormEvent) => {
@@ -113,6 +116,7 @@ export default function AdminView() {
   })
 
   useEffect(() => {
+    console.log('AdminView: Calculando estatísticas dinâmicas...')
     // Calcular estatísticas baseadas em mockJobs e localStorage
     const savedApplications = localStorage.getItem('midu_candidaturas')
     const applicationsCount = savedApplications ? JSON.parse(savedApplications).length : 0
@@ -124,6 +128,7 @@ export default function AdminView() {
       applications: 328 + applicationsCount, // Mock base + reais
       pendingReview: 45 + applicationsCount
     }))
+    console.log('AdminView: Estatísticas calculadas.')
   }, [])
 
 

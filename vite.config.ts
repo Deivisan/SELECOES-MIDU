@@ -19,6 +19,7 @@ export default defineConfig({
         portal: resolve(__dirname, 'portal.html'),
         admin: resolve(__dirname, 'admin.html'),
         sobre: resolve(__dirname, 'sobre.html'),
+        empresas: resolve(__dirname, 'empresas.html'),
       },
     },
   },
