@@ -95,7 +95,7 @@ export default function SobreView() {
                     <div style={{ width: '200px', margin: '0 auto', marginBottom: 'var(--space-4)' }}>
                       {!imgError ? (
                         <img 
-                          src="/SELECOES-MIDU/public/daniel.svg"
+                          src="/SELECOES-MIDU/daniel.svg"
                           alt="Daniel Duarte"
                           onError={() => setImgError(true)}
                           style={{ 
