@@ -816,6 +816,19 @@ function VagasSection() {
 /* ==================== CANDIDATOS SECTION ==================== */
 function CandidatosSection() {
   const [candidatos, setCandidatos] = useState<any[]>([])
+  const [allCandidatos, setAllCandidatos] = useState<any[]>([]) // Lista completa para filtragem
+  const [filters, setFilters] = useState({ status: 'Todos', vaga: 'Todas', periodo: '30dias' })
+  const [selectedCandidate, setSelectedCandidate] = useState<any | null>(null)
+  const [showModal, setShowModal] = useState(false)
+
+  // Status disponíveis com cores
+  const statusOptions = [
+    { label: 'Pendente', color: '#fbbf24' },
+    { label: 'Em Análise', color: '#3b82f6' },
+    { label: 'Entrevista', color: '#8b5cf6' },
+    { label: 'Contratado', color: '#10b981' },
+    { label: 'Rejeitado', color: '#ef4444' }
+  ]
 
   useEffect(() => {
     // Carregar candidatos do localStorage (simulado)
@@ -827,49 +840,219 @@ function CandidatosSection() {
     const userProfile = profile ? JSON.parse(profile) : { 
       name: 'Daniel Duarte', 
       email: 'daniel@midu.com', 
+      phone: '(71) 99999-9999',
       linkedin: 'linkedin.com/in/daniel',
       bio: 'Desenvolvedor focado em resultados.'
     }
 
     // Gerar lista de candidatos baseada nas aplicações em localStorage
-    const candidatesList = appsList.map((appId: string) => {
+    const candidatesList = appsList.map((appId: string, idx: number) => {
       const job = mockJobs.find(j => j.id === appId)
+      const randomStatus = statusOptions[Math.floor(Math.random() * statusOptions.length)]
       return {
         id: Math.random().toString(36).substr(2, 9),
         name: userProfile.name,
         email: userProfile.email,
+        phone: userProfile.phone || '(71) 98888-7777',
+        linkedin: userProfile.linkedin,
+        bio: userProfile.bio,
+        jobId: appId,
         jobTitle: job?.title || 'Vaga Desconhecida',
         company: job?.company || 'Midu Group',
-        appliedAt: new Date().toLocaleDateString('pt-BR'),
-        status: 'Pendente',
-        color: '#fbbf24'
+        appliedAt: new Date(Date.now() - idx * 3 * 24 * 60 * 60 * 1000).toLocaleDateString('pt-BR'),
+        status: randomStatus.label,
+        color: randomStatus.color
       }
     })
 
-    // Adicionar alguns mocks fixos se estiver vazio para demonstração
+    // Adicionar mocks fixos se estiver vazio para demonstração
     if (candidatesList.length === 0) {
-      candidatesList.push({
-        id: 'mock1',
-        name: 'Ana Silva',
-        email: 'ana.silva@email.com',
-        jobTitle: 'Desenvolvedor Full Stack Sênior',
-        company: 'Ford Brasil',
-        appliedAt: '12/01/2026',
-        status: 'Em Análise',
-        color: '#3b82f6'
-      })
+      candidatesList.push(
+        {
+          id: 'mock1',
+          name: 'Ana Silva',
+          email: 'ana.silva@email.com',
+          phone: '(71) 99876-5432',
+          linkedin: 'linkedin.com/in/anasilva',
+          bio: 'Desenvolvedora Full Stack com 5 anos de experiência em React e Node.js. Apaixonada por criar soluções escaláveis.',
+          jobId: '1',
+          jobTitle: 'Desenvolvedor Full Stack Sênior',
+          company: 'Ford Brasil',
+          appliedAt: '12/01/2026',
+          status: 'Em Análise',
+          color: '#3b82f6'
+        },
+        {
+          id: 'mock2',
+          name: 'Carlos Eduardo',
+          email: 'carlos.eduardo@email.com',
+          phone: '(71) 98765-4321',
+          linkedin: 'linkedin.com/in/carloseduardo',
+          bio: 'Engenheiro de Dados com experiência em Python, SQL e cloud computing (AWS, GCP).',
+          jobId: '2',
+          jobTitle: 'Analista de Dados',
+          company: 'Midu Group',
+          appliedAt: '10/01/2026',
+          status: 'Entrevista',
+          color: '#8b5cf6'
+        },
+        {
+          id: 'mock3',
+          name: 'Mariana Costa',
+          email: 'mariana.costa@email.com',
+          phone: '(71) 97654-3210',
+          linkedin: 'linkedin.com/in/marianacosta',
+          bio: 'Designer UX/UI com foco em acessibilidade e design systems. Portfólio em behance.net/marianacosta',
+          jobId: '3',
+          jobTitle: 'Designer UX/UI',
+          company: 'Midu Group',
+          appliedAt: '08/01/2026',
+          status: 'Pendente',
+          color: '#fbbf24'
+        }
+      )
     }
 
+    setAllCandidatos(candidatesList)
     setCandidatos(candidatesList)
   }, [])
 
+  // Aplicar filtros
+  useEffect(() => {
+    let filtered = [...allCandidatos]
+
+    // Filtrar por status
+    if (filters.status !== 'Todos') {
+      filtered = filtered.filter(c => c.status === filters.status)
+    }
+
+    // Filtrar por vaga
+    if (filters.vaga !== 'Todas') {
+      filtered = filtered.filter(c => c.jobTitle.includes(filters.vaga))
+    }
+
+    // Filtrar por período (simulado)
+    if (filters.periodo === '7dias') {
+      const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
+      filtered = filtered.filter(c => {
+        const parts = c.appliedAt.split('/')
+        const date = new Date(`${parts[2]}-${parts[1]}-${parts[0]}`)
+        return date >= sevenDaysAgo
+      })
+    }
+
+    setCandidatos(filtered)
+  }, [filters, allCandidatos])
+
+  // Mudar status do candidato
+  const handleChangeStatus = (candId: string, newStatus: string) => {
+    const statusColor = statusOptions.find(s => s.label === newStatus)?.color || '#gray'
+    
+    const updated = allCandidatos.map(c => 
+      c.id === candId ? { ...c, status: newStatus, color: statusColor } : c
+    )
+    
+    setAllCandidatos(updated)
+    
+    // Atualizar também o modal se estiver aberto
+    if (selectedCandidate?.id === candId) {
+      setSelectedCandidate({ ...selectedCandidate, status: newStatus, color: statusColor })
+    }
+  }
+
+  // Exportar CSV (mock)
+  const handleExportCSV = () => {
+    const headers = ['Nome', 'Email', 'Vaga', 'Empresa', 'Data', 'Status']
+    const rows = candidatos.map(c => [c.name, c.email, c.jobTitle, c.company, c.appliedAt, c.status])
+    
+    const csvContent = [
+      headers.join(','),
+      ...rows.map(r => r.join(','))
+    ].join('\n')
+    
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' })
+    const link = document.createElement('a')
+    link.href = URL.createObjectURL(blob)
+    link.download = `candidatos_${new Date().toLocaleDateString('pt-BR').replace(/\//g, '-')}.csv`
+    link.click()
+  }
+
   return (
     <div>
-      <h1 style={{ fontSize: '2rem', fontWeight: 700, marginBottom: '0.5rem' }}>👥 Gestão de Candidatos</h1>
-      <p style={{ color: 'var(--color-gray-600)', marginBottom: '2rem' }}>
-        Visualize e gerencie os profissionais que se candidataram às vagas
-      </p>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '2rem' }}>
+        <div>
+          <h1 style={{ fontSize: '2rem', fontWeight: 700, marginBottom: '0.5rem' }}>👥 Gestão de Candidatos</h1>
+          <p style={{ color: 'var(--color-gray-600)' }}>
+            Visualize e gerencie os profissionais que se candidataram às vagas
+          </p>
+        </div>
+        <button className="btn btn-primary" onClick={handleExportCSV}>
+          📥 Exportar CSV
+        </button>
+      </div>
 
+      {/* Filtros */}
+      <div className="card" style={{ marginBottom: '1.5rem', padding: '1.5rem' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem' }}>
+          <div>
+            <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, marginBottom: '0.5rem' }}>
+              Status
+            </label>
+            <select 
+              className="input" 
+              value={filters.status}
+              onChange={e => setFilters({...filters, status: e.target.value})}
+              style={{ width: '100%' }}
+            >
+              <option value="Todos">Todos os Status</option>
+              {statusOptions.map(s => (
+                <option key={s.label} value={s.label}>{s.label}</option>
+              ))}
+            </select>
+          </div>
+
+          <div>
+            <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, marginBottom: '0.5rem' }}>
+              Vaga
+            </label>
+            <select 
+              className="input" 
+              value={filters.vaga}
+              onChange={e => setFilters({...filters, vaga: e.target.value})}
+              style={{ width: '100%' }}
+            >
+              <option value="Todas">Todas as Vagas</option>
+              <option value="Desenvolvedor">Desenvolvedor</option>
+              <option value="Analista">Analista</option>
+              <option value="Designer">Designer</option>
+              <option value="Gerente">Gerente</option>
+            </select>
+          </div>
+
+          <div>
+            <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, marginBottom: '0.5rem' }}>
+              Período
+            </label>
+            <select 
+              className="input" 
+              value={filters.periodo}
+              onChange={e => setFilters({...filters, periodo: e.target.value})}
+              style={{ width: '100%' }}
+            >
+              <option value="30dias">Últimos 30 dias</option>
+              <option value="7dias">Últimos 7 dias</option>
+              <option value="90dias">Últimos 90 dias</option>
+              <option value="todos">Todos</option>
+            </select>
+          </div>
+        </div>
+
+        <div style={{ marginTop: '1rem', fontSize: '0.875rem', color: 'var(--color-gray-600)' }}>
+          📊 <strong>{candidatos.length}</strong> candidato(s) encontrado(s)
+        </div>
+      </div>
+
+      {/* Tabela */}
       <div className="card" style={{ padding: '0', overflow: 'hidden' }}>
         <table className="table" style={{ width: '100%', borderCollapse: 'collapse' }}>
           <thead>
@@ -882,38 +1065,191 @@ function CandidatosSection() {
             </tr>
           </thead>
           <tbody>
-            {candidatos.map((cand) => (
-              <tr key={cand.id} style={{ borderBottom: '1px solid var(--color-gray-100)' }}>
-                <td style={{ padding: '1rem' }}>
-                  <div style={{ fontWeight: 600 }}>{cand.name}</div>
-                  <div style={{ fontSize: '0.8125rem', color: 'var(--color-gray-500)' }}>{cand.email}</div>
-                </td>
-                <td style={{ padding: '1rem' }}>
-                  <div style={{ fontWeight: 500 }}>{cand.jobTitle}</div>
-                  <div style={{ fontSize: '0.8125rem', color: 'var(--color-gray-500)' }}>{cand.company}</div>
-                </td>
-                <td style={{ padding: '1rem', fontSize: '0.875rem' }}>{cand.appliedAt}</td>
-                <td style={{ padding: '1rem' }}>
-                  <span style={{ 
-                    padding: '0.25rem 0.75rem', 
-                    borderRadius: '12px', 
-                    fontSize: '0.75rem', 
-                    fontWeight: 700,
-                    background: cand.color + '20',
-                    color: cand.color
-                  }}>
-                    {cand.status}
-                  </span>
-                </td>
-                <td style={{ padding: '1rem', textAlign: 'right' }}>
-                  <button className="btn btn-sm" style={{ marginRight: '0.5rem' }}>👁️ Ver</button>
-                  <button className="btn btn-sm btn-primary">✉️ Contato</button>
+            {candidatos.length === 0 ? (
+              <tr>
+                <td colSpan={5} style={{ padding: '3rem', textAlign: 'center', color: 'var(--color-gray-500)' }}>
+                  😔 Nenhum candidato encontrado com os filtros aplicados
                 </td>
               </tr>
-            ))}
+            ) : (
+              candidatos.map((cand) => (
+                <tr key={cand.id} style={{ borderBottom: '1px solid var(--color-gray-100)' }}>
+                  <td style={{ padding: '1rem' }}>
+                    <div style={{ fontWeight: 600 }}>{cand.name}</div>
+                    <div style={{ fontSize: '0.8125rem', color: 'var(--color-gray-500)' }}>{cand.email}</div>
+                  </td>
+                  <td style={{ padding: '1rem' }}>
+                    <div style={{ fontWeight: 500 }}>{cand.jobTitle}</div>
+                    <div style={{ fontSize: '0.8125rem', color: 'var(--color-gray-500)' }}>{cand.company}</div>
+                  </td>
+                  <td style={{ padding: '1rem', fontSize: '0.875rem' }}>{cand.appliedAt}</td>
+                  <td style={{ padding: '1rem' }}>
+                    <select
+                      value={cand.status}
+                      onChange={(e) => handleChangeStatus(cand.id, e.target.value)}
+                      style={{ 
+                        padding: '0.25rem 0.75rem', 
+                        borderRadius: '12px', 
+                        fontSize: '0.75rem', 
+                        fontWeight: 700,
+                        background: cand.color + '20',
+                        color: cand.color,
+                        border: `1px solid ${cand.color}`,
+                        cursor: 'pointer'
+                      }}
+                    >
+                      {statusOptions.map(s => (
+                        <option key={s.label} value={s.label}>{s.label}</option>
+                      ))}
+                    </select>
+                  </td>
+                  <td style={{ padding: '1rem', textAlign: 'right' }}>
+                    <button 
+                      className="btn btn-sm" 
+                      style={{ marginRight: '0.5rem' }}
+                      onClick={() => {
+                        setSelectedCandidate(cand)
+                        setShowModal(true)
+                      }}
+                    >
+                      👁️ Ver
+                    </button>
+                    <button className="btn btn-sm btn-primary">✉️ Contato</button>
+                  </td>
+                </tr>
+              ))
+            )}
           </tbody>
         </table>
       </div>
+
+      {/* Modal de Visualização */}
+      {showModal && selectedCandidate && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          background: 'rgba(0,0,0,0.7)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 9999,
+          padding: '2rem'
+        }}>
+          <div className="card" style={{
+            maxWidth: '600px',
+            width: '100%',
+            maxHeight: '90vh',
+            overflow: 'auto',
+            position: 'relative'
+          }}>
+            <button 
+              onClick={() => setShowModal(false)}
+              style={{
+                position: 'absolute',
+                top: '1rem',
+                right: '1rem',
+                background: 'var(--color-gray-200)',
+                border: 'none',
+                borderRadius: '50%',
+                width: '32px',
+                height: '32px',
+                cursor: 'pointer',
+                fontSize: '1.25rem'
+              }}
+            >
+              ✕
+            </button>
+
+            <h2 style={{ fontSize: '1.5rem', fontWeight: 700, marginBottom: '1.5rem' }}>
+              👤 Perfil do Candidato
+            </h2>
+
+            <div style={{ marginBottom: '1.5rem' }}>
+              <h3 style={{ fontSize: '1.125rem', fontWeight: 700, marginBottom: '0.5rem' }}>
+                {selectedCandidate.name}
+              </h3>
+              <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', fontSize: '0.875rem', color: 'var(--color-gray-600)' }}>
+                <span>📧 {selectedCandidate.email}</span>
+                <span>•</span>
+                <span>📱 {selectedCandidate.phone}</span>
+              </div>
+            </div>
+
+            <div style={{ borderTop: '1px solid var(--color-gray-200)', paddingTop: '1rem', marginBottom: '1rem' }}>
+              <div style={{ marginBottom: '1rem' }}>
+                <strong style={{ display: 'block', marginBottom: '0.25rem' }}>💼 Vaga Aplicada:</strong>
+                <span>{selectedCandidate.jobTitle}</span>
+              </div>
+
+              <div style={{ marginBottom: '1rem' }}>
+                <strong style={{ display: 'block', marginBottom: '0.25rem' }}>🏢 Empresa:</strong>
+                <span>{selectedCandidate.company}</span>
+              </div>
+
+              <div style={{ marginBottom: '1rem' }}>
+                <strong style={{ display: 'block', marginBottom: '0.25rem' }}>📅 Data de Aplicação:</strong>
+                <span>{selectedCandidate.appliedAt}</span>
+              </div>
+
+              <div style={{ marginBottom: '1rem' }}>
+                <strong style={{ display: 'block', marginBottom: '0.25rem' }}>📊 Status Atual:</strong>
+                <span style={{ 
+                  padding: '0.25rem 0.75rem', 
+                  borderRadius: '12px', 
+                  fontSize: '0.75rem', 
+                  fontWeight: 700,
+                  background: selectedCandidate.color + '20',
+                  color: selectedCandidate.color
+                }}>
+                  {selectedCandidate.status}
+                </span>
+              </div>
+
+              {selectedCandidate.linkedin && (
+                <div style={{ marginBottom: '1rem' }}>
+                  <strong style={{ display: 'block', marginBottom: '0.25rem' }}>🔗 LinkedIn:</strong>
+                  <a 
+                    href={`https://${selectedCandidate.linkedin}`} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    style={{ color: 'var(--color-primary)' }}
+                  >
+                    {selectedCandidate.linkedin}
+                  </a>
+                </div>
+              )}
+
+              {selectedCandidate.bio && (
+                <div>
+                  <strong style={{ display: 'block', marginBottom: '0.5rem' }}>📝 Bio:</strong>
+                  <p style={{ 
+                    fontSize: '0.9375rem', 
+                    lineHeight: '1.7', 
+                    color: 'var(--color-gray-700)',
+                    background: 'var(--color-gray-50)',
+                    padding: '1rem',
+                    borderRadius: '8px'
+                  }}>
+                    {selectedCandidate.bio}
+                  </p>
+                </div>
+              )}
+            </div>
+
+            <div style={{ borderTop: '1px solid var(--color-gray-200)', paddingTop: '1rem', display: 'flex', gap: '0.75rem', justifyContent: 'flex-end' }}>
+              <button className="btn" onClick={() => setShowModal(false)}>
+                Fechar
+              </button>
+              <button className="btn btn-primary">
+                ✉️ Enviar Email
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
