@@ -122,6 +122,21 @@ Para verificar o status:
 
 ---
 
+## ⚠️ Troubleshooting - Página em branco?
+
+**SINTOMA:** Ao acessar o site, a página fica completamente em branco.
+
+**CAUSA:** O GitHub Pages está configurado para servir do branch errado (`main` em vez do workflow).
+
+**SOLUÇÃO:** Siga as instruções completas em **[📄 GITHUB-PAGES-FIX.md](./GITHUB-PAGES-FIX.md)**
+
+**RESUMO RÁPIDO:**
+1. Acesse: https://github.com/Deivisan/SELECOES-MIDU/settings/pages
+2. Em **Source**, mude para: **GitHub Actions**
+3. Salve e aguarde 5-10 minutos
+
+---
+
 ## 📂 Estrutura do Projeto
 
 ```
