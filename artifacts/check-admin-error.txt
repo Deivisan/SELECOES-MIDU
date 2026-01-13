@@ -1,0 +1,1 @@
+TypeError: page.waitForTimeout is not a function. (In 'page.waitForTimeout(1500)', 'page.waitForTimeout' is undefined)

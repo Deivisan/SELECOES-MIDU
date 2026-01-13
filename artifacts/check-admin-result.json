@@ -1,0 +1,125 @@
+{
+  "logs": [
+    {
+      "type": "log",
+      "text": "🚀 [ADMIN MAIN] Iniciando bootstrap do Admin Dashboard"
+    },
+    {
+      "type": "log",
+      "text": "🚀 [ADMIN MAIN] Root element encontrado: JSHandle@node"
+    },
+    {
+      "type": "log",
+      "text": "🚀 [ADMIN MAIN] ReactDOM.createRoot criado com sucesso"
+    },
+    {
+      "type": "log",
+      "text": "🚀 [ADMIN MAIN] AdminView renderizado com sucesso"
+    },
+    {
+      "type": "log",
+      "text": "🔍 [1/10] AdminView: Função invocada"
+    },
+    {
+      "type": "log",
+      "text": "🔍 [2/10] AdminView: useState theme OK"
+    },
+    {
+      "type": "log",
+      "text": "🔍 [3/10] AdminView: useState isLoggedIn OK"
+    },
+    {
+      "type": "log",
+      "text": "🔍 [4/10] AdminView: Todos os useState inicializados"
+    },
+    {
+      "type": "log",
+      "text": "⏳ AdminView: Aguardando montagem (mounted=false)"
+    },
+    {
+      "type": "log",
+      "text": "🔍 [5/10] AdminView: useEffect montagem iniciado"
+    },
+    {
+      "type": "log",
+      "text": "🔍 [6/10] AdminView: Sessão localStorage: "
+    },
+    {
+      "type": "log",
+      "text": "🔍 [8/10] AdminView: Montagem concluída com sucesso"
+    },
+    {
+      "type": "log",
+      "text": "🔍 [1/10] AdminView: Função invocada"
+    },
+    {
+      "type": "log",
+      "text": "🔍 [2/10] AdminView: useState theme OK"
+    },
+    {
+      "type": "log",
+      "text": "🔍 [3/10] AdminView: useState isLoggedIn OK"
+    },
+    {
+      "type": "log",
+      "text": "🔍 [4/10] AdminView: Todos os useState inicializados"
+    },
+    {
+      "type": "log",
+      "text": "✅ AdminView: Iniciando render do JSX, isLoggedIn= false"
+    },
+    {
+      "type": "log",
+      "text": "🔍 [1/10] AdminView: Função invocada"
+    },
+    {
+      "type": "log",
+      "text": "🔍 [1/10] AdminView: Função invocada"
+    },
+    {
+      "type": "log",
+      "text": "🔍 [1/10] AdminView: Função invocada"
+    },
+    {
+      "type": "log",
+      "text": "🔍 [2/10] AdminView: useState theme OK"
+    },
+    {
+      "type": "log",
+      "text": "🔍 [3/10] AdminView: useState isLoggedIn OK"
+    },
+    {
+      "type": "log",
+      "text": "🔍 [4/10] AdminView: Todos os useState inicializados"
+    },
+    {
+      "type": "log",
+      "text": "✅ AdminView: Iniciando render do JSX, isLoggedIn= false"
+    },
+    {
+      "type": "log",
+      "text": "🔍 [1/10] AdminView: Função invocada"
+    },
+    {
+      "type": "log",
+      "text": "🔍 [1/10] AdminView: Função invocada"
+    },
+    {
+      "type": "pageerror",
+      "text": "Minified React error #310; visit https://react.dev/errors/310 for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+    },
+    {
+      "type": "response",
+      "url": "https://deivisan.github.io/favicon.ico",
+      "status": 404
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: the server responded with a status of 404 ()"
+    }
+  ],
+  "rootExists": true,
+  "imgCount": 0,
+  "screenshotPath": "artifacts/admin_page.png",
+  "htmlSnippet": "<!DOCTYPE html><html lang=\"pt-BR\"><head>\n  <meta charset=\"UTF-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n  <title>Painel Administrativo - Midu Group</title>\n  <script type=\"module\" crossorigin=\"\" src=\"/SELECOES-MIDU/assets/admin-CnT9QP-O.js\"></script>\n  <link rel=\"modulepreload\" crossorigin=\"\" href=\"/SELECOES-MIDU/assets/themes-ByjSlsV6.js\">\n  <link rel=\"modulepreload\" crossorigin=\"\" href=\"/SELECOES-MIDU/assets/mockData-K2nyzMUB.js\">\n  <link rel=\"stylesheet\" crossorigin=\"\" href=\"/SELECOES-MIDU/assets/themes-BUrqCkKs.css\">\n  <link rel=\"stylesheet\" crossorigin=\"\" href=\"/SELECOES-MIDU/assets/global-uv12CWJn.css\">\n<style>\n      #dev-debug-console { position: fixed; right: 12px; bottom: 12px; width: 360px; max-height: 45vh; background: rgba(255,255,255,0.95); border: 1px solid rgba(0,0,0,0.08); box-shadow: 0 10px 30px rgba(0,0,0,0.12); font-family: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial; z-index: 999999; display: flex; flex-direction: column; }\n      #dev-debug-console .header { padding: 8px 10px; display:flex; align-items:center; justify-content:space-between; gap:8px; border-bottom: 1px solid rgba(0,0,0,0.04); }\n      #dev-debug-console .messages { padding: 8px; overflow: auto; font-size: 12px; color: #111827; }\n      #dev-debug-console .messages pre { margin: 0 0 6px 0; white-space: pre-wrap; }\n      #dev-debug-console .toggle { cursor: pointer; border: none; background: transparent; font-weight: 700; }\n      .dev-error-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); color: #fff; display:flex; align-items:center; justify-content:center; padding: 2rem; z-index: 999998; }\n      .dev-error-box { background: #111; padding: 1.5rem; border-radius: 8px; max-width: 90%; max-height: 80%; overflow:auto; }\n    </style></head>\n<body>\n  <div id=\"root\"></div>\n\n\n<div id=\"dev-debug-console\">\n      <div class=\"header\"><strong>Dev Console</strong><div><button class=\"toggle\">▲</button></div"
+}

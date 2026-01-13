@@ -644,7 +644,7 @@ function DashboardSection({ stats }: { stats: any }) {
 function KPICard({ icon, label, value, trend, trendUp, color }: {
   icon: string
   label: string
-  value: number
+  value: string | number
   trend: string
   trendUp: boolean
   color: string
@@ -2090,15 +2090,350 @@ function CandidatosSection() {
 }
 
 
-/* ==================== RELATÓRIOS SECTION (Placeholder) ==================== */
+/* ==================== RELATORIOS SECTION ==================== */
 function RelatoriosSection() {
+  const [reportData, setReportData] = useState({
+    statusDistribution: statusCandidatos,
+    monthlyApplications: aplicacoesMes,
+    categoryDistribution: vagasCategoria,
+    hiringTrend: contratacoesTrimestre,
+    conversionFunnel: [
+      { stage: 'Candidaturas', count: 328, percentage: 100 },
+      { stage: 'Em Análise', count: 147, percentage: 45 },
+      { stage: 'Entrevistas', count: 32, percentage: 10 },
+      { stage: 'Contratados', count: 23, percentage: 7 }
+    ],
+    topCompanies: [
+      { name: 'Midu Group', jobs: 8, candidates: 45 },
+      { name: 'Ford Brasil', jobs: 5, candidates: 38 },
+      { name: 'TechCorp', jobs: 3, candidates: 22 },
+      { name: 'Inovare', jobs: 2, candidates: 15 }
+    ]
+  })
+
+  const [filters, setFilters] = useState({
+    period: '6months',
+    category: 'all'
+  })
+
+  useEffect(() => {
+    // Atualizar dados com informações reais do localStorage
+    const apps = localStorage.getItem('midu_candidaturas')
+    const appsList = apps ? JSON.parse(apps) : []
+    
+    const interviews = localStorage.getItem('midu_interviews')
+    const interviewsList = interviews ? JSON.parse(interviews) : []
+
+    // Calcular distribuição real de status (simulado)
+    const statusCounts = {
+      'Pendente': 45 + Math.floor(appsList.length * 0.3),
+      'Em Análise': 32 + Math.floor(appsList.length * 0.2),
+      'Entrevista': 18 + interviewsList.length,
+      'Contratado': 23,
+      'Rejeitado': 35 + Math.floor(appsList.length * 0.1)
+    }
+
+    const realStatusDistribution = Object.entries(statusCounts).map(([name, value]) => ({
+      name,
+      value,
+      color: statusCandidatos.find(s => s.name === name)?.color || '#gray'
+    }))
+
+    setReportData(prev => ({
+      ...prev,
+      statusDistribution: realStatusDistribution,
+      monthlyApplications: aplicacoesMes.map(month => ({
+        ...month,
+        candidatos: month.candidatos + Math.floor(Math.random() * 20),
+        vagas: month.vagas + Math.floor(Math.random() * 5)
+      }))
+    }))
+  }, [])
+
+  const exportToCSV = () => {
+    const data = [
+      ['Relatório', 'Valor', 'Período'],
+      ['Total Candidaturas', reportData.conversionFunnel[0].count, filters.period],
+      ['Em Análise', reportData.conversionFunnel[1].count, filters.period],
+      ['Entrevistas', reportData.conversionFunnel[2].count, filters.period],
+      ['Contratados', reportData.conversionFunnel[3].count, filters.period],
+      ['', '', ''],
+      ['Status', 'Quantidade', 'Percentual'],
+      ...reportData.statusDistribution.map(s => [s.name, s.value, `${((s.value / reportData.statusDistribution.reduce((a,b) => a + b.value, 0)) * 100).toFixed(1)}%`])
+    ]
+
+    const csvContent = data.map(row => row.join(',')).join('\n')
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' })
+    const link = document.createElement('a')
+    link.href = URL.createObjectURL(blob)
+    link.download = `relatorio_midugroup_${new Date().toISOString().split('T')[0]}.csv`
+    link.click()
+  }
+
+  const exportToPDF = () => {
+    // Simulação de export PDF - em produção usaria jsPDF ou similar
+    alert('📄 Funcionalidade de export PDF será implementada em breve!\n\nPor enquanto, use o CSV ou faça print da página.')
+  }
+
   return (
     <div>
-      <h1 style={{ fontSize: '2rem', fontWeight: 700, marginBottom: '2rem' }}>📈 Relatórios e Análises</h1>
-      <div className="card" style={{ padding: '3rem', textAlign: 'center' }}>
-        <div style={{ fontSize: '4rem', marginBottom: '1rem' }}>🚧</div>
-        <h3 style={{ fontSize: '1.5rem', fontWeight: 700, marginBottom: '1rem' }}>Em Desenvolvimento</h3>
-        <p style={{ color: 'var(--color-gray-600)' }}>Relatórios avançados serão implementados em breve</p>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
+        <div>
+          <h1 style={{ fontSize: '2rem', fontWeight: 700, marginBottom: '0.5rem' }}>📈 Relatórios e Análises</h1>
+          <p style={{ color: 'var(--color-gray-600)' }}>
+            Métricas detalhadas do processo de recrutamento
+          </p>
+        </div>
+        <div style={{ display: 'flex', gap: '0.75rem' }}>
+          <button className="btn" onClick={exportToCSV}>
+            📊 Exportar CSV
+          </button>
+          <button className="btn btn-primary" onClick={exportToPDF}>
+            📄 Exportar PDF
+          </button>
+        </div>
+      </div>
+
+      {/* Filtros */}
+      <div className="card" style={{ marginBottom: '1.5rem', padding: '1.5rem' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem' }}>
+          <div>
+            <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, marginBottom: '0.5rem' }}>
+              Período
+            </label>
+            <select 
+              className="input" 
+              value={filters.period}
+              onChange={e => setFilters({...filters, period: e.target.value})}
+              style={{ width: '100%' }}
+            >
+              <option value="1month">Último mês</option>
+              <option value="3months">Últimos 3 meses</option>
+              <option value="6months">Últimos 6 meses</option>
+              <option value="1year">Último ano</option>
+            </select>
+          </div>
+          <div>
+            <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, marginBottom: '0.5rem' }}>
+              Categoria
+            </label>
+            <select 
+              className="input" 
+              value={filters.category}
+              onChange={e => setFilters({...filters, category: e.target.value})}
+              style={{ width: '100%' }}
+            >
+              <option value="all">Todas as categorias</option>
+              <option value="tecnologia">Tecnologia</option>
+              <option value="marketing">Marketing</option>
+              <option value="vendas">Vendas</option>
+              <option value="administracao">Administração</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      {/* KPI Cards */}
+      <div style={{ 
+        display: 'grid', 
+        gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', 
+        gap: '1.5rem',
+        marginBottom: '2rem'
+      }}>
+        <KPICard 
+          icon="📝" 
+          label="Total Candidaturas" 
+          value={reportData.conversionFunnel[0].count} 
+          trend="+18%" 
+          trendUp={true}
+          color="#3b82f6"
+        />
+        <KPICard 
+          icon="🎯" 
+          label="Taxa Conversão" 
+          value={`${reportData.conversionFunnel[3].percentage}%`} 
+          trend="+2%" 
+          trendUp={true}
+          color="#10b981"
+        />
+        <KPICard 
+          icon="⏱️" 
+          label="Tempo Médio" 
+          value="18 dias" 
+          trend="-3 dias" 
+          trendUp={true}
+          color="#f59e0b"
+        />
+        <KPICard 
+          icon="🏆" 
+          label="Satisfação" 
+          value="4.2/5" 
+          trend="+0.3" 
+          trendUp={true}
+          color="#8b5cf6"
+        />
+      </div>
+
+      {/* Gráficos */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(500px, 1fr))', gap: '1.5rem', marginBottom: '2rem' }}>
+        
+        {/* Funil de Conversão */}
+        <div className="card" style={{ padding: '1.5rem' }}>
+          <h3 style={{ fontSize: '1.125rem', fontWeight: 700, marginBottom: '1rem' }}>
+            🎯 Funil de Recrutamento
+          </h3>
+          <ResponsiveContainer width="100%" height={300}>
+            <BarChart data={reportData.conversionFunnel} layout="horizontal">
+              <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+              <XAxis type="number" stroke="#6b7280" style={{ fontSize: '0.875rem' }} />
+              <YAxis dataKey="stage" type="category" width={80} stroke="#6b7280" style={{ fontSize: '0.875rem' }} />
+              <Tooltip 
+                contentStyle={{ 
+                  background: 'white', 
+                  border: '2px solid #e5e7eb', 
+                  borderRadius: '8px',
+                  boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
+                }}
+                formatter={(value, name) => [`${value} (${reportData.conversionFunnel.find(f => f.stage === name)?.percentage}%)`, 'Quantidade']}
+              />
+              <Bar dataKey="count" fill="#3b82f6" radius={[0, 4, 4, 0]} />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+
+        {/* Status Distribution */}
+        <div className="card" style={{ padding: '1.5rem' }}>
+          <h3 style={{ fontSize: '1.125rem', fontWeight: 700, marginBottom: '1rem' }}>
+            📊 Distribuição por Status
+          </h3>
+          <ResponsiveContainer width="100%" height={300}>
+            <PieChart>
+              <Pie
+                data={reportData.statusDistribution}
+                cx="50%"
+                cy="50%"
+                labelLine={false}
+                label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
+                outerRadius={100}
+                fill="#8884d8"
+                dataKey="value"
+              >
+                {reportData.statusDistribution.map((entry, index) => (
+                  <Cell key={`cell-${index}`} fill={entry.color} />
+                ))}
+              </Pie>
+              <Tooltip />
+            </PieChart>
+          </ResponsiveContainer>
+        </div>
+
+        {/* Monthly Applications Trend */}
+        <div className="card" style={{ padding: '1.5rem' }}>
+          <h3 style={{ fontSize: '1.125rem', fontWeight: 700, marginBottom: '1rem' }}>
+            📈 Tendência Mensal
+          </h3>
+          <ResponsiveContainer width="100%" height={300}>
+            <AreaChart data={reportData.monthlyApplications}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+              <XAxis dataKey="mes" stroke="#6b7280" style={{ fontSize: '0.875rem' }} />
+              <YAxis stroke="#6b7280" style={{ fontSize: '0.875rem' }} />
+              <Tooltip 
+                contentStyle={{ 
+                  background: 'white', 
+                  border: '2px solid #e5e7eb', 
+                  borderRadius: '8px' 
+                }} 
+              />
+              <Area type="monotone" dataKey="candidatos" stackId="1" stroke="#3b82f6" fill="rgba(59, 130, 246, 0.2)" />
+              <Area type="monotone" dataKey="vagas" stackId="1" stroke="#10b981" fill="rgba(16, 185, 129, 0.2)" />
+            </AreaChart>
+          </ResponsiveContainer>
+        </div>
+
+        {/* Hiring Trend */}
+        <div className="card" style={{ padding: '1.5rem' }}>
+          <h3 style={{ fontSize: '1.125rem', fontWeight: 700, marginBottom: '1rem' }}>
+            ✅ Contratações por Mês
+          </h3>
+          <ResponsiveContainer width="100%" height={300}>
+            <LineChart data={reportData.hiringTrend}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+              <XAxis dataKey="mes" stroke="#6b7280" style={{ fontSize: '0.875rem' }} />
+              <YAxis stroke="#6b7280" style={{ fontSize: '0.875rem' }} />
+              <Tooltip 
+                contentStyle={{ 
+                  background: 'white', 
+                  border: '2px solid #e5e7eb', 
+                  borderRadius: '8px' 
+                }} 
+              />
+              <Line type="monotone" dataKey="contratados" stroke="#10b981" strokeWidth={3} dot={{ r: 6 }} />
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
+
+        {/* Top Companies */}
+        <div className="card" style={{ padding: '1.5rem' }}>
+          <h3 style={{ fontSize: '1.125rem', fontWeight: 700, marginBottom: '1rem' }}>
+            🏢 Top Empresas Parceiras
+          </h3>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+            {reportData.topCompanies.map((company, index) => (
+              <div key={company.name} style={{ 
+                display: 'flex', 
+                justifyContent: 'space-between', 
+                alignItems: 'center',
+                padding: '1rem',
+                border: '1px solid var(--color-gray-200)',
+                borderRadius: '8px',
+                background: index === 0 ? 'var(--color-yellow-50)' : 'transparent'
+              }}>
+                <div>
+                  <div style={{ fontWeight: 600, color: 'var(--color-gray-900)' }}>
+                    #{index + 1} {company.name}
+                  </div>
+                  <div style={{ fontSize: '0.875rem', color: 'var(--color-gray-600)' }}>
+                    {company.jobs} vagas • {company.candidates} candidatos
+                  </div>
+                </div>
+                <div style={{ 
+                  fontSize: '1.25rem', 
+                  fontWeight: 700, 
+                  color: index === 0 ? 'var(--color-yellow-600)' : 'var(--color-gray-700)' 
+                }}>
+                  🏆
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Category Distribution */}
+        <div className="card" style={{ padding: '1.5rem' }}>
+          <h3 style={{ fontSize: '1.125rem', fontWeight: 700, marginBottom: '1rem' }}>
+            📂 Distribuição por Categoria
+          </h3>
+          <ResponsiveContainer width="100%" height={300}>
+            <BarChart data={reportData.categoryDistribution}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+              <XAxis dataKey="name" stroke="#6b7280" style={{ fontSize: '0.875rem' }} />
+              <YAxis stroke="#6b7280" style={{ fontSize: '0.875rem' }} />
+              <Tooltip 
+                contentStyle={{ 
+                  background: 'white', 
+                  border: '2px solid #e5e7eb', 
+                  borderRadius: '8px',
+                  boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
+                }} 
+              />
+              <Bar dataKey="value" radius={[4, 4, 0, 0]}>
+                {reportData.categoryDistribution.map((entry, index) => (
+                  <Cell key={`cell-${index}`} fill={entry.color} />
+                ))}
+              </Bar>
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
       </div>
     </div>
   )
