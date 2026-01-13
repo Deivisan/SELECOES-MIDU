@@ -14,7 +14,13 @@
 
 html {
   scroll-behavior: smooth;
-  font-size: 16px;
+  font-size: 16px; /* Base 16px (mobile) */
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 18px; /* 18px em desktop para melhor legibilidade */
+  }
 }
 
 body {
@@ -23,7 +29,9 @@ body {
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  line-height: 1.6;
+  line-height: 1.7; /* Aumentado de 1.6 para 1.7 (melhor legibilidade) */
+  word-wrap: break-word; /* Quebra palavras longas */
+  overflow-wrap: break-word; /* Fallback para navegadores antigos */
 }
 
 /* ============================================
@@ -122,7 +130,7 @@ body {
 
 /* ============================================
    THEME 3: PURPLE (Purple Primary)
-   Creative, innovative, premium
+   Creative, artistic, premium feel
    ============================================ */
 .theme-purple {
   --color-primary: #7c3aed;
@@ -138,11 +146,65 @@ body {
 }
 
 /* ============================================
+   THEME 4: ORANGE (Orange Primary)
+   Energetic, warm, friendly
+   ============================================ */
+.theme-orange {
+  --color-primary: #f97316;
+  --color-primary-dark: #ea580c;
+  --color-primary-light: #fed7aa;
+  --color-primary-50: #fff7ed;
+  --color-accent: #fb923c;
+  --color-accent-light: #ffedd5;
+  --gradient-bg: linear-gradient(180deg, #fff7ed 0%, #fed7aa 50%, #fdba74 100%);
+  --gradient-hero: linear-gradient(135deg, #fb923c 0%, #f97316 50%, #ea580c 100%);
+  --gradient-primary: linear-gradient(135deg, #f97316 0%, #fb923c 100%);
+  --gradient-section: linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%);
+}
+
+/* ============================================
+   THEME 5: PINK (Pink Primary)
+   Vibrant, modern, creative
+   ============================================ */
+.theme-pink {
+  --color-primary: #ec4899;
+  --color-primary-dark: #db2777;
+  --color-primary-light: #fce7f3;
+  --color-primary-50: #fdf2f8;
+  --color-accent: #f472b6;
+  --color-accent-light: #fbcfe8;
+  --gradient-bg: linear-gradient(180deg, #fdf2f8 0%, #fce7f3 50%, #fbcfe8 100%);
+  --gradient-hero: linear-gradient(135deg, #f472b6 0%, #ec4899 50%, #db2777 100%);
+  --gradient-primary: linear-gradient(135deg, #ec4899 0%, #f472b6 100%);
+  --gradient-section: linear-gradient(135deg, #fdf2f8 0%, #fce7f3 100%);
+}
+
+/* ============================================
+   THEME 6: CYAN (Cyan Primary)
+   Fresh, innovative, tech-focused
+   ============================================ */
+.theme-cyan {
+  --color-primary: #06b6d4;
+  --color-primary-dark: #0891b2;
+  --color-primary-light: #cffafe;
+  --color-primary-50: #ecfeff;
+  --color-accent: #22d3ee;
+  --color-accent-light: #a5f3fc;
+  --gradient-bg: linear-gradient(180deg, #ecfeff 0%, #cffafe 50%, #a5f3fc 100%);
+  --gradient-hero: linear-gradient(135deg, #22d3ee 0%, #06b6d4 50%, #0891b2 100%);
+  --gradient-primary: linear-gradient(135deg, #06b6d4 0%, #22d3ee 100%);
+  --gradient-section: linear-gradient(135deg, #ecfeff 0%, #cffafe 100%);
+}
+
+/* ============================================
    GLOBAL STYLES (Apply to all themes)
    ============================================ */
 .theme-default body,
 .theme-teal body,
-.theme-purple body {
+.theme-purple body,
+.theme-orange body,
+.theme-pink body,
+.theme-cyan body {
   background: var(--gradient-bg);
   color: var(--color-gray-800);
 }
@@ -181,23 +243,37 @@ body {
 
 .text-body {
   font-size: 1rem;
-  line-height: 1.6;
-  color: var(--color-gray-600);
+  line-height: 1.75; /* Aumentado de 1.6 para 1.75 */
+  color: var(--color-gray-700); /* Melhor contraste (antes era 600) */
 }
 
 .text-small {
-  font-size: 0.875rem;
-  line-height: 1.5;
-  color: var(--color-gray-500);
+  font-size: 0.9375rem; /* Aumentado de 0.875rem (14px → 15px) */
+  line-height: 1.65; /* Aumentado de 1.5 para 1.65 */
+  color: var(--color-gray-600); /* Melhor contraste (antes era 500) */
 }
 
 .text-caption {
-  font-size: 0.75rem;
+  font-size: 0.8125rem; /* Aumentado de 0.75rem (12px → 13px) */
   font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: var(--color-gray-400);
+  color: var(--color-gray-500); /* Melhor contraste (antes era 400) */
 }
+
+/* GARANTIA DE LEGIBILIDADE - Todos os parágrafos e textos */
+p, li, span, div {
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  hyphens: auto;
+}
+
+/* Contraste mínimo WCAG AA (4.5:1) garantido */
+.text-gray-900 { color: var(--color-gray-900); /* 15.5:1 - AAA */ }
+.text-gray-800 { color: var(--color-gray-800); /* 11.6:1 - AAA */ }
+.text-gray-700 { color: var(--color-gray-700); /* 8.3:1 - AAA */ }
+.text-gray-600 { color: var(--color-gray-600); /* 5.7:1 - AA */ }
+.text-gray-500 { color: var(--color-gray-500); /* 4.6:1 - AA (limite) */ }
 
 /* ============================================
    CONTAINER

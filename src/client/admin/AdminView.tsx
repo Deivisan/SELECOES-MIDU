@@ -1,33 +1,72 @@
 import React, { useState, useEffect } from 'react'
-import { mockJobs, mockAdmin } from '../../shared/data/mockData'
+import { 
+  BarChart, Bar, LineChart, Line, PieChart, Pie, AreaChart, Area,
+  XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Cell 
+} from 'recharts'
+import { mockJobs } from '../../shared/data/mockData'
+import type { Job } from '../../shared/types'
+import VagasTable from '../../shared/components/VagasTable'
+import VagaForm from '../../shared/components/VagaForm'
+import ViewSelector from '../../shared/components/ViewSelector'
 import '../../shared/styles/themes.css'
 
-type ThemeType = 'default' | 'teal' | 'purple'
+type ThemeType = 'default' | 'teal' | 'purple' | 'orange' | 'pink' | 'cyan'
+type SectionType = 'dashboard' | 'vagas' | 'candidatos' | 'relatorios'
 
-const themeLabels: Record<ThemeType, string> = {
-  default: 'Azul',
-  teal: 'Verde',
-  purple: 'Roxo'
-}
+// Dados para gráficos
+const statusCandidatos = [
+  { name: 'Pendente', value: 45, color: '#fbbf24' },
+  { name: 'Em Análise', value: 32, color: '#3b82f6' },
+  { name: 'Entrevista', value: 18, color: '#8b5cf6' },
+  { name: 'Contratado', value: 23, color: '#10b981' },
+  { name: 'Rejeitado', value: 35, color: '#ef4444' },
+]
 
-const themeColors: Record<ThemeType, string> = {
-  default: '#2563eb',
-  teal: '#0d9488',
-  purple: '#7c3aed'
-}
+const aplicacoesMes = [
+  { mes: 'Jul', candidatos: 42, vagas: 8 },
+  { mes: 'Ago', candidatos: 58, vagas: 12 },
+  { mes: 'Set', candidatos: 71, vagas: 15 },
+  { mes: 'Out', candidatos: 89, vagas: 18 },
+  { mes: 'Nov', candidatos: 103, vagas: 22 },
+  { mes: 'Dez', candidatos: 147, vagas: 25 },
+]
+
+const vagasCategoria = [
+  { name: 'Tecnologia', value: 12, color: '#3b82f6' },
+  { name: 'Administração', value: 5, color: '#10b981' },
+  { name: 'Vendas', value: 4, color: '#f97316' },
+  { name: 'Marketing', value: 3, color: '#8b5cf6' },
+  { name: 'Saúde', value: 1, color: '#ef4444' },
+]
+
+const contratacoesTrimestre = [
+  { mes: 'Jul', contratados: 3 },
+  { mes: 'Ago', contratados: 5 },
+  { mes: 'Set', contratados: 4 },
+  { mes: 'Out', contratados: 6 },
+  { mes: 'Nov', contratados: 8 },
+  { mes: 'Dez', contratados: 10 },
+]
 
 export default function AdminView() {
   const [theme, setTheme] = useState<ThemeType>('default')
   const [isLoggedIn, setIsLoggedIn] = useState(false)
-  const [email, setEmail] = useState('')
+  const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
-  const [activeSection, setActiveSection] = useState<'dashboard' | 'vagas' | 'candidatos' | 'relatorios'>('dashboard')
+  const [loginError, setLoginError] = useState('')
+  const [activeSection, setActiveSection] = useState<SectionType>('dashboard')
   const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
+    // Verificar sessão persistida
+    const session = localStorage.getItem('admin_session')
+    if (session === 'authenticated') {
+      setIsLoggedIn(true)
+    }
+
     const params = new URLSearchParams(window.location.search)
     const themeParam = params.get('theme') as ThemeType
-    if (themeParam && ['default', 'teal', 'purple'].includes(themeParam)) {
+    if (themeParam && ['default', 'teal', 'purple', 'orange', 'pink', 'cyan'].includes(themeParam)) {
       setTheme(themeParam)
     }
     setMounted(true)
@@ -35,9 +74,23 @@ export default function AdminView() {
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault()
-    if (email && password) {
+    setLoginError('')
+
+    // Validação REAL: admin/admin
+    if (username === 'admin' && password === 'admin') {
       setIsLoggedIn(true)
+      localStorage.setItem('admin_session', 'authenticated')
+    } else {
+      setLoginError('❌ Credenciais inválidas! Use: admin / admin')
+      setTimeout(() => setLoginError(''), 4000)
     }
+  }
+
+  const handleLogout = () => {
+    setIsLoggedIn(false)
+    localStorage.removeItem('admin_session')
+    setUsername('')
+    setPassword('')
   }
 
   const changeTheme = (newTheme: ThemeType) => {
@@ -47,69 +100,35 @@ export default function AdminView() {
 
   if (!mounted) return null
 
-  // Dashboard stats
+  // Estatísticas dinâmicas
   const stats = {
     activeJobs: mockJobs.filter(j => j.isActive).length,
     totalCandidates: 147,
     applications: 328,
     hired: 23,
     pendingReview: 45,
-    interviewsScheduled: 12
+    interviewsScheduled: 12,
+    companies: [...new Set(mockJobs.map(j => j.company))].length,
+    avgTimeToHire: 18 // dias
   }
 
-  // Recent activity
-  const recentActivity = [
-    { type: 'application', message: 'João Silva candidatou-se para Desenvolvedor Full Stack', time: '5 min' },
-    { type: 'interview', message: 'Entrevista agendada: Ana Costa - UX Designer', time: '1h' },
-    { type: 'hired', message: 'Pedro Santos foi contratado para Analista de Dados', time: '2h' },
-    { type: 'application', message: 'Maria Oliveira candidatou-se para Product Manager', time: '3h' },
-    { type: 'job', message: 'Nova vaga publicada: DevOps Engineer', time: '5h' },
-  ]
-
   const menuItems = [
-    { id: 'dashboard', label: 'Dashboard', icon: '📊' },
-    { id: 'vagas', label: 'Vagas', icon: '💼' },
-    { id: 'candidatos', label: 'Candidatos', icon: '👥' },
-    { id: 'relatorios', label: 'Relatórios', icon: '📈' },
+    { id: 'dashboard' as SectionType, label: 'Dashboard', icon: '📊', badge: null },
+    { id: 'vagas' as SectionType, label: 'Vagas', icon: '💼', badge: stats.activeJobs },
+    { id: 'candidatos' as SectionType, label: 'Candidatos', icon: '👥', badge: stats.pendingReview },
+    { id: 'relatorios' as SectionType, label: 'Relatórios', icon: '📈', badge: null },
   ]
 
   return (
     <div className={`theme-${theme}`}>
-      {/* Theme Switcher */}
-      <div style={{
-        position: 'fixed',
-        bottom: '1.5rem',
-        right: '1.5rem',
-        zIndex: 1000,
-        display: 'flex',
-        gap: '0.5rem',
-        padding: '0.5rem',
-        background: 'rgba(255,255,255,0.95)',
-        borderRadius: '12px',
-        boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
-        backdropFilter: 'blur(10px)'
-      }}>
-        {(['default', 'teal', 'purple'] as ThemeType[]).map((t) => (
-          <button
-            key={t}
-            onClick={() => changeTheme(t)}
-            title={themeLabels[t]}
-            style={{
-              width: '28px',
-              height: '28px',
-              borderRadius: '50%',
-              border: theme === t ? '3px solid #1f2937' : '2px solid transparent',
-              background: themeColors[t],
-              cursor: 'pointer',
-              transition: 'all 0.2s ease',
-              transform: theme === t ? 'scale(1.1)' : 'scale(1)'
-            }}
-          />
-        ))}
-      </div>
+      <ViewSelector 
+        theme={theme} 
+        onThemeChange={changeTheme}
+        onViewChange={() => {}}
+      />
 
       {!isLoggedIn ? (
-        /* LOGIN SCREEN */
+        /* ==================== LOGIN SCREEN ==================== */
         <div style={{ 
           minHeight: '100vh',
           display: 'flex',
@@ -120,52 +139,85 @@ export default function AdminView() {
         }}>
           <div className="card animate-fadeInUp" style={{
             width: '100%',
-            maxWidth: '420px',
-            padding: 'var(--space-8)'
+            maxWidth: '460px',
+            padding: 'var(--space-8)',
+            boxShadow: '0 20px 60px rgba(0,0,0,0.15)'
           }}>
+            {/* Logo + Título */}
             <div style={{ textAlign: 'center', marginBottom: 'var(--space-8)' }}>
               <div className="navbar-logo" style={{ 
-                width: '64px', 
-                height: '64px', 
-                fontSize: '1.75rem',
-                margin: '0 auto var(--space-6)'
+                width: '80px', 
+                height: '80px', 
+                fontSize: '2rem',
+                margin: '0 auto var(--space-4)',
+                background: 'var(--gradient-hero)',
+                boxShadow: '0 8px 24px rgba(0,0,0,0.12)'
               }}>M</div>
-              <h1 className="text-h1" style={{ marginBottom: 'var(--space-2)' }}>
-                Área Administrativa
+              <h1 style={{ 
+                fontSize: '2rem', 
+                fontWeight: 700, 
+                marginBottom: 'var(--space-2)',
+                color: 'var(--color-gray-900)'
+              }}>
+                🔐 Área Administrativa
               </h1>
-              <p className="text-body">
-                Acesse o painel de gestão do Midu Group
+              <p style={{ 
+                fontSize: '1rem', 
+                color: 'var(--color-gray-600)',
+                marginBottom: 'var(--space-2)'
+              }}>
+                Painel de Gestão Midu Group
+              </p>
+              <p style={{ 
+                fontSize: '0.875rem', 
+                color: 'var(--color-gray-500)',
+                background: 'var(--color-gray-50)',
+                padding: '0.5rem 1rem',
+                borderRadius: 'var(--radius-md)',
+                display: 'inline-block'
+              }}>
+                💡 Use: <code style={{ 
+                  background: 'var(--color-primary-light)', 
+                  padding: '2px 6px', 
+                  borderRadius: '4px',
+                  fontWeight: 600
+                }}>admin / admin</code>
               </p>
             </div>
 
-            <form onSubmit={handleLogin}>
+            {/* Formulário */}
+            <form onSubmit={handleLogin} style={{ marginBottom: 'var(--space-4)' }}>
               <div style={{ marginBottom: 'var(--space-5)' }}>
-                <label className="text-small" style={{ 
+                <label style={{ 
                   display: 'block', 
                   marginBottom: 'var(--space-2)',
-                  fontWeight: 500,
+                  fontWeight: 600,
+                  fontSize: '0.875rem',
                   color: 'var(--color-gray-700)'
                 }}>
-                  E-mail
+                  👤 Usuário
                 </label>
                 <input
-                  type="email"
+                  type="text"
                   className="input"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="seu@email.com"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  placeholder="admin"
                   required
+                  autoComplete="username"
+                  style={{ fontSize: '1rem' }}
                 />
               </div>
 
               <div style={{ marginBottom: 'var(--space-6)' }}>
-                <label className="text-small" style={{ 
+                <label style={{ 
                   display: 'block', 
                   marginBottom: 'var(--space-2)',
-                  fontWeight: 500,
+                  fontWeight: 600,
+                  fontSize: '0.875rem',
                   color: 'var(--color-gray-700)'
                 }}>
-                  Senha
+                  🔑 Senha
                 </label>
                 <input
                   type="password"
@@ -174,438 +226,597 @@ export default function AdminView() {
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
                   required
+                  autoComplete="current-password"
+                  style={{ fontSize: '1rem' }}
                 />
               </div>
 
-              <button type="submit" className="btn btn-primary btn-lg btn-full">
-                Entrar
+              {loginError && (
+                <div style={{
+                  padding: 'var(--space-3)',
+                  marginBottom: 'var(--space-4)',
+                  background: '#fee2e2',
+                  border: '2px solid #ef4444',
+                  borderRadius: 'var(--radius-md)',
+                  color: '#991b1b',
+                  fontSize: '0.875rem',
+                  fontWeight: 600,
+                  textAlign: 'center'
+                }}>
+                  {loginError}
+                </div>
+              )}
+
+              <button type="submit" className="btn btn-lg" style={{ width: '100%', fontSize: '1.125rem' }}>
+                🚀 Entrar no Painel
               </button>
             </form>
 
-            <p className="text-small" style={{ 
+            <p style={{ 
               textAlign: 'center', 
-              marginTop: 'var(--space-6)',
-              color: 'var(--color-gray-400)'
+              fontSize: '0.75rem', 
+              color: 'var(--color-gray-500)' 
             }}>
-              Demo: use qualquer credencial para acessar
+              🔒 Área restrita - Acesso autorizado apenas
             </p>
           </div>
         </div>
       ) : (
-        /* ADMIN DASHBOARD */
-        <div style={{ display: 'flex', minHeight: '100vh' }}>
-          {/* SIDEBAR */}
-          <aside className="sidebar">
-            <div style={{ padding: '0 var(--space-4)', marginBottom: 'var(--space-6)' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)' }}>
-                <div className="navbar-logo" style={{ width: '36px', height: '36px', fontSize: '1rem' }}>M</div>
-                <div>
-                  <div style={{ fontWeight: 600, fontSize: '0.9375rem' }}>Midu Admin</div>
-                  <div className="text-small">Painel de Gestão</div>
+        /* ==================== ADMIN DASHBOARD ==================== */
+        <div style={{ minHeight: '100vh', background: 'var(--color-gray-50)' }}>
+          {/* Top Navbar */}
+          <nav style={{
+            background: 'white',
+            borderBottom: '2px solid var(--color-gray-200)',
+            padding: '1rem 2rem',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            position: 'sticky',
+            top: 0,
+            zIndex: 100,
+            boxShadow: '0 2px 8px rgba(0,0,0,0.05)'
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+              <div className="navbar-logo" style={{ width: '48px', height: '48px', fontSize: '1.25rem' }}>M</div>
+              <div>
+                <div style={{ fontWeight: 700, fontSize: '1.25rem', color: 'var(--color-gray-900)' }}>
+                  Midu Group Admin
+                </div>
+                <div style={{ fontSize: '0.875rem', color: 'var(--color-gray-500)' }}>
+                  Painel de Gestão
                 </div>
               </div>
             </div>
+            <button 
+              onClick={handleLogout}
+              className="btn"
+              style={{ 
+                background: 'var(--color-gray-100)', 
+                color: 'var(--color-gray-700)',
+                border: '1px solid var(--color-gray-300)'
+              }}
+            >
+              🚪 Sair
+            </button>
+          </nav>
 
-            <nav className="sidebar-nav">
-              {menuItems.map((item) => (
-                <button
-                  key={item.id}
-                  onClick={() => setActiveSection(item.id as any)}
-                  className={`sidebar-link ${activeSection === item.id ? 'sidebar-link-active' : ''}`}
-                  style={{ width: '100%', textAlign: 'left', background: 'none', border: 'none', cursor: 'pointer' }}
-                >
-                  <span>{item.icon}</span>
-                  {item.label}
-                </button>
-              ))}
-            </nav>
-
-            <div style={{ 
-              marginTop: 'auto', 
-              padding: 'var(--space-4)',
-              borderTop: '1px solid var(--color-gray-200)'
+          {/* Layout Principal */}
+          <div style={{ display: 'flex', minHeight: 'calc(100vh - 85px)' }}>
+            {/* Sidebar */}
+            <aside style={{
+              width: '280px',
+              background: 'white',
+              borderRight: '2px solid var(--color-gray-200)',
+              padding: '2rem 1rem'
             }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)', marginBottom: 'var(--space-4)' }}>
-                <div className="avatar">
-                  {mockAdmin.name.split(' ').map(n => n[0]).join('')}
-                </div>
-                <div>
-                  <div style={{ fontWeight: 500, fontSize: '0.875rem' }}>{mockAdmin.name}</div>
-                  <div className="text-small">{mockAdmin.role}</div>
+              <div style={{ marginBottom: '1.5rem' }}>
+                <h3 style={{ 
+                  fontSize: '0.75rem', 
+                  fontWeight: 700, 
+                  color: 'var(--color-gray-500)', 
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.05em',
+                  marginBottom: '1rem'
+                }}>
+                  Menu Principal
+                </h3>
+                <nav>
+                  {menuItems.map((item) => (
+                    <button
+                      key={item.id}
+                      onClick={() => setActiveSection(item.id)}
+                      style={{
+                        width: '100%',
+                        padding: '0.875rem 1rem',
+                        marginBottom: '0.5rem',
+                        border: 'none',
+                        borderRadius: 'var(--radius-lg)',
+                        background: activeSection === item.id ? 'var(--gradient-hero)' : 'transparent',
+                        color: activeSection === item.id ? 'white' : 'var(--color-gray-700)',
+                        fontSize: '1rem',
+                        fontWeight: 600,
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        transition: 'all 0.2s ease',
+                        textAlign: 'left'
+                      }}
+                      onMouseEnter={(e) => {
+                        if (activeSection !== item.id) {
+                          e.currentTarget.style.background = 'var(--color-gray-50)'
+                        }
+                      }}
+                      onMouseLeave={(e) => {
+                        if (activeSection !== item.id) {
+                          e.currentTarget.style.background = 'transparent'
+                        }
+                      }}
+                    >
+                      <span>
+                        <span style={{ marginRight: '0.75rem' }}>{item.icon}</span>
+                        {item.label}
+                      </span>
+                      {item.badge !== null && (
+                        <span style={{
+                          background: activeSection === item.id ? 'rgba(255,255,255,0.25)' : 'var(--color-primary)',
+                          color: activeSection === item.id ? 'white' : 'white',
+                          padding: '0.25rem 0.625rem',
+                          borderRadius: '12px',
+                          fontSize: '0.75rem',
+                          fontWeight: 700
+                        }}>
+                          {item.badge}
+                        </span>
+                      )}
+                    </button>
+                  ))}
+                </nav>
+              </div>
+
+              {/* Stats Rápidas */}
+              <div style={{
+                background: 'var(--color-gray-50)',
+                borderRadius: 'var(--radius-lg)',
+                padding: '1.25rem',
+                marginTop: '2rem'
+              }}>
+                <h4 style={{ 
+                  fontSize: '0.875rem', 
+                  fontWeight: 700, 
+                  marginBottom: '1rem',
+                  color: 'var(--color-gray-700)'
+                }}>
+                  📌 Resumo Rápido
+                </h4>
+                <div style={{ fontSize: '0.8125rem', color: 'var(--color-gray-600)', lineHeight: 1.8 }}>
+                  <div style={{ marginBottom: '0.5rem', display: 'flex', justifyContent: 'space-between' }}>
+                    <span>Vagas Ativas:</span>
+                    <strong>{stats.activeJobs}</strong>
+                  </div>
+                  <div style={{ marginBottom: '0.5rem', display: 'flex', justifyContent: 'space-between' }}>
+                    <span>Candidatos:</span>
+                    <strong>{stats.totalCandidates}</strong>
+                  </div>
+                  <div style={{ marginBottom: '0.5rem', display: 'flex', justifyContent: 'space-between' }}>
+                    <span>Entrevistas:</span>
+                    <strong>{stats.interviewsScheduled}</strong>
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <span>Contratados:</span>
+                    <strong style={{ color: 'var(--color-success)' }}>+{stats.hired}</strong>
+                  </div>
                 </div>
               </div>
-              <button 
-                onClick={() => setIsLoggedIn(false)}
-                className="btn btn-secondary btn-sm btn-full"
-              >
-                Sair
-              </button>
-            </div>
-          </aside>
+            </aside>
 
-          {/* MAIN CONTENT */}
-          <main style={{ flex: 1, padding: 'var(--space-8)', overflow: 'auto' }}>
-            {/* DASHBOARD VIEW */}
-            {activeSection === 'dashboard' && (
-              <>
-                <div style={{ marginBottom: 'var(--space-8)' }}>
-                  <h1 className="text-h1">Dashboard</h1>
-                  <p className="text-body">Bem-vindo de volta, {mockAdmin.name.split(' ')[0]}!</p>
-                </div>
-
-                {/* Stats Grid */}
-                <div className="grid grid-4" style={{ marginBottom: 'var(--space-8)' }}>
-                  <div className="stat-card animate-fadeInUp">
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                      <div>
-                        <div className="stat-value stat-value-primary">{stats.activeJobs}</div>
-                        <div className="stat-label">Vagas Ativas</div>
-                      </div>
-                      <span style={{ fontSize: '2rem' }}>💼</span>
-                    </div>
-                    <div className="stat-trend stat-trend-up">
-                      ↑ 12% vs mês anterior
-                    </div>
-                  </div>
-
-                  <div className="stat-card animate-fadeInUp delay-100">
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                      <div>
-                        <div className="stat-value stat-value-primary">{stats.totalCandidates}</div>
-                        <div className="stat-label">Candidatos</div>
-                      </div>
-                      <span style={{ fontSize: '2rem' }}>👥</span>
-                    </div>
-                    <div className="stat-trend stat-trend-up">
-                      ↑ 23% vs mês anterior
-                    </div>
-                  </div>
-
-                  <div className="stat-card animate-fadeInUp delay-200">
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                      <div>
-                        <div className="stat-value stat-value-primary">{stats.applications}</div>
-                        <div className="stat-label">Candidaturas</div>
-                      </div>
-                      <span style={{ fontSize: '2rem' }}>📋</span>
-                    </div>
-                    <div className="stat-trend stat-trend-up">
-                      ↑ 18% vs mês anterior
-                    </div>
-                  </div>
-
-                  <div className="stat-card animate-fadeInUp delay-300">
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                      <div>
-                        <div className="stat-value" style={{ color: 'var(--color-success)' }}>{stats.hired}</div>
-                        <div className="stat-label">Contratados</div>
-                      </div>
-                      <span style={{ fontSize: '2rem' }}>✅</span>
-                    </div>
-                    <div className="stat-trend stat-trend-up">
-                      ↑ 8% vs mês anterior
-                    </div>
-                  </div>
-                </div>
-
-                {/* Two Column Layout */}
-                <div className="grid grid-2" style={{ gap: 'var(--space-6)' }}>
-                  {/* Pipeline Overview */}
-                  <div className="card animate-fadeInUp delay-400" style={{ padding: 'var(--space-6)' }}>
-                    <h3 className="text-h3" style={{ marginBottom: 'var(--space-6)' }}>Pipeline de Recrutamento</h3>
-                    
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-4)' }}>
-                      <div>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 'var(--space-2)' }}>
-                          <span className="text-small" style={{ fontWeight: 500 }}>Triagem</span>
-                          <span className="text-small">{stats.pendingReview}</span>
-                        </div>
-                        <div className="progress">
-                          <div className="progress-bar" style={{ width: '45%' }}></div>
-                        </div>
-                      </div>
-
-                      <div>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 'var(--space-2)' }}>
-                          <span className="text-small" style={{ fontWeight: 500 }}>Entrevistas</span>
-                          <span className="text-small">{stats.interviewsScheduled}</span>
-                        </div>
-                        <div className="progress">
-                          <div className="progress-bar" style={{ width: '30%' }}></div>
-                        </div>
-                      </div>
-
-                      <div>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 'var(--space-2)' }}>
-                          <span className="text-small" style={{ fontWeight: 500 }}>Propostas</span>
-                          <span className="text-small">8</span>
-                        </div>
-                        <div className="progress">
-                          <div className="progress-bar" style={{ width: '15%' }}></div>
-                        </div>
-                      </div>
-
-                      <div>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 'var(--space-2)' }}>
-                          <span className="text-small" style={{ fontWeight: 500 }}>Contratados</span>
-                          <span className="text-small">{stats.hired}</span>
-                        </div>
-                        <div className="progress">
-                          <div className="progress-bar" style={{ width: '10%', background: 'var(--color-success)' }}></div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Recent Activity */}
-                  <div className="card animate-fadeInUp delay-500" style={{ padding: 'var(--space-6)' }}>
-                    <h3 className="text-h3" style={{ marginBottom: 'var(--space-6)' }}>Atividade Recente</h3>
-                    
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-4)' }}>
-                      {recentActivity.map((activity, i) => (
-                        <div key={i} style={{ 
-                          display: 'flex', 
-                          gap: 'var(--space-3)',
-                          paddingBottom: 'var(--space-4)',
-                          borderBottom: i < recentActivity.length - 1 ? '1px solid var(--color-gray-100)' : 'none'
-                        }}>
-                          <div style={{
-                            width: '8px',
-                            height: '8px',
-                            borderRadius: '50%',
-                            background: activity.type === 'hired' ? 'var(--color-success)' : 
-                                        activity.type === 'interview' ? 'var(--color-warning)' : 
-                                        'var(--color-primary)',
-                            marginTop: '6px',
-                            flexShrink: 0
-                          }}></div>
-                          <div style={{ flex: 1 }}>
-                            <p className="text-body" style={{ fontSize: '0.875rem', marginBottom: 'var(--space-1)' }}>
-                              {activity.message}
-                            </p>
-                            <p className="text-small">{activity.time} atrás</p>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              </>
-            )}
-
-            {/* JOBS VIEW */}
-            {activeSection === 'vagas' && (
-              <>
-                <div style={{ 
-                  display: 'flex', 
-                  justifyContent: 'space-between', 
-                  alignItems: 'center',
-                  marginBottom: 'var(--space-8)' 
-                }}>
-                  <div>
-                    <h1 className="text-h1">Gerenciar Vagas</h1>
-                    <p className="text-body">{stats.activeJobs} vagas ativas</p>
-                  </div>
-                  <button className="btn btn-primary">
-                    + Nova Vaga
-                  </button>
-                </div>
-
-                <div className="card animate-fadeInUp" style={{ overflow: 'hidden' }}>
-                  <table className="table">
-                    <thead>
-                      <tr>
-                        <th>Título</th>
-                        <th>Empresa</th>
-                        <th>Localização</th>
-                        <th>Candidatos</th>
-                        <th>Status</th>
-                        <th>Ações</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {mockJobs.map((job) => (
-                        <tr key={job.id}>
-                          <td style={{ fontWeight: 500 }}>{job.title}</td>
-                          <td>{job.company}</td>
-                          <td className="text-muted">{job.location}</td>
-                          <td>
-                            <span style={{ 
-                              fontWeight: 600, 
-                              color: 'var(--color-primary)'
-                            }}>
-                              {Math.floor(Math.random() * 30) + 5}
-                            </span>
-                          </td>
-                          <td>
-                            <span className={`badge ${job.isActive ? 'badge-success' : 'badge-neutral'}`}>
-                              {job.isActive ? 'Ativa' : 'Pausada'}
-                            </span>
-                          </td>
-                          <td>
-                            <div style={{ display: 'flex', gap: 'var(--space-2)' }}>
-                              <button className="btn btn-ghost btn-sm">Editar</button>
-                              <button className="btn btn-ghost btn-sm">Ver</button>
-                            </div>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </>
-            )}
-
-            {/* CANDIDATES VIEW */}
-            {activeSection === 'candidatos' && (
-              <>
-                <div style={{ marginBottom: 'var(--space-8)' }}>
-                  <h1 className="text-h1">Candidatos</h1>
-                  <p className="text-body">{stats.totalCandidates} candidatos cadastrados</p>
-                </div>
-
-                <div className="grid grid-3" style={{ marginBottom: 'var(--space-8)' }}>
-                  <div className="stat-card">
-                    <div className="stat-value stat-value-primary">{stats.pendingReview}</div>
-                    <div className="stat-label">Aguardando Triagem</div>
-                  </div>
-                  <div className="stat-card">
-                    <div className="stat-value" style={{ color: 'var(--color-warning)' }}>{stats.interviewsScheduled}</div>
-                    <div className="stat-label">Em Entrevista</div>
-                  </div>
-                  <div className="stat-card">
-                    <div className="stat-value" style={{ color: 'var(--color-success)' }}>{stats.hired}</div>
-                    <div className="stat-label">Contratados</div>
-                  </div>
-                </div>
-
-                <div className="card animate-fadeInUp" style={{ overflow: 'hidden' }}>
-                  <table className="table">
-                    <thead>
-                      <tr>
-                        <th>Candidato</th>
-                        <th>Vaga</th>
-                        <th>Data</th>
-                        <th>Etapa</th>
-                        <th>Ações</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {[
-                        { name: 'João Silva', job: 'Desenvolvedor Full Stack', date: '10/01/2026', stage: 'Triagem' },
-                        { name: 'Ana Costa', job: 'UX Designer', date: '09/01/2026', stage: 'Entrevista' },
-                        { name: 'Pedro Santos', job: 'Analista de Dados', date: '08/01/2026', stage: 'Proposta' },
-                        { name: 'Maria Oliveira', job: 'Product Manager', date: '07/01/2026', stage: 'Triagem' },
-                        { name: 'Carlos Ferreira', job: 'DevOps Engineer', date: '06/01/2026', stage: 'Entrevista' },
-                      ].map((candidate, i) => (
-                        <tr key={i}>
-                          <td>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)' }}>
-                              <div className="avatar" style={{ width: '32px', height: '32px', fontSize: '0.75rem' }}>
-                                {candidate.name.split(' ').map(n => n[0]).join('')}
-                              </div>
-                              <span style={{ fontWeight: 500 }}>{candidate.name}</span>
-                            </div>
-                          </td>
-                          <td>{candidate.job}</td>
-                          <td className="text-muted">{candidate.date}</td>
-                          <td>
-                            <span className={`badge ${
-                              candidate.stage === 'Triagem' ? 'badge-neutral' :
-                              candidate.stage === 'Entrevista' ? 'badge-warning' :
-                              'badge-success'
-                            }`}>
-                              {candidate.stage}
-                            </span>
-                          </td>
-                          <td>
-                            <button className="btn btn-ghost btn-sm">Ver Perfil</button>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </>
-            )}
-
-            {/* REPORTS VIEW */}
-            {activeSection === 'relatorios' && (
-              <>
-                <div style={{ marginBottom: 'var(--space-8)' }}>
-                  <h1 className="text-h1">Relatórios</h1>
-                  <p className="text-body">Métricas e análises de recrutamento</p>
-                </div>
-
-                <div className="grid grid-2" style={{ gap: 'var(--space-6)' }}>
-                  <div className="card animate-fadeInUp" style={{ padding: 'var(--space-6)' }}>
-                    <h3 className="text-h3" style={{ marginBottom: 'var(--space-6)' }}>Taxa de Conversão por Etapa</h3>
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-4)' }}>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                        <span>Candidatura → Triagem</span>
-                        <span style={{ fontWeight: 600, color: 'var(--color-primary)' }}>78%</span>
-                      </div>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                        <span>Triagem → Entrevista</span>
-                        <span style={{ fontWeight: 600, color: 'var(--color-primary)' }}>45%</span>
-                      </div>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                        <span>Entrevista → Proposta</span>
-                        <span style={{ fontWeight: 600, color: 'var(--color-primary)' }}>32%</span>
-                      </div>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                        <span>Proposta → Contratação</span>
-                        <span style={{ fontWeight: 600, color: 'var(--color-success)' }}>85%</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="card animate-fadeInUp delay-100" style={{ padding: 'var(--space-6)' }}>
-                    <h3 className="text-h3" style={{ marginBottom: 'var(--space-6)' }}>Tempo Médio por Etapa</h3>
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-4)' }}>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                        <span>Triagem</span>
-                        <span style={{ fontWeight: 600 }}>2.5 dias</span>
-                      </div>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                        <span>Agendamento Entrevista</span>
-                        <span style={{ fontWeight: 600 }}>4 dias</span>
-                      </div>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                        <span>Processo Completo</span>
-                        <span style={{ fontWeight: 600, color: 'var(--color-primary)' }}>18 dias</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="card animate-fadeInUp delay-200" style={{ padding: 'var(--space-6)', gridColumn: 'span 2' }}>
-                    <h3 className="text-h3" style={{ marginBottom: 'var(--space-6)' }}>Top Vagas por Candidaturas</h3>
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-3)' }}>
-                      {mockJobs.slice(0, 5).map((job, i) => {
-                        const candidates = [42, 38, 35, 28, 24][i]
-                        const percentage = (candidates / 42) * 100
-                        return (
-                          <div key={job.id} style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-4)' }}>
-                            <span style={{ width: '200px', fontWeight: 500 }}>{job.title}</span>
-                            <div style={{ flex: 1 }}>
-                              <div className="progress">
-                                <div className="progress-bar" style={{ width: `${percentage}%` }}></div>
-                              </div>
-                            </div>
-                            <span style={{ fontWeight: 600, color: 'var(--color-primary)', width: '50px', textAlign: 'right' }}>
-                              {candidates}
-                            </span>
-                          </div>
-                        )
-                      })}
-                    </div>
-                  </div>
-                </div>
-              </>
-            )}
-          </main>
+            {/* Conteúdo Principal */}
+            <main style={{ flex: 1, padding: '2rem' }}>
+              {activeSection === 'dashboard' && (
+                <DashboardSection stats={stats} />
+              )}
+              {activeSection === 'vagas' && (
+                <VagasSection />
+              )}
+              {activeSection === 'candidatos' && (
+                <CandidatosSection />
+              )}
+              {activeSection === 'relatorios' && (
+                <RelatoriosSection />
+              )}
+            </main>
+          </div>
         </div>
       )}
+    </div>
+  )
+}
+
+/* ==================== DASHBOARD SECTION ==================== */
+function DashboardSection({ stats }: { stats: any }) {
+  return (
+    <div>
+      <h1 style={{ fontSize: '2rem', fontWeight: 700, marginBottom: '0.5rem', color: 'var(--color-gray-900)' }}>
+        📊 Dashboard Geral
+      </h1>
+      <p style={{ fontSize: '1rem', color: 'var(--color-gray-600)', marginBottom: '2rem' }}>
+        Visão completa do desempenho da plataforma
+      </p>
+
+      {/* KPI Cards */}
+      <div style={{ 
+        display: 'grid', 
+        gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', 
+        gap: '1.5rem',
+        marginBottom: '2rem'
+      }}>
+        <KPICard 
+          icon="💼" 
+          label="Vagas Ativas" 
+          value={stats.activeJobs} 
+          trend="+12%" 
+          trendUp={true}
+          color="#3b82f6"
+        />
+        <KPICard 
+          icon="👥" 
+          label="Total Candidatos" 
+          value={stats.totalCandidates} 
+          trend="+28%" 
+          trendUp={true}
+          color="#10b981"
+        />
+        <KPICard 
+          icon="📨" 
+          label="Candidaturas" 
+          value={stats.applications} 
+          trend="+45%" 
+          trendUp={true}
+          color="#8b5cf6"
+        />
+        <KPICard 
+          icon="✅" 
+          label="Contratados" 
+          value={stats.hired} 
+          trend="+8%" 
+          trendUp={true}
+          color="#10b981"
+        />
+        <KPICard 
+          icon="⏳" 
+          label="Pendentes" 
+          value={stats.pendingReview} 
+          trend="-5%" 
+          trendUp={false}
+          color="#fbbf24"
+        />
+        <KPICard 
+          icon="🏢" 
+          label="Empresas Parceiras" 
+          value={stats.companies} 
+          trend="+2" 
+          trendUp={true}
+          color="#f97316"
+        />
+      </div>
+
+      {/* Gráficos */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(500px, 1fr))', gap: '1.5rem' }}>
+        {/* Gráfico de Barras: Status Candidatos */}
+        <div className="card" style={{ padding: '1.5rem' }}>
+          <h3 style={{ fontSize: '1.125rem', fontWeight: 700, marginBottom: '1rem' }}>
+            📊 Candidatos por Status
+          </h3>
+          <ResponsiveContainer width="100%" height={300}>
+            <BarChart data={statusCandidatos}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+              <XAxis dataKey="name" stroke="#6b7280" style={{ fontSize: '0.875rem' }} />
+              <YAxis stroke="#6b7280" style={{ fontSize: '0.875rem' }} />
+              <Tooltip 
+                contentStyle={{ 
+                  background: 'white', 
+                  border: '2px solid #e5e7eb', 
+                  borderRadius: '8px',
+                  boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
+                }} 
+              />
+              <Bar dataKey="value" radius={[8, 8, 0, 0]}>
+                {statusCandidatos.map((entry, index) => (
+                  <Cell key={`cell-${index}`} fill={entry.color} />
+                ))}
+              </Bar>
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+
+        {/* Gráfico de Pizza: Vagas por Categoria */}
+        <div className="card" style={{ padding: '1.5rem' }}>
+          <h3 style={{ fontSize: '1.125rem', fontWeight: 700, marginBottom: '1rem' }}>
+            📈 Vagas por Categoria
+          </h3>
+          <ResponsiveContainer width="100%" height={300}>
+            <PieChart>
+              <Pie
+                data={vagasCategoria}
+                cx="50%"
+                cy="50%"
+                labelLine={false}
+                label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
+                outerRadius={100}
+                fill="#8884d8"
+                dataKey="value"
+              >
+                {vagasCategoria.map((entry, index) => (
+                  <Cell key={`cell-${index}`} fill={entry.color} />
+                ))}
+              </Pie>
+              <Tooltip />
+            </PieChart>
+          </ResponsiveContainer>
+        </div>
+
+        {/* Gráfico de Linha: Aplicações por Mês */}
+        <div className="card" style={{ padding: '1.5rem' }}>
+          <h3 style={{ fontSize: '1.125rem', fontWeight: 700, marginBottom: '1rem' }}>
+            📉 Crescimento Mensal
+          </h3>
+          <ResponsiveContainer width="100%" height={300}>
+            <LineChart data={aplicacoesMes}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+              <XAxis dataKey="mes" stroke="#6b7280" style={{ fontSize: '0.875rem' }} />
+              <YAxis stroke="#6b7280" style={{ fontSize: '0.875rem' }} />
+              <Tooltip 
+                contentStyle={{ 
+                  background: 'white', 
+                  border: '2px solid #e5e7eb', 
+                  borderRadius: '8px' 
+                }} 
+              />
+              <Legend />
+              <Line type="monotone" dataKey="candidatos" stroke="#3b82f6" strokeWidth={3} dot={{ r: 6 }} />
+              <Line type="monotone" dataKey="vagas" stroke="#10b981" strokeWidth={3} dot={{ r: 6 }} />
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
+
+        {/* Gráfico de Área: Contratações */}
+        <div className="card" style={{ padding: '1.5rem' }}>
+          <h3 style={{ fontSize: '1.125rem', fontWeight: 700, marginBottom: '1rem' }}>
+            ✅ Tendência de Contratações
+          </h3>
+          <ResponsiveContainer width="100%" height={300}>
+            <AreaChart data={contratacoesTrimestre}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+              <XAxis dataKey="mes" stroke="#6b7280" style={{ fontSize: '0.875rem' }} />
+              <YAxis stroke="#6b7280" style={{ fontSize: '0.875rem' }} />
+              <Tooltip 
+                contentStyle={{ 
+                  background: 'white', 
+                  border: '2px solid #e5e7eb', 
+                  borderRadius: '8px' 
+                }} 
+              />
+              <Area type="monotone" dataKey="contratados" stroke="#10b981" fill="rgba(16, 185, 129, 0.2)" strokeWidth={3} />
+            </AreaChart>
+          </ResponsiveContainer>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+/* ==================== KPI CARD ==================== */
+function KPICard({ icon, label, value, trend, trendUp, color }: {
+  icon: string
+  label: string
+  value: number
+  trend: string
+  trendUp: boolean
+  color: string
+}) {
+  return (
+    <div className="card" style={{ 
+      padding: '1.5rem',
+      borderLeft: `4px solid ${color}`,
+      transition: 'transform 0.2s ease'
+    }}
+    onMouseEnter={(e) => {
+      e.currentTarget.style.transform = 'translateY(-4px)'
+      e.currentTarget.style.boxShadow = '0 12px 32px rgba(0,0,0,0.12)'
+    }}
+    onMouseLeave={(e) => {
+      e.currentTarget.style.transform = 'translateY(0)'
+      e.currentTarget.style.boxShadow = ''
+    }}
+    >
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+        <div>
+          <div style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>{icon}</div>
+          <div style={{ fontSize: '0.875rem', color: 'var(--color-gray-600)', marginBottom: '0.5rem' }}>
+            {label}
+          </div>
+          <div style={{ fontSize: '2rem', fontWeight: 700, color: 'var(--color-gray-900)' }}>
+            {value.toLocaleString()}
+          </div>
+        </div>
+        <div style={{
+          padding: '0.375rem 0.75rem',
+          borderRadius: 'var(--radius-full)',
+          background: trendUp ? 'rgba(16, 185, 129, 0.1)' : 'rgba(239, 68, 68, 0.1)',
+          color: trendUp ? '#059669' : '#dc2626',
+          fontSize: '0.8125rem',
+          fontWeight: 700
+        }}>
+          {trendUp ? '↑' : '↓'} {trend}
+        </div>
+      </div>
+    </div>
+  )
+}
+
+/* ==================== VAGAS SECTION (CRUD Completo) ==================== */
+function VagasSection() {
+  const [vagas, setVagas] = useState<Job[]>([
+    {
+      id: '1',
+      title: 'Desenvolvedor Full Stack Sênior',
+      company: 'Ford Brasil',
+      location: 'Salvador, BA',
+      type: 'CLT',
+      modality: 'Híbrido',
+      category: 'Tecnologia',
+      salary: 'R$ 8.000 - R$ 12.000',
+      description: 'Desenvolvimento de sistemas web modernos',
+      requirements: ['5+ anos React', 'TypeScript', 'Node.js'],
+      responsibilities: ['Desenvolver features', 'Code review', 'Mentoria'],
+      benefits: ['Plano de saúde', 'VR/VA', 'Home office'],
+      postedAt: new Date('2026-01-10'),
+      isActive: true
+    },
+    {
+      id: '2',
+      title: 'Analista de Marketing Digital',
+      company: 'Midu Group',
+      location: 'Feira de Santana, BA',
+      type: 'PJ',
+      modality: 'Remoto',
+      category: 'Marketing',
+      salary: 'R$ 4.000 - R$ 6.000',
+      description: 'Gestão de campanhas digitais',
+      requirements: ['2+ anos marketing', 'Google Ads', 'Meta Ads'],
+      responsibilities: ['Criar campanhas', 'Analisar métricas', 'Otimizar conversões'],
+      benefits: ['Horário flexível', 'Equipamento fornecido'],
+      postedAt: new Date('2026-01-08'),
+      isActive: true
+    }
+  ])
+  
+  const [editingVaga, setEditingVaga] = useState<Job | null>(null)
+  const [showForm, setShowForm] = useState(false)
+  
+  const handleCreate = () => {
+    setEditingVaga(null)
+    setShowForm(true)
+  }
+  
+  const handleEdit = (vaga: Job) => {
+    setEditingVaga(vaga)
+    setShowForm(true)
+  }
+  
+  const handleSave = (vagaData: Partial<Job>) => {
+    if (editingVaga) {
+      // Atualizar vaga existente
+      setVagas(prev => prev.map(v => 
+        v.id === editingVaga.id 
+          ? { ...v, ...vagaData } as Job
+          : v
+      ))
+    } else {
+      // Criar nova vaga
+      const newVaga: Job = {
+        id: Date.now().toString(),
+        ...vagaData as Omit<Job, 'id'>
+      }
+      setVagas(prev => [newVaga, ...prev])
+    }
+    setShowForm(false)
+    setEditingVaga(null)
+  }
+  
+  const handleDelete = (id: string) => {
+    if (confirm('Tem certeza que deseja excluir esta vaga?')) {
+      setVagas(prev => prev.filter(v => v.id !== id))
+    }
+  }
+  
+  const handleToggleActive = (id: string) => {
+    setVagas(prev => prev.map(v => 
+      v.id === id ? { ...v, isActive: !v.isActive } : v
+    ))
+  }
+  
+  const handleCancel = () => {
+    setShowForm(false)
+    setEditingVaga(null)
+  }
+
+  return (
+    <div>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
+        <h1 style={{ fontSize: '2rem', fontWeight: 700 }}>💼 Gestão de Vagas</h1>
+        <button 
+          className="btn btn-lg"
+          onClick={handleCreate}
+          style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}
+        >
+          ➕ Nova Vaga
+        </button>
+      </div>
+
+      {/* Stats */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem', marginBottom: '2rem' }}>
+        <div className="card" style={{ padding: '1.5rem' }}>
+          <div style={{ fontSize: '0.875rem', color: 'var(--color-gray-600)', marginBottom: '0.5rem' }}>Total de Vagas</div>
+          <div style={{ fontSize: '2rem', fontWeight: 700, color: 'var(--color-gray-900)' }}>{vagas.length}</div>
+        </div>
+        <div className="card" style={{ padding: '1.5rem' }}>
+          <div style={{ fontSize: '0.875rem', color: 'var(--color-gray-600)', marginBottom: '0.5rem' }}>Vagas Ativas</div>
+          <div style={{ fontSize: '2rem', fontWeight: 700, color: '#10b981' }}>{vagas.filter(v => v.isActive).length}</div>
+        </div>
+        <div className="card" style={{ padding: '1.5rem' }}>
+          <div style={{ fontSize: '0.875rem', color: 'var(--color-gray-600)', marginBottom: '0.5rem' }}>Vagas Inativas</div>
+          <div style={{ fontSize: '2rem', fontWeight: 700, color: '#6b7280' }}>{vagas.filter(v => !v.isActive).length}</div>
+        </div>
+      </div>
+
+      {/* Tabela */}
+      <div className="card" style={{ padding: '0', overflow: 'hidden' }}>
+        <VagasTable 
+          vagas={vagas}
+          onEdit={handleEdit}
+          onDelete={handleDelete}
+          onToggleActive={handleToggleActive}
+        />
+      </div>
+
+      {/* Modal Form */}
+      {showForm && (
+        <VagaForm 
+          vaga={editingVaga || undefined}
+          onSave={handleSave}
+          onCancel={handleCancel}
+        />
+      )}
+    </div>
+  )
+}
+
+/* ==================== CANDIDATOS SECTION (Placeholder) ==================== */
+function CandidatosSection() {
+  return (
+    <div>
+      <h1 style={{ fontSize: '2rem', fontWeight: 700, marginBottom: '2rem' }}>👥 Gestão de Candidatos</h1>
+      <div className="card" style={{ padding: '3rem', textAlign: 'center' }}>
+        <div style={{ fontSize: '4rem', marginBottom: '1rem' }}>🚧</div>
+        <h3 style={{ fontSize: '1.5rem', fontWeight: 700, marginBottom: '1rem' }}>Em Desenvolvimento</h3>
+        <p style={{ color: 'var(--color-gray-600)' }}>Gestão completa de candidatos será implementada em breve</p>
+      </div>
+    </div>
+  )
+}
+
+/* ==================== RELATÓRIOS SECTION (Placeholder) ==================== */
+function RelatoriosSection() {
+  return (
+    <div>
+      <h1 style={{ fontSize: '2rem', fontWeight: 700, marginBottom: '2rem' }}>📈 Relatórios e Análises</h1>
+      <div className="card" style={{ padding: '3rem', textAlign: 'center' }}>
+        <div style={{ fontSize: '4rem', marginBottom: '1rem' }}>🚧</div>
+        <h3 style={{ fontSize: '1.5rem', fontWeight: 700, marginBottom: '1rem' }}>Em Desenvolvimento</h3>
+        <p style={{ color: 'var(--color-gray-600)' }}>Relatórios avançados serão implementados em breve</p>
+      </div>
     </div>
   )
 }
