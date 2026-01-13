@@ -49,30 +49,42 @@ const contratacoesTrimestre = [
 ]
 
 export default function AdminView() {
+  console.log('🔍 [1/10] AdminView: Função invocada')
+  
   const [theme, setTheme] = useState<ThemeType>('default')
+  console.log('🔍 [2/10] AdminView: useState theme OK')
+  
   const [isLoggedIn, setIsLoggedIn] = useState(false)
+  console.log('🔍 [3/10] AdminView: useState isLoggedIn OK')
+  
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [loginError, setLoginError] = useState('')
   const [activeSection, setActiveSection] = useState<SectionType>('dashboard')
   const [mounted, setMounted] = useState(false)
+  console.log('🔍 [4/10] AdminView: Todos os useState inicializados')
 
   useEffect(() => {
-    console.log('AdminView: Iniciando montagem...')
-    // Verificar sessão persistida
-    const session = localStorage.getItem('admin_session')
-    console.log('AdminView: Sessão encontrada:', session)
-    if (session === 'authenticated') {
-      setIsLoggedIn(true)
-    }
+    console.log('🔍 [5/10] AdminView: useEffect montagem iniciado')
+    try {
+      // Verificar sessão persistida
+      const session = localStorage.getItem('admin_session')
+      console.log('🔍 [6/10] AdminView: Sessão localStorage:', session)
+      if (session === 'authenticated') {
+        setIsLoggedIn(true)
+        console.log('🔍 [7/10] AdminView: Login automático ativado')
+      }
 
-    const params = new URLSearchParams(window.location.search)
-    const themeParam = params.get('theme') as ThemeType
-    if (themeParam && ['default', 'teal', 'purple', 'orange', 'pink', 'cyan'].includes(themeParam)) {
-      setTheme(themeParam)
+      const params = new URLSearchParams(window.location.search)
+      const themeParam = params.get('theme') as ThemeType
+      if (themeParam && ['default', 'teal', 'purple', 'orange', 'pink', 'cyan'].includes(themeParam)) {
+        setTheme(themeParam)
+      }
+      setMounted(true)
+      console.log('🔍 [8/10] AdminView: Montagem concluída com sucesso')
+    } catch (error) {
+      console.error('❌ ERRO na montagem do AdminView:', error)
     }
-    setMounted(true)
-    console.log('AdminView: Montagem concluída.')
   }, [])
 
   const handleLogin = (e: React.FormEvent) => {
@@ -101,7 +113,12 @@ export default function AdminView() {
     window.history.replaceState({}, '', `?theme=${newTheme}`)
   }
 
-  if (!mounted) return null
+  if (!mounted) {
+    console.log('⏳ AdminView: Aguardando montagem (mounted=false)')
+    return null
+  }
+  
+  console.log('✅ AdminView: Iniciando render do JSX, isLoggedIn=', isLoggedIn)
 
   // Estatísticas dinâmicas
   const [stats, setStats] = useState({
@@ -116,19 +133,23 @@ export default function AdminView() {
   })
 
   useEffect(() => {
-    console.log('AdminView: Calculando estatísticas dinâmicas...')
-    // Calcular estatísticas baseadas em mockJobs e localStorage
-    const savedApplications = localStorage.getItem('midu_candidaturas')
-    const applicationsCount = savedApplications ? JSON.parse(savedApplications).length : 0
-    
-    setStats(prev => ({
-      ...prev,
-      activeJobs: mockJobs.filter(j => j.isActive).length,
-      companies: [...new Set(mockJobs.map(j => j.company))].length,
-      applications: 328 + applicationsCount, // Mock base + reais
-      pendingReview: 45 + applicationsCount
-    }))
-    console.log('AdminView: Estatísticas calculadas.')
+    console.log('🔍 [9/10] AdminView: useEffect stats iniciado')
+    try {
+      // Calcular estatísticas baseadas em mockJobs e localStorage
+      const savedApplications = localStorage.getItem('midu_candidaturas')
+      const applicationsCount = savedApplications ? JSON.parse(savedApplications).length : 0
+      
+      setStats(prev => ({
+        ...prev,
+        activeJobs: mockJobs.filter(j => j.isActive).length,
+        companies: [...new Set(mockJobs.map(j => j.company))].length,
+        applications: 328 + applicationsCount, // Mock base + reais
+        pendingReview: 45 + applicationsCount
+      }))
+      console.log('🔍 [10/10] AdminView: Estatísticas calculadas com sucesso')
+    } catch (error) {
+      console.error('❌ ERRO ao calcular estatísticas:', error)
+    }
   }, [])
 
 
