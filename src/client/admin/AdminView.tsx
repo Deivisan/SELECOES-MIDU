@@ -820,6 +820,36 @@ function CandidatosSection() {
   const [filters, setFilters] = useState({ status: 'Todos', vaga: 'Todas', periodo: '30dias' })
   const [selectedCandidate, setSelectedCandidate] = useState<any | null>(null)
   const [showModal, setShowModal] = useState(false)
+  
+  // 🆕 SISTEMA DE SELEÇÃO MÚLTIPLA
+  const [selectedCandidates, setSelectedCandidates] = useState<string[]>([])
+  const [showCompareModal, setShowCompareModal] = useState(false)
+  const [bulkAction, setBulkAction] = useState<string>('')
+  
+  // 🆕 SISTEMA DE CONTATO
+  const [showEmailModal, setShowEmailModal] = useState(false)
+  const [emailCandidate, setEmailCandidate] = useState<any | null>(null)
+  const [emailTemplate, setEmailTemplate] = useState<string>('invitation')
+  const [emailSubject, setEmailSubject] = useState<string>('')
+  const [emailBody, setEmailBody] = useState<string>('')
+  
+  // 🆕 SISTEMA DE AGENDAMENTO
+  const [showScheduleModal, setShowScheduleModal] = useState(false)
+  const [scheduleCandidate, setScheduleCandidate] = useState<any | null>(null)
+  const [interviews, setInterviews] = useState<any[]>([])
+  const [scheduleForm, setScheduleForm] = useState({
+    date: '',
+    time: '',
+    type: 'online',
+    location: '',
+    duration: 60,
+    interviewer: 'Daniel Duarte',
+    notes: ''
+  })
+  
+  // 🆕 SISTEMA DE NOTAS
+  const [notes, setNotes] = useState<any[]>([])
+  const [newNote, setNewNote] = useState<string>('')
 
   // Status disponíveis com cores
   const statusOptions = [
@@ -829,6 +859,40 @@ function CandidatosSection() {
     { label: 'Contratado', color: '#10b981' },
     { label: 'Rejeitado', color: '#ef4444' }
   ]
+  
+  // 🆕 TEMPLATES DE EMAIL
+  const emailTemplates: Record<string, { subject: string, body: string }> = {
+    invitation: {
+      subject: 'Oportunidade em {vaga} - Midu Group',
+      body: 'Olá {nome},\n\nIdentificamos seu perfil para a vaga de {vaga} na {empresa}.\n\nGostaríamos de conhecê-lo(a) melhor e discutir esta oportunidade.\n\nAguardamos seu retorno.\n\nAtenciosamente,\nDaniel Duarte\nMidu Group'
+    },
+    rejection: {
+      subject: 'Processo Seletivo - {vaga}',
+      body: 'Olá {nome},\n\nAgradecemos seu interesse na vaga de {vaga}.\n\nApós análise criteriosa, optamos por seguir com outros candidatos neste momento.\n\nDesejamos sucesso em sua jornada profissional.\n\nAtenciosamente,\nMidu Group'
+    },
+    interview: {
+      subject: 'Convite para Entrevista - {vaga}',
+      body: 'Olá {nome},\n\nParabéns! Você foi selecionado(a) para a próxima etapa do processo seletivo de {vaga}.\n\nEm breve entraremos em contato para agendar sua entrevista.\n\nAtenciosamente,\nDaniel Duarte\nMidu Group'
+    }
+  }
+
+  // 🆕 CARREGAR ENTREVISTAS E NOTAS DO LOCALSTORAGE
+  useEffect(() => {
+    const storedInterviews = localStorage.getItem('midu_interviews')
+    if (storedInterviews) setInterviews(JSON.parse(storedInterviews))
+    
+    const storedNotes = localStorage.getItem('midu_notes')
+    if (storedNotes) setNotes(JSON.parse(storedNotes))
+  }, [])
+  
+  // 🆕 SALVAR ENTREVISTAS E NOTAS NO LOCALSTORAGE
+  useEffect(() => {
+    localStorage.setItem('midu_interviews', JSON.stringify(interviews))
+  }, [interviews])
+  
+  useEffect(() => {
+    localStorage.setItem('midu_notes', JSON.stringify(notes))
+  }, [notes])
 
   useEffect(() => {
     // Carregar candidatos do localStorage (simulado)
@@ -976,6 +1040,153 @@ function CandidatosSection() {
     link.download = `candidatos_${new Date().toLocaleDateString('pt-BR').replace(/\//g, '-')}.csv`
     link.click()
   }
+  
+  // 🆕 TOGGLE SELEÇÃO DE CANDIDATO
+  const toggleSelection = (id: string) => {
+    setSelectedCandidates(prev => 
+      prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]
+    )
+  }
+  
+  // 🆕 SELECIONAR TODOS
+  const toggleSelectAll = () => {
+    if (selectedCandidates.length === candidatos.length) {
+      setSelectedCandidates([])
+    } else {
+      setSelectedCandidates(candidatos.map(c => c.id))
+    }
+  }
+  
+  // 🆕 AÇÕES EM MASSA
+  const handleBulkAction = () => {
+    if (!bulkAction) return
+    
+    const selected = candidatos.filter(c => selectedCandidates.includes(c.id))
+    
+    switch(bulkAction) {
+      case 'email':
+        if (selected.length > 0) {
+          setEmailCandidate({ 
+            ...selected[0], 
+            isBulk: true, 
+            bulkCount: selected.length,
+            bulkEmails: selected.map(c => c.email).join(', ')
+          })
+          setShowEmailModal(true)
+        }
+        break
+      case 'status':
+        const newStatus = prompt('Novo status (Pendente, Em Análise, Entrevista, Contratado, Rejeitado):')
+        if (newStatus && statusOptions.find(s => s.label === newStatus)) {
+          selected.forEach(c => handleChangeStatus(c.id, newStatus))
+          setSelectedCandidates([])
+        }
+        break
+      case 'delete':
+        if (confirm(`Deletar ${selected.length} candidatura(s)?`)) {
+          const updated = allCandidatos.filter(c => !selectedCandidates.includes(c.id))
+          setAllCandidatos(updated)
+          setSelectedCandidates([])
+        }
+        break
+    }
+    setBulkAction('')
+  }
+  
+  // 🆕 ABRIR MODAL DE EMAIL
+  const openEmailModal = (candidate: any) => {
+    setEmailCandidate(candidate)
+    const template = emailTemplates.invitation
+    setEmailTemplate('invitation')
+    setEmailSubject(template.subject
+      .replace('{vaga}', candidate.jobTitle)
+      .replace('{empresa}', candidate.company)
+    )
+    setEmailBody(template.body
+      .replace('{nome}', candidate.name)
+      .replace('{vaga}', candidate.jobTitle)
+      .replace('{empresa}', candidate.company)
+    )
+    setShowEmailModal(true)
+  }
+  
+  // 🆕 MUDAR TEMPLATE DE EMAIL
+  const changeEmailTemplate = (templateKey: string) => {
+    setEmailTemplate(templateKey)
+    const template = emailTemplates[templateKey]
+    setEmailSubject(template.subject
+      .replace('{vaga}', emailCandidate?.jobTitle || '')
+      .replace('{empresa}', emailCandidate?.company || '')
+    )
+    setEmailBody(template.body
+      .replace('{nome}', emailCandidate?.name || '')
+      .replace('{vaga}', emailCandidate?.jobTitle || '')
+      .replace('{empresa}', emailCandidate?.company || '')
+    )
+  }
+  
+  // 🆕 ENVIAR EMAIL (MOCK)
+  const sendEmail = () => {
+    const mailto = `mailto:${emailCandidate?.isBulk ? emailCandidate.bulkEmails : emailCandidate?.email}?subject=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(emailBody)}`
+    window.location.href = mailto
+    setShowEmailModal(false)
+  }
+  
+  // 🆕 ABRIR WHATSAPP
+  const openWhatsApp = (candidate: any) => {
+    const phone = candidate.phone.replace(/\D/g, '')
+    const message = `Olá ${candidate.name}, tudo bem? Aqui é Daniel Duarte da Midu Group. Gostaria de conversar sobre sua candidatura para ${candidate.jobTitle}.`
+    window.open(`https://wa.me/55${phone}?text=${encodeURIComponent(message)}`, '_blank')
+  }
+  
+  // 🆕 AGENDAR ENTREVISTA
+  const scheduleInterview = () => {
+    const newInterview = {
+      id: Math.random().toString(36).substr(2, 9),
+      candidateId: scheduleCandidate.id,
+      candidateName: scheduleCandidate.name,
+      jobTitle: scheduleCandidate.jobTitle,
+      ...scheduleForm,
+      status: 'agendada',
+      createdAt: new Date().toISOString()
+    }
+    
+    setInterviews([...interviews, newInterview])
+    setShowScheduleModal(false)
+    setScheduleForm({
+      date: '',
+      time: '',
+      type: 'online',
+      location: '',
+      duration: 60,
+      interviewer: 'Daniel Duarte',
+      notes: ''
+    })
+    
+    alert(`✅ Entrevista agendada com ${scheduleCandidate.name} para ${scheduleForm.date} às ${scheduleForm.time}`)
+  }
+  
+  // 🆕 ADICIONAR NOTA
+  const addNote = (candidateId: string) => {
+    if (!newNote.trim()) return
+    
+    const note = {
+      id: Math.random().toString(36).substr(2, 9),
+      candidateId,
+      author: 'Admin',
+      content: newNote,
+      createdAt: new Date().toISOString()
+    }
+    
+    setNotes([...notes, note])
+    setNewNote('')
+  }
+  
+  // 🆕 OBTER NOTAS DE UM CANDIDATO
+  const getCandidateNotes = (candidateId: string) => {
+    return notes.filter(n => n.candidateId === candidateId)
+      .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+  }
 
   return (
     <div>
@@ -985,11 +1196,64 @@ function CandidatosSection() {
           <p style={{ color: 'var(--color-gray-600)' }}>
             Visualize e gerencie os profissionais que se candidataram às vagas
           </p>
+          {interviews.length > 0 && (
+            <div style={{ marginTop: '0.5rem', display: 'inline-flex', alignItems: 'center', gap: '0.5rem', background: 'var(--color-purple-50)', color: 'var(--color-purple)', padding: '0.5rem 1rem', borderRadius: '8px', fontSize: '0.875rem', fontWeight: 600 }}>
+              📅 {interviews.filter(i => i.status === 'agendada').length} entrevista(s) agendada(s)
+            </div>
+          )}
         </div>
-        <button className="btn btn-primary" onClick={handleExportCSV}>
-          📥 Exportar CSV
-        </button>
+        <div style={{ display: 'flex', gap: '0.75rem' }}>
+          {selectedCandidates.length > 0 && (
+            <button 
+              className="btn" 
+              onClick={() => setShowCompareModal(true)}
+              disabled={selectedCandidates.length < 2 || selectedCandidates.length > 5}
+            >
+              🔄 Comparar ({selectedCandidates.length})
+            </button>
+          )}
+          <button className="btn btn-primary" onClick={handleExportCSV}>
+            📥 Exportar CSV
+          </button>
+        </div>
       </div>
+      
+      {/* 🆕 BARRA DE AÇÕES EM MASSA */}
+      {selectedCandidates.length > 0 && (
+        <div className="card" style={{ marginBottom: '1.5rem', padding: '1rem', background: 'var(--color-blue-50)', border: '1px solid var(--color-blue-200)' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem' }}>
+            <span style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--color-blue)' }}>
+              ✓ {selectedCandidates.length} candidato(s) selecionado(s)
+            </span>
+            <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+              <select 
+                className="input" 
+                value={bulkAction}
+                onChange={e => setBulkAction(e.target.value)}
+                style={{ fontSize: '0.875rem', padding: '0.5rem' }}
+              >
+                <option value="">Escolha uma ação</option>
+                <option value="email">✉️ Enviar Email</option>
+                <option value="status">📊 Mudar Status</option>
+                <option value="delete">🗑️ Deletar</option>
+              </select>
+              <button 
+                className="btn btn-sm btn-primary"
+                onClick={handleBulkAction}
+                disabled={!bulkAction}
+              >
+                Executar
+              </button>
+              <button 
+                className="btn btn-sm"
+                onClick={() => setSelectedCandidates([])}
+              >
+                Cancelar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Filtros */}
       <div className="card" style={{ marginBottom: '1.5rem', padding: '1.5rem' }}>
@@ -1057,6 +1321,14 @@ function CandidatosSection() {
         <table className="table" style={{ width: '100%', borderCollapse: 'collapse' }}>
           <thead>
             <tr style={{ background: 'var(--color-gray-50)', textAlign: 'left' }}>
+              <th style={{ padding: '1rem', borderBottom: '2px solid var(--color-gray-200)', width: '40px' }}>
+                <input 
+                  type="checkbox" 
+                  checked={candidatos.length > 0 && selectedCandidates.length === candidatos.length}
+                  onChange={toggleSelectAll}
+                  style={{ cursor: 'pointer' }}
+                />
+              </th>
               <th style={{ padding: '1rem', borderBottom: '2px solid var(--color-gray-200)' }}>Candidato</th>
               <th style={{ padding: '1rem', borderBottom: '2px solid var(--color-gray-200)' }}>Vaga / Empresa</th>
               <th style={{ padding: '1rem', borderBottom: '2px solid var(--color-gray-200)' }}>Data</th>
@@ -1067,13 +1339,21 @@ function CandidatosSection() {
           <tbody>
             {candidatos.length === 0 ? (
               <tr>
-                <td colSpan={5} style={{ padding: '3rem', textAlign: 'center', color: 'var(--color-gray-500)' }}>
+                <td colSpan={6} style={{ padding: '3rem', textAlign: 'center', color: 'var(--color-gray-500)' }}>
                   😔 Nenhum candidato encontrado com os filtros aplicados
                 </td>
               </tr>
             ) : (
               candidatos.map((cand) => (
-                <tr key={cand.id} style={{ borderBottom: '1px solid var(--color-gray-100)' }}>
+                <tr key={cand.id} style={{ borderBottom: '1px solid var(--color-gray-100)', background: selectedCandidates.includes(cand.id) ? 'var(--color-blue-50)' : 'transparent' }}>
+                  <td style={{ padding: '1rem' }}>
+                    <input 
+                      type="checkbox" 
+                      checked={selectedCandidates.includes(cand.id)}
+                      onChange={() => toggleSelection(cand.id)}
+                      style={{ cursor: 'pointer' }}
+                    />
+                  </td>
                   <td style={{ padding: '1rem' }}>
                     <div style={{ fontWeight: 600 }}>{cand.name}</div>
                     <div style={{ fontSize: '0.8125rem', color: 'var(--color-gray-500)' }}>{cand.email}</div>
@@ -1104,17 +1384,45 @@ function CandidatosSection() {
                     </select>
                   </td>
                   <td style={{ padding: '1rem', textAlign: 'right' }}>
-                    <button 
-                      className="btn btn-sm" 
-                      style={{ marginRight: '0.5rem' }}
-                      onClick={() => {
-                        setSelectedCandidate(cand)
-                        setShowModal(true)
-                      }}
-                    >
-                      👁️ Ver
-                    </button>
-                    <button className="btn btn-sm btn-primary">✉️ Contato</button>
+                    <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'flex-end', flexWrap: 'wrap' }}>
+                      <button 
+                        className="btn btn-sm" 
+                        onClick={() => {
+                          setSelectedCandidate(cand)
+                          setShowModal(true)
+                        }}
+                        title="Ver perfil completo"
+                      >
+                        👁️
+                      </button>
+                      <button 
+                        className="btn btn-sm btn-primary"
+                        onClick={() => openEmailModal(cand)}
+                        title="Enviar email"
+                      >
+                        ✉️
+                      </button>
+                      {cand.phone && (
+                        <button 
+                          className="btn btn-sm"
+                          onClick={() => openWhatsApp(cand)}
+                          style={{ background: '#25D366', color: 'white', border: 'none' }}
+                          title="WhatsApp"
+                        >
+                          📱
+                        </button>
+                      )}
+                      <button 
+                        className="btn btn-sm"
+                        onClick={() => {
+                          setScheduleCandidate(cand)
+                          setShowScheduleModal(true)
+                        }}
+                        title="Agendar entrevista"
+                      >
+                        📅
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))
@@ -1223,7 +1531,7 @@ function CandidatosSection() {
               )}
 
               {selectedCandidate.bio && (
-                <div>
+                <div style={{ marginBottom: '1rem' }}>
                   <strong style={{ display: 'block', marginBottom: '0.5rem' }}>📝 Bio:</strong>
                   <p style={{ 
                     fontSize: '0.9375rem', 
@@ -1237,14 +1545,527 @@ function CandidatosSection() {
                   </p>
                 </div>
               )}
+              
+              {/* 🆕 SISTEMA DE NOTAS */}
+              <div style={{ borderTop: '1px solid var(--color-gray-200)', paddingTop: '1rem' }}>
+                <strong style={{ display: 'block', marginBottom: '0.75rem' }}>💬 Notas Internas ({getCandidateNotes(selectedCandidate.id).length})</strong>
+                
+                {/* Input nova nota */}
+                <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1rem' }}>
+                  <input 
+                    type="text" 
+                    className="input" 
+                    placeholder="Adicionar nota interna..."
+                    value={newNote}
+                    onChange={e => setNewNote(e.target.value)}
+                    onKeyDown={e => e.key === 'Enter' && addNote(selectedCandidate.id)}
+                    style={{ flex: 1, fontSize: '0.875rem' }}
+                  />
+                  <button 
+                    className="btn btn-sm btn-primary"
+                    onClick={() => addNote(selectedCandidate.id)}
+                    disabled={!newNote.trim()}
+                  >
+                    Adicionar
+                  </button>
+                </div>
+                
+                {/* Lista de notas */}
+                {getCandidateNotes(selectedCandidate.id).length > 0 ? (
+                  <div style={{ maxHeight: '200px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                    {getCandidateNotes(selectedCandidate.id).map(note => (
+                      <div key={note.id} style={{ 
+                        background: 'var(--color-gray-50)', 
+                        padding: '0.75rem', 
+                        borderRadius: '8px',
+                        borderLeft: '3px solid var(--color-primary)'
+                      }}>
+                        <div style={{ fontSize: '0.8125rem', color: 'var(--color-gray-600)', marginBottom: '0.25rem' }}>
+                          <strong>{note.author}</strong> • {new Date(note.createdAt).toLocaleString('pt-BR')}
+                        </div>
+                        <div style={{ fontSize: '0.875rem', color: 'var(--color-gray-700)' }}>
+                          {note.content}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p style={{ fontSize: '0.8125rem', color: 'var(--color-gray-500)', fontStyle: 'italic' }}>
+                    Nenhuma nota adicionada ainda.
+                  </p>
+                )}
+              </div>
             </div>
 
             <div style={{ borderTop: '1px solid var(--color-gray-200)', paddingTop: '1rem', display: 'flex', gap: '0.75rem', justifyContent: 'flex-end' }}>
               <button className="btn" onClick={() => setShowModal(false)}>
                 Fechar
               </button>
-              <button className="btn btn-primary">
+              <button 
+                className="btn btn-primary"
+                onClick={() => {
+                  setShowModal(false)
+                  openEmailModal(selectedCandidate)
+                }}
+              >
                 ✉️ Enviar Email
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      
+      {/* 🆕 MODAL DE COMPARAÇÃO DE CURRÍCULOS */}
+      {showCompareModal && selectedCandidates.length >= 2 && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          background: 'rgba(0,0,0,0.7)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 9999,
+          padding: '2rem',
+          overflowY: 'auto'
+        }}>
+          <div className="card" style={{
+            maxWidth: '1200px',
+            width: '100%',
+            maxHeight: '90vh',
+            overflow: 'auto',
+            position: 'relative'
+          }}>
+            <button 
+              onClick={() => setShowCompareModal(false)}
+              style={{
+                position: 'absolute',
+                top: '1rem',
+                right: '1rem',
+                background: 'var(--color-gray-200)',
+                border: 'none',
+                borderRadius: '50%',
+                width: '32px',
+                height: '32px',
+                cursor: 'pointer',
+                fontSize: '1.25rem',
+                zIndex: 1
+              }}
+            >
+              ✕
+            </button>
+
+            <h2 style={{ fontSize: '1.5rem', fontWeight: 700, marginBottom: '1.5rem' }}>
+              🔄 Comparação de Candidatos ({selectedCandidates.length})
+            </h2>
+
+            <div style={{ 
+              display: 'grid', 
+              gridTemplateColumns: `repeat(${Math.min(selectedCandidates.length, 3)}, 1fr)`, 
+              gap: '1.5rem' 
+            }}>
+              {candidatos.filter(c => selectedCandidates.includes(c.id)).slice(0, 5).map((cand) => (
+                <div key={cand.id} style={{ 
+                  border: '2px solid var(--color-gray-200)', 
+                  borderRadius: '12px', 
+                  padding: '1.5rem',
+                  background: 'var(--color-gray-50)'
+                }}>
+                  <h3 style={{ fontSize: '1.125rem', fontWeight: 700, marginBottom: '0.5rem' }}>
+                    {cand.name}
+                  </h3>
+                  
+                  <div style={{ fontSize: '0.875rem', color: 'var(--color-gray-600)', marginBottom: '1rem' }}>
+                    📧 {cand.email}<br/>
+                    📱 {cand.phone}
+                  </div>
+                  
+                  <div style={{ marginBottom: '0.75rem' }}>
+                    <strong style={{ fontSize: '0.875rem', display: 'block', marginBottom: '0.25rem' }}>Vaga:</strong>
+                    <span style={{ fontSize: '0.875rem' }}>{cand.jobTitle}</span>
+                  </div>
+                  
+                  <div style={{ marginBottom: '0.75rem' }}>
+                    <strong style={{ fontSize: '0.875rem', display: 'block', marginBottom: '0.25rem' }}>Empresa:</strong>
+                    <span style={{ fontSize: '0.875rem' }}>{cand.company}</span>
+                  </div>
+                  
+                  <div style={{ marginBottom: '0.75rem' }}>
+                    <strong style={{ fontSize: '0.875rem', display: 'block', marginBottom: '0.25rem' }}>Data:</strong>
+                    <span style={{ fontSize: '0.875rem' }}>{cand.appliedAt}</span>
+                  </div>
+                  
+                  <div style={{ marginBottom: '1rem' }}>
+                    <strong style={{ fontSize: '0.875rem', display: 'block', marginBottom: '0.25rem' }}>Status:</strong>
+                    <span style={{ 
+                      padding: '0.25rem 0.75rem', 
+                      borderRadius: '12px', 
+                      fontSize: '0.75rem', 
+                      fontWeight: 700,
+                      background: cand.color + '20',
+                      color: cand.color,
+                      display: 'inline-block'
+                    }}>
+                      {cand.status}
+                    </span>
+                  </div>
+                  
+                  {cand.bio && (
+                    <div style={{ marginBottom: '1rem' }}>
+                      <strong style={{ fontSize: '0.875rem', display: 'block', marginBottom: '0.5rem' }}>Bio:</strong>
+                      <p style={{ 
+                        fontSize: '0.8125rem', 
+                        lineHeight: '1.6', 
+                        color: 'var(--color-gray-700)',
+                        background: 'white',
+                        padding: '0.75rem',
+                        borderRadius: '8px'
+                      }}>
+                        {cand.bio}
+                      </p>
+                    </div>
+                  )}
+                  
+                  <div style={{ display: 'flex', gap: '0.5rem', flexDirection: 'column' }}>
+                    <button 
+                      className="btn btn-sm btn-primary"
+                      onClick={() => {
+                        setShowCompareModal(false)
+                        setSelectedCandidate(cand)
+                        setShowModal(true)
+                      }}
+                      style={{ width: '100%' }}
+                    >
+                      👁️ Ver Completo
+                    </button>
+                    <button 
+                      className="btn btn-sm"
+                      onClick={() => openEmailModal(cand)}
+                      style={{ width: '100%' }}
+                    >
+                      ✉️ Contatar
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div style={{ borderTop: '1px solid var(--color-gray-200)', paddingTop: '1rem', marginTop: '1.5rem', display: 'flex', gap: '0.75rem', justifyContent: 'flex-end' }}>
+              <button className="btn" onClick={() => setShowCompareModal(false)}>
+                Fechar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      
+      {/* 🆕 MODAL DE EMAIL */}
+      {showEmailModal && emailCandidate && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          background: 'rgba(0,0,0,0.7)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 9999,
+          padding: '2rem'
+        }}>
+          <div className="card" style={{
+            maxWidth: '700px',
+            width: '100%',
+            maxHeight: '90vh',
+            overflow: 'auto',
+            position: 'relative'
+          }}>
+            <button 
+              onClick={() => setShowEmailModal(false)}
+              style={{
+                position: 'absolute',
+                top: '1rem',
+                right: '1rem',
+                background: 'var(--color-gray-200)',
+                border: 'none',
+                borderRadius: '50%',
+                width: '32px',
+                height: '32px',
+                cursor: 'pointer',
+                fontSize: '1.25rem'
+              }}
+            >
+              ✕
+            </button>
+
+            <h2 style={{ fontSize: '1.5rem', fontWeight: 700, marginBottom: '1.5rem' }}>
+              ✉️ Enviar Email
+            </h2>
+            
+            {emailCandidate.isBulk && (
+              <div style={{ 
+                background: 'var(--color-blue-50)', 
+                border: '1px solid var(--color-blue-200)',
+                padding: '1rem',
+                borderRadius: '8px',
+                marginBottom: '1.5rem'
+              }}>
+                📧 Enviando para <strong>{emailCandidate.bulkCount} candidatos</strong>
+              </div>
+            )}
+
+            <div style={{ marginBottom: '1.5rem' }}>
+              <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, marginBottom: '0.5rem' }}>
+                Template
+              </label>
+              <select 
+                className="input" 
+                value={emailTemplate}
+                onChange={e => changeEmailTemplate(e.target.value)}
+                style={{ width: '100%' }}
+              >
+                <option value="invitation">✉️ Convite para Vaga</option>
+                <option value="interview">📅 Convite para Entrevista</option>
+                <option value="rejection">❌ Rejeição Educada</option>
+              </select>
+            </div>
+
+            <div style={{ marginBottom: '1.5rem' }}>
+              <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, marginBottom: '0.5rem' }}>
+                Para
+              </label>
+              <input 
+                type="text" 
+                className="input" 
+                value={emailCandidate.isBulk ? emailCandidate.bulkEmails : emailCandidate.email}
+                readOnly
+                style={{ width: '100%', background: 'var(--color-gray-100)' }}
+              />
+            </div>
+
+            <div style={{ marginBottom: '1.5rem' }}>
+              <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, marginBottom: '0.5rem' }}>
+                Assunto
+              </label>
+              <input 
+                type="text" 
+                className="input" 
+                value={emailSubject}
+                onChange={e => setEmailSubject(e.target.value)}
+                style={{ width: '100%' }}
+              />
+            </div>
+
+            <div style={{ marginBottom: '1.5rem' }}>
+              <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, marginBottom: '0.5rem' }}>
+                Mensagem
+              </label>
+              <textarea 
+                className="input" 
+                value={emailBody}
+                onChange={e => setEmailBody(e.target.value)}
+                rows={10}
+                style={{ width: '100%', fontFamily: 'inherit', resize: 'vertical' }}
+              />
+            </div>
+
+            <div style={{ borderTop: '1px solid var(--color-gray-200)', paddingTop: '1rem', display: 'flex', gap: '0.75rem', justifyContent: 'flex-end' }}>
+              <button className="btn" onClick={() => setShowEmailModal(false)}>
+                Cancelar
+              </button>
+              <button className="btn btn-primary" onClick={sendEmail}>
+                📨 Enviar {emailCandidate.isBulk && `(${emailCandidate.bulkCount})`}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      
+      {/* 🆕 MODAL DE AGENDAMENTO */}
+      {showScheduleModal && scheduleCandidate && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          background: 'rgba(0,0,0,0.7)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 9999,
+          padding: '2rem'
+        }}>
+          <div className="card" style={{
+            maxWidth: '600px',
+            width: '100%',
+            maxHeight: '90vh',
+            overflow: 'auto',
+            position: 'relative'
+          }}>
+            <button 
+              onClick={() => setShowScheduleModal(false)}
+              style={{
+                position: 'absolute',
+                top: '1rem',
+                right: '1rem',
+                background: 'var(--color-gray-200)',
+                border: 'none',
+                borderRadius: '50%',
+                width: '32px',
+                height: '32px',
+                cursor: 'pointer',
+                fontSize: '1.25rem'
+              }}
+            >
+              ✕
+            </button>
+
+            <h2 style={{ fontSize: '1.5rem', fontWeight: 700, marginBottom: '1.5rem' }}>
+              📅 Agendar Entrevista
+            </h2>
+            
+            <div style={{ 
+              background: 'var(--color-blue-50)', 
+              padding: '1rem',
+              borderRadius: '8px',
+              marginBottom: '1.5rem'
+            }}>
+              <strong>{scheduleCandidate.name}</strong><br/>
+              <span style={{ fontSize: '0.875rem', color: 'var(--color-gray-600)' }}>
+                {scheduleCandidate.jobTitle} • {scheduleCandidate.company}
+              </span>
+            </div>
+
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1rem' }}>
+              <div>
+                <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, marginBottom: '0.5rem' }}>
+                  Data
+                </label>
+                <input 
+                  type="date" 
+                  className="input" 
+                  value={scheduleForm.date}
+                  onChange={e => setScheduleForm({...scheduleForm, date: e.target.value})}
+                  style={{ width: '100%' }}
+                  required
+                />
+              </div>
+              
+              <div>
+                <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, marginBottom: '0.5rem' }}>
+                  Horário
+                </label>
+                <input 
+                  type="time" 
+                  className="input" 
+                  value={scheduleForm.time}
+                  onChange={e => setScheduleForm({...scheduleForm, time: e.target.value})}
+                  style={{ width: '100%' }}
+                  required
+                />
+              </div>
+            </div>
+
+            <div style={{ marginBottom: '1rem' }}>
+              <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, marginBottom: '0.5rem' }}>
+                Tipo
+              </label>
+              <div style={{ display: 'flex', gap: '1rem' }}>
+                <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer' }}>
+                  <input 
+                    type="radio" 
+                    name="type"
+                    checked={scheduleForm.type === 'online'}
+                    onChange={() => setScheduleForm({...scheduleForm, type: 'online'})}
+                  />
+                  <span style={{ fontSize: '0.875rem' }}>💻 Online</span>
+                </label>
+                <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer' }}>
+                  <input 
+                    type="radio" 
+                    name="type"
+                    checked={scheduleForm.type === 'presencial'}
+                    onChange={() => setScheduleForm({...scheduleForm, type: 'presencial'})}
+                  />
+                  <span style={{ fontSize: '0.875rem' }}>🏢 Presencial</span>
+                </label>
+              </div>
+            </div>
+
+            <div style={{ marginBottom: '1rem' }}>
+              <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, marginBottom: '0.5rem' }}>
+                {scheduleForm.type === 'online' ? 'Link da Reunião' : 'Local'}
+              </label>
+              <input 
+                type="text" 
+                className="input" 
+                placeholder={scheduleForm.type === 'online' ? 'https://meet.google.com/...' : 'Endereço completo'}
+                value={scheduleForm.location}
+                onChange={e => setScheduleForm({...scheduleForm, location: e.target.value})}
+                style={{ width: '100%' }}
+              />
+            </div>
+
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1rem' }}>
+              <div>
+                <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, marginBottom: '0.5rem' }}>
+                  Duração (min)
+                </label>
+                <select 
+                  className="input" 
+                  value={scheduleForm.duration}
+                  onChange={e => setScheduleForm({...scheduleForm, duration: Number(e.target.value)})}
+                  style={{ width: '100%' }}
+                >
+                  <option value={30}>30 min</option>
+                  <option value={60}>1 hora</option>
+                  <option value={90}>1h 30min</option>
+                  <option value={120}>2 horas</option>
+                </select>
+              </div>
+              
+              <div>
+                <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, marginBottom: '0.5rem' }}>
+                  Entrevistador
+                </label>
+                <input 
+                  type="text" 
+                  className="input" 
+                  value={scheduleForm.interviewer}
+                  onChange={e => setScheduleForm({...scheduleForm, interviewer: e.target.value})}
+                  style={{ width: '100%' }}
+                />
+              </div>
+            </div>
+
+            <div style={{ marginBottom: '1.5rem' }}>
+              <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, marginBottom: '0.5rem' }}>
+                Notas Adicionais
+              </label>
+              <textarea 
+                className="input" 
+                placeholder="Informações importantes sobre a entrevista..."
+                value={scheduleForm.notes}
+                onChange={e => setScheduleForm({...scheduleForm, notes: e.target.value})}
+                rows={3}
+                style={{ width: '100%', fontFamily: 'inherit', resize: 'vertical' }}
+              />
+            </div>
+
+            <div style={{ borderTop: '1px solid var(--color-gray-200)', paddingTop: '1rem', display: 'flex', gap: '0.75rem', justifyContent: 'flex-end' }}>
+              <button className="btn" onClick={() => setShowScheduleModal(false)}>
+                Cancelar
+              </button>
+              <button 
+                className="btn btn-primary" 
+                onClick={scheduleInterview}
+                disabled={!scheduleForm.date || !scheduleForm.time}
+              >
+                📅 Agendar
               </button>
             </div>
           </div>
