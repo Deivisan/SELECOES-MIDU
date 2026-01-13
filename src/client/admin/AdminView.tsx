@@ -49,30 +49,35 @@ const contratacoesTrimestre = [
 ]
 
 export default function AdminView() {
-  console.log('🔍 [1/10] AdminView: Função invocada')
-  
   const [theme, setTheme] = useState<ThemeType>('default')
-  console.log('🔍 [2/10] AdminView: useState theme OK')
-  
   const [isLoggedIn, setIsLoggedIn] = useState(false)
-  console.log('🔍 [3/10] AdminView: useState isLoggedIn OK')
-  
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [loginError, setLoginError] = useState('')
   const [activeSection, setActiveSection] = useState<SectionType>('dashboard')
   const [mounted, setMounted] = useState(false)
-  console.log('🔍 [4/10] AdminView: Todos os useState inicializados')
+  const [safeMode, setSafeMode] = useState(false) // Modo seguro para evitar componentes pesados em caso de erro
+
+  // Estatísticas dinâmicas (declaradas ANTES de qualquer early return para manter a ordem dos hooks)
+  const [stats, setStats] = useState({
+    activeJobs: 0,
+    totalCandidates: 147,
+    applications: 328,
+    hired: 23,
+    pendingReview: 45,
+    interviewsScheduled: 12,
+    companies: 0,
+    avgTimeToHire: 18 // dias
+  })
+
+
 
   useEffect(() => {
-    console.log('🔍 [5/10] AdminView: useEffect montagem iniciado')
     try {
       // Verificar sessão persistida
       const session = localStorage.getItem('admin_session')
-      console.log('🔍 [6/10] AdminView: Sessão localStorage:', session)
       if (session === 'authenticated') {
         setIsLoggedIn(true)
-        console.log('🔍 [7/10] AdminView: Login automático ativado')
       }
 
       const params = new URLSearchParams(window.location.search)
@@ -81,17 +86,45 @@ export default function AdminView() {
         setTheme(themeParam)
       }
       setMounted(true)
-      console.log('🔍 [8/10] AdminView: Montagem concluída com sucesso')
     } catch (error) {
       console.error('❌ ERRO na montagem do AdminView:', error)
     }
   }, [])
 
+  useEffect(() => {
+    try {
+      // Calcular estatísticas baseadas em mockJobs e localStorage
+      const savedApplications = localStorage.getItem('midu_candidaturas')
+      const applicationsCount = savedApplications ? JSON.parse(savedApplications).length : 0
+      
+      setStats(prev => ({
+        ...prev,
+        activeJobs: mockJobs.filter(j => j.isActive).length,
+        companies: [...new Set(mockJobs.map(j => j.company))].length,
+        applications: 328 + applicationsCount, // Mock base + reais
+        pendingReview: 45 + applicationsCount
+      }))
+    } catch (error) {
+      console.error('❌ ERRO ao calcular estatísticas:', error)
+    }
+  }, [])
+
+  // Funções de ação (definidas antes do render para evitar ReferenceError)
+  const changeTheme = (newTheme: ThemeType) => {
+    setTheme(newTheme)
+    try {
+      const params = new URLSearchParams(window.location.search)
+      params.set('theme', newTheme)
+      window.history.replaceState({}, '', `?${params.toString()}`)
+    } catch (e) {
+      // ignore in some environments
+    }
+  }
+
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault()
     setLoginError('')
 
-    // Validação REAL: admin/admin
     if (username === 'admin' && password === 'admin') {
       setIsLoggedIn(true)
       localStorage.setItem('admin_session', 'authenticated')
@@ -108,49 +141,9 @@ export default function AdminView() {
     setPassword('')
   }
 
-  const changeTheme = (newTheme: ThemeType) => {
-    setTheme(newTheme)
-    window.history.replaceState({}, '', `?theme=${newTheme}`)
-  }
-
   if (!mounted) {
-    console.log('⏳ AdminView: Aguardando montagem (mounted=false)')
     return null
   }
-  
-  console.log('✅ AdminView: Iniciando render do JSX, isLoggedIn=', isLoggedIn)
-
-  // Estatísticas dinâmicas
-  const [stats, setStats] = useState({
-    activeJobs: 0,
-    totalCandidates: 147,
-    applications: 328,
-    hired: 23,
-    pendingReview: 45,
-    interviewsScheduled: 12,
-    companies: 0,
-    avgTimeToHire: 18 // dias
-  })
-
-  useEffect(() => {
-    console.log('🔍 [9/10] AdminView: useEffect stats iniciado')
-    try {
-      // Calcular estatísticas baseadas em mockJobs e localStorage
-      const savedApplications = localStorage.getItem('midu_candidaturas')
-      const applicationsCount = savedApplications ? JSON.parse(savedApplications).length : 0
-      
-      setStats(prev => ({
-        ...prev,
-        activeJobs: mockJobs.filter(j => j.isActive).length,
-        companies: [...new Set(mockJobs.map(j => j.company))].length,
-        applications: 328 + applicationsCount, // Mock base + reais
-        pendingReview: 45 + applicationsCount
-      }))
-      console.log('🔍 [10/10] AdminView: Estatísticas calculadas com sucesso')
-    } catch (error) {
-      console.error('❌ ERRO ao calcular estatísticas:', error)
-    }
-  }, [])
 
 
   const menuItems = [
@@ -455,16 +448,16 @@ export default function AdminView() {
             {/* Conteúdo Principal */}
             <main style={{ flex: 1, padding: '2rem' }}>
               {activeSection === 'dashboard' && (
-                <DashboardSection stats={stats} />
+                <DashboardSection key="dashboard" stats={stats} />
               )}
               {activeSection === 'vagas' && (
-                <VagasSection />
+                <VagasSection key="vagas" />
               )}
               {activeSection === 'candidatos' && (
-                <CandidatosSection />
+                <CandidatosSection key="candidatos" />
               )}
               {activeSection === 'relatorios' && (
-                <RelatoriosSection />
+                <RelatoriosSection key="relatorios" />
               )}
             </main>
           </div>
