@@ -106,12 +106,23 @@ export default function PublicView() {
               placeholder="Buscar por cargo, empresa ou cidade..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  document.getElementById('vagas')?.scrollIntoView({ behavior: 'smooth' })
+                }
+              }}
               style={{ flex: 1 }}
             />
-            <button className="btn btn-primary btn-lg">
+            <button 
+              className="btn btn-primary btn-lg"
+              onClick={() => {
+                document.getElementById('vagas')?.scrollIntoView({ behavior: 'smooth' })
+              }}
+            >
               Buscar Vagas
             </button>
           </div>
+
 
           {/* Stats */}
           <div className="hero-stats animate-fadeInUp delay-300">

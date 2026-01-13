@@ -101,16 +101,31 @@ export default function AdminView() {
   if (!mounted) return null
 
   // Estatísticas dinâmicas
-  const stats = {
-    activeJobs: mockJobs.filter(j => j.isActive).length,
+  const [stats, setStats] = useState({
+    activeJobs: 0,
     totalCandidates: 147,
     applications: 328,
     hired: 23,
     pendingReview: 45,
     interviewsScheduled: 12,
-    companies: [...new Set(mockJobs.map(j => j.company))].length,
+    companies: 0,
     avgTimeToHire: 18 // dias
-  }
+  })
+
+  useEffect(() => {
+    // Calcular estatísticas baseadas em mockJobs e localStorage
+    const savedApplications = localStorage.getItem('midu_candidaturas')
+    const applicationsCount = savedApplications ? JSON.parse(savedApplications).length : 0
+    
+    setStats(prev => ({
+      ...prev,
+      activeJobs: mockJobs.filter(j => j.isActive).length,
+      companies: [...new Set(mockJobs.map(j => j.company))].length,
+      applications: 328 + applicationsCount, // Mock base + reais
+      pendingReview: 45 + applicationsCount
+    }))
+  }, [])
+
 
   const menuItems = [
     { id: 'dashboard' as SectionType, label: 'Dashboard', icon: '📊', badge: null },
@@ -793,19 +808,111 @@ function VagasSection() {
   )
 }
 
-/* ==================== CANDIDATOS SECTION (Placeholder) ==================== */
+/* ==================== CANDIDATOS SECTION ==================== */
 function CandidatosSection() {
+  const [candidatos, setCandidatos] = useState<any[]>([])
+
+  useEffect(() => {
+    // Carregar candidatos do localStorage (simulado)
+    const apps = localStorage.getItem('midu_candidaturas')
+    const appsList = apps ? JSON.parse(apps) : []
+    
+    // Obter perfil do usuário para simular um candidato real
+    const profile = localStorage.getItem('midu_user_profile')
+    const userProfile = profile ? JSON.parse(profile) : { 
+      name: 'Daniel Duarte', 
+      email: 'daniel@midu.com', 
+      linkedin: 'linkedin.com/in/daniel',
+      bio: 'Desenvolvedor focado em resultados.'
+    }
+
+    // Gerar lista de candidatos baseada nas aplicações em localStorage
+    const candidatesList = appsList.map((appId: string) => {
+      const job = mockJobs.find(j => j.id === appId)
+      return {
+        id: Math.random().toString(36).substr(2, 9),
+        name: userProfile.name,
+        email: userProfile.email,
+        jobTitle: job?.title || 'Vaga Desconhecida',
+        company: job?.company || 'Midu Group',
+        appliedAt: new Date().toLocaleDateString('pt-BR'),
+        status: 'Pendente',
+        color: '#fbbf24'
+      }
+    })
+
+    // Adicionar alguns mocks fixos se estiver vazio para demonstração
+    if (candidatesList.length === 0) {
+      candidatesList.push({
+        id: 'mock1',
+        name: 'Ana Silva',
+        email: 'ana.silva@email.com',
+        jobTitle: 'Desenvolvedor Full Stack Sênior',
+        company: 'Ford Brasil',
+        appliedAt: '12/01/2026',
+        status: 'Em Análise',
+        color: '#3b82f6'
+      })
+    }
+
+    setCandidatos(candidatesList)
+  }, [])
+
   return (
     <div>
-      <h1 style={{ fontSize: '2rem', fontWeight: 700, marginBottom: '2rem' }}>👥 Gestão de Candidatos</h1>
-      <div className="card" style={{ padding: '3rem', textAlign: 'center' }}>
-        <div style={{ fontSize: '4rem', marginBottom: '1rem' }}>🚧</div>
-        <h3 style={{ fontSize: '1.5rem', fontWeight: 700, marginBottom: '1rem' }}>Em Desenvolvimento</h3>
-        <p style={{ color: 'var(--color-gray-600)' }}>Gestão completa de candidatos será implementada em breve</p>
+      <h1 style={{ fontSize: '2rem', fontWeight: 700, marginBottom: '0.5rem' }}>👥 Gestão de Candidatos</h1>
+      <p style={{ color: 'var(--color-gray-600)', marginBottom: '2rem' }}>
+        Visualize e gerencie os profissionais que se candidataram às vagas
+      </p>
+
+      <div className="card" style={{ padding: '0', overflow: 'hidden' }}>
+        <table className="table" style={{ width: '100%', borderCollapse: 'collapse' }}>
+          <thead>
+            <tr style={{ background: 'var(--color-gray-50)', textAlign: 'left' }}>
+              <th style={{ padding: '1rem', borderBottom: '2px solid var(--color-gray-200)' }}>Candidato</th>
+              <th style={{ padding: '1rem', borderBottom: '2px solid var(--color-gray-200)' }}>Vaga / Empresa</th>
+              <th style={{ padding: '1rem', borderBottom: '2px solid var(--color-gray-200)' }}>Data</th>
+              <th style={{ padding: '1rem', borderBottom: '2px solid var(--color-gray-200)' }}>Status</th>
+              <th style={{ padding: '1rem', borderBottom: '2px solid var(--color-gray-200)', textAlign: 'right' }}>Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            {candidatos.map((cand) => (
+              <tr key={cand.id} style={{ borderBottom: '1px solid var(--color-gray-100)' }}>
+                <td style={{ padding: '1rem' }}>
+                  <div style={{ fontWeight: 600 }}>{cand.name}</div>
+                  <div style={{ fontSize: '0.8125rem', color: 'var(--color-gray-500)' }}>{cand.email}</div>
+                </td>
+                <td style={{ padding: '1rem' }}>
+                  <div style={{ fontWeight: 500 }}>{cand.jobTitle}</div>
+                  <div style={{ fontSize: '0.8125rem', color: 'var(--color-gray-500)' }}>{cand.company}</div>
+                </td>
+                <td style={{ padding: '1rem', fontSize: '0.875rem' }}>{cand.appliedAt}</td>
+                <td style={{ padding: '1rem' }}>
+                  <span style={{ 
+                    padding: '0.25rem 0.75rem', 
+                    borderRadius: '12px', 
+                    fontSize: '0.75rem', 
+                    fontWeight: 700,
+                    background: cand.color + '20',
+                    color: cand.color
+                  }}>
+                    {cand.status}
+                  </span>
+                </td>
+                <td style={{ padding: '1rem', textAlign: 'right' }}>
+                  <button className="btn btn-sm" style={{ marginRight: '0.5rem' }}>👁️ Ver</button>
+                  <button className="btn btn-sm btn-primary">✉️ Contato</button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
     </div>
   )
 }
+
 
 /* ==================== RELATÓRIOS SECTION (Placeholder) ==================== */
 function RelatoriosSection() {
