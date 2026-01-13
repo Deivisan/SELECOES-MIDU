@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DEBUG - SELECOES-MIDU</title>
+  <link rel="stylesheet" href="./dist/assets/global-CSz642vs.css">
+</head>
+<body>
+  <h1>Debug CSS Variables</h1>
+  <div id="css-vars"></div>
+
+  <h2>Theme Classes Test</h2>
+  <div class="theme-default">
+    <div class="hero" style="height: 200px; background: var(--gradient-hero); color: white; padding: 20px;">
+      Hero section - should have blue gradient background
+    </div>
+
+    <div class="navbar" style="background: var(--color-white); padding: 10px;">
+      <div class="navbar-brand">Midu Group</div>
+    </div>
+
+    <div class="card p-8" style="background: var(--color-white); margin: 20px;">
+      Card with white background
+    </div>
+
+    <button class="btn btn-primary">Primary Button</button>
+    <input class="input" placeholder="Input field">
+  </div>
+
+  <script>
+    function showCSSVars() {
+      const rootStyles = getComputedStyle(document.documentElement);
+      const vars = [
+        '--color-primary', '--color-white', '--gradient-hero', '--gradient-bg',
+        '--color-gray-700', '--color-gray-100', '--space-4', '--space-8'
+      ];
+
+      const output = vars.map(varName => {
+        const value = rootStyles.getPropertyValue(varName);
+        return `<div><strong>${varName}:</strong> ${value || 'NOT FOUND'}</div>`;
+      }).join('');
+
+      document.getElementById('css-vars').innerHTML = output;
+    }
+
+    window.addEventListener('load', showCSSVars);
+  </script>
+</body>
+</html>

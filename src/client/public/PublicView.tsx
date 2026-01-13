@@ -78,9 +78,9 @@ export default function PublicView() {
         </a>
         <div className="navbar-nav">
           <a href="#vagas" className="navbar-link">Vagas</a>
-          <a href="#sobre" className="navbar-link">Sobre</a>
+          <a href="/SELECOES-MIDU/sobre.html" className="navbar-link">Sobre</a>
           <a href="#empresas" className="navbar-link">Empresas</a>
-          <a href="/portal.html" className="btn btn-primary">
+          <a href="/SELECOES-MIDU/portal.html" className="btn btn-primary">
             Portal do Candidato
           </a>
         </div>
@@ -126,76 +126,6 @@ export default function PublicView() {
             <div className="hero-stat animate-scaleIn delay-600">
               <div className="hero-stat-value" style={{ color: 'white' }}>2.5k+</div>
               <div className="hero-stat-label" style={{ color: 'rgba(255,255,255,0.8)' }}>Candidatos Conectados</div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* SOBRE SECTION */}
-      <section id="sobre" style={{ 
-        padding: 'var(--space-16) var(--space-6)', 
-        background: 'var(--gradient-section)'
-      }}>
-        <div className="container container-sm">
-          <div className="text-center mb-8 animate-fadeInUp">
-            <h2 className="text-h1" style={{ marginBottom: 'var(--space-4)' }}>
-              Sobre a Midu Group
-            </h2>
-            <p className="text-body" style={{ fontSize: '1.125rem', lineHeight: 1.8, color: 'var(--color-gray-700)' }}>
-              A <strong>Midu Group</strong> é uma empresa baiana especializada em <strong>recrutamento e seleção</strong> de profissionais 
-              para o mercado corporativo da Bahia. Fundada por <strong>Daniel Duarte</strong>, profissional com sólida experiência em 
-              Recursos Humanos e certificações internacionais (LinkedIn HR, Equity & Inclusion, Strategic HR), nossa missão é 
-              <strong> conectar talentos qualificados às empresas que buscam crescimento e inovação</strong>.
-            </p>
-          </div>
-
-          <div className="grid grid-2 gap-8 mt-8">
-            <div className="card p-8 animate-slideInRight delay-200">
-              <div style={{ fontSize: '3rem', marginBottom: 'var(--space-4)' }}>🎯</div>
-              <h3 className="text-h3 mb-4">Nossa Missão</h3>
-              <p className="text-body">
-                Facilitar processos seletivos de alta qualidade, reduzindo tempo de contratação e aumentando 
-                a taxa de acerto no match entre empresas e profissionais. Atuamos com foco em diversidade, 
-                equidade e inclusão (DEI), garantindo processos justos e transparentes.
-              </p>
-            </div>
-
-            <div className="card p-8 animate-slideInLeft delay-300">
-              <div style={{ fontSize: '3rem', marginBottom: 'var(--space-4)' }}>💼</div>
-              <h3 className="text-h3 mb-4">Nosso Diferencial</h3>
-              <p className="text-body">
-                Combinamos <strong>tecnologia moderna</strong> com <strong>olhar humano especializado</strong>. 
-                Utilizamos plataformas digitais para agilidade, mas mantemos entrevistas estruturadas e 
-                avaliações comportamentais conduzidas por psicólogos e especialistas em RH.
-              </p>
-            </div>
-          </div>
-
-          <div className="mt-8 animate-fadeInUp delay-400" style={{ 
-            padding: 'var(--space-8)', 
-            background: 'var(--color-white)',
-            borderRadius: 'var(--radius-lg)',
-            boxShadow: 'var(--shadow-md)'
-          }}>
-            <h3 className="text-h3 mb-4 text-center">🏆 Áreas de Atuação</h3>
-            <div style={{ 
-              display: 'grid', 
-              gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-              gap: 'var(--space-4)',
-              marginTop: 'var(--space-6)'
-            }}>
-              {['Tecnologia', 'Comercial', 'Administrativo', 'Financeiro', 'Engenharia', 'Logística', 'Marketing', 'Educação'].map((area, i) => (
-                <div key={area} className={`animate-scaleIn delay-${(i + 5) * 100}`} style={{
-                  padding: 'var(--space-3)',
-                  background: 'var(--color-primary-light)',
-                  borderRadius: 'var(--radius-md)',
-                  textAlign: 'center',
-                  fontWeight: 600,
-                  color: 'var(--color-primary)'
-                }}>
-                  {area}
-                </div>
-              ))}
             </div>
           </div>
         </div>

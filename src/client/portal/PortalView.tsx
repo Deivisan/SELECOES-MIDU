@@ -29,8 +29,15 @@ export default function PortalView() {
   const [selectedJob, setSelectedJob] = useState<Job | null>(null)
   const [activeTab, setActiveTab] = useState<'vagas' | 'candidaturas' | 'perfil'>('vagas')
   const [mounted, setMounted] = useState(false)
+  const [myApplications, setMyApplications] = useState<string[]>([])
 
   useEffect(() => {
+    // Carregar candidaturas do localStorage
+    const saved = localStorage.getItem('midu_candidaturas')
+    if (saved) {
+      setMyApplications(JSON.parse(saved))
+    }
+
     const params = new URLSearchParams(window.location.search)
     const themeParam = params.get('theme') as ThemeType
     const jobId = params.get('job')
@@ -54,13 +61,24 @@ export default function PortalView() {
     window.history.replaceState({}, '', `?${params.toString()}`)
   }
 
+  const handleApply = (jobId: string) => {
+    if (!myApplications.includes(jobId)) {
+      const updated = [...myApplications, jobId]
+      setMyApplications(updated)
+      localStorage.setItem('midu_candidaturas', JSON.stringify(updated))
+      alert('Candidatura enviada com sucesso!')
+    } else {
+      alert('Você já se candidatou a esta vaga.')
+    }
+  }
+
   if (!mounted) return null
 
   // Mock user data
   const user = {
     name: 'Maria Silva',
     email: 'maria.silva@email.com',
-    applications: 5,
+    applications: myApplications.length,
     savedJobs: 3
   }
 
@@ -75,7 +93,7 @@ export default function PortalView() {
 
       {/* NAVBAR */}
       <nav className="navbar">
-        <a href="/public.html" className="navbar-brand">
+        <a href="/SELECOES-MIDU/public.html" className="navbar-brand">
           <div className="navbar-logo">M</div>
           <div>
             <div className="navbar-title">Midu Group</div>
@@ -212,8 +230,13 @@ export default function PortalView() {
                   paddingTop: 'var(--space-6)',
                   borderTop: '1px solid var(--color-gray-200)'
                 }}>
-                  <button className="btn btn-primary btn-lg" style={{ flex: 1 }}>
-                    Candidatar-se Agora
+                  <button 
+                    className="btn btn-primary btn-lg" 
+                    style={{ flex: 1 }}
+                    onClick={() => handleApply(selectedJob.id)}
+                    disabled={myApplications.includes(selectedJob.id)}
+                  >
+                    {myApplications.includes(selectedJob.id) ? 'Já Candidatado' : 'Candidatar-se Agora'}
                   </button>
                   <button className="btn btn-secondary btn-lg">
                     Salvar Vaga
@@ -232,10 +255,11 @@ export default function PortalView() {
               <div className="card animate-fadeInUp" style={{ 
                 padding: 'var(--space-8)',
                 background: 'var(--gradient-hero)',
-                marginBottom: 'var(--space-8)'
+                marginBottom: 'var(--space-8)',
+                color: 'white'
               }}>
-                <h2 className="text-h1">Olá, {user.name.split(' ')[0]}! 👋</h2>
-                <p className="text-body" style={{ marginTop: 'var(--space-2)', maxWidth: '500px' }}>
+                <h2 className="text-h1" style={{ color: 'white' }}>Olá, {user.name.split(' ')[0]}! 👋</h2>
+                <p className="text-body" style={{ marginTop: 'var(--space-2)', maxWidth: '500px', color: 'rgba(255,255,255,0.9)' }}>
                   Você tem {user.applications} candidaturas ativas e {user.savedJobs} vagas salvas.
                   Continue explorando novas oportunidades!
                 </p>
@@ -304,7 +328,7 @@ export default function PortalView() {
                     </tr>
                   </thead>
                   <tbody>
-                    {mockJobs.slice(0, 5).map((job, i) => {
+                    {mockJobs.filter(j => myApplications.includes(j.id)).map((job, i) => {
                       const statuses = ['Em análise', 'Entrevista', 'Aprovado', 'Em análise', 'Reprovado']
                       const statusColors = {
                         'Em análise': 'badge-warning',
@@ -312,13 +336,13 @@ export default function PortalView() {
                         'Aprovado': 'badge-success',
                         'Reprovado': 'badge-error'
                       }
-                      const status = statuses[i]
+                      const status = statuses[i % statuses.length]
                       return (
-                        <tr key={job.id}>
+                        <tr key={job.id} className="animate-fadeInUp" style={{ animationDelay: `${i * 100}ms` }}>
                           <td style={{ fontWeight: 500 }}>{job.title}</td>
                           <td>{job.company}</td>
                           <td className="text-muted">
-                            {new Date(Date.now() - i * 86400000 * 3).toLocaleDateString('pt-BR')}
+                            {new Date().toLocaleDateString('pt-BR')}
                           </td>
                           <td>
                             <span className={`badge ${statusColors[status as keyof typeof statusColors]}`}>
@@ -336,6 +360,21 @@ export default function PortalView() {
                         </tr>
                       )
                     })}
+                    {myApplications.length === 0 && (
+                      <tr>
+                        <td colSpan={5} className="text-center" style={{ padding: 'var(--space-12)' }}>
+                          <div style={{ fontSize: '3rem', marginBottom: 'var(--space-4)' }}>📂</div>
+                          <p className="text-body">Você ainda não se candidatou a nenhuma vaga.</p>
+                          <button 
+                            className="btn btn-primary" 
+                            style={{ marginTop: 'var(--space-4)' }}
+                            onClick={() => setActiveTab('vagas')}
+                          >
+                            Explorar Vagas
+                          </button>
+                        </td>
+                      </tr>
+                    )}
                   </tbody>
                 </table>
               </div>
