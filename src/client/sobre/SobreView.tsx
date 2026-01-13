@@ -7,6 +7,7 @@ type ThemeType = 'default' | 'teal' | 'purple' | 'orange' | 'pink' | 'cyan'
 export default function SobreView() {
   const [theme, setTheme] = useState<ThemeType>('default')
   const [mounted, setMounted] = useState(false)
+  const [imgError, setImgError] = useState(false)
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search)
@@ -91,21 +92,40 @@ export default function SobreView() {
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: 'var(--space-8)', alignItems: 'center' }}>
                 <div style={{ textAlign: 'center' }}>
                   {/* 🆕 FOTO REAL DO DANIEL DUARTE (fallback para iniciais se CORS bloquear) */}
-                  <div style={{ width: '200px', margin: '0 auto', marginBottom: 'var(--space-4)' }}>
-                    <img 
-                      src="https://media.licdn.com/dms/image/v2/D4D03AQEhQ1WG_TgJjg/profile-displayphoto-shrink_800_800/0/1714572629850"
-                      alt="Daniel Duarte"
-                      style={{ 
-                        width: '200px',
-                        height: '200px',
-                        borderRadius: '50%',
-                        objectFit: 'cover',
-                        border: '4px solid var(--color-primary)',
-                        boxShadow: '0 8px 24px rgba(0,0,0,0.15)',
-                        display: 'block'
-                      }}
-                    />
-                  </div>
+                    <div style={{ width: '200px', margin: '0 auto', marginBottom: 'var(--space-4)' }}>
+                      {!imgError ? (
+                        <img 
+                          src="https://media.licdn.com/dms/image/v2/D4D03AQEhQ1WG_TgJjg/profile-displayphoto-shrink_800_800/0/1714572629850"
+                          alt="Daniel Duarte"
+                          onError={() => setImgError(true)}
+                          style={{ 
+                            width: '200px',
+                            height: '200px',
+                            borderRadius: '50%',
+                            objectFit: 'cover',
+                            border: '4px solid var(--color-primary)',
+                            boxShadow: '0 8px 24px rgba(0,0,0,0.15)',
+                            display: 'block'
+                          }}
+                        />
+                      ) : (
+                        <div style={{
+                          width: '200px',
+                          height: '200px',
+                          borderRadius: '50%',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          background: 'var(--color-primary-light)',
+                          color: 'var(--color-primary)',
+                          fontSize: '3rem',
+                          fontWeight: 700,
+                          border: '4px solid var(--color-primary)'
+                        }}>
+                          D
+                        </div>
+                      )}
+                    </div>
                   <a 
                     href="https://www.linkedin.com/in/danielduarte0/" 
                     target="_blank" 
