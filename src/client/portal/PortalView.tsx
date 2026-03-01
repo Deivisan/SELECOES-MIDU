@@ -4,7 +4,7 @@ import type { Job } from '../../shared/types'
 import ViewSelector from '../../shared/components/ViewSelector'
 import '../../shared/styles/themes.css'
 
-type ThemeType = 'default' | 'teal' | 'purple' | 'orange' | 'pink' | 'cyan'
+type ThemeType = 'default' | 'teal' | 'purple' | 'orange' | 'pink' | 'cyan' | 'portal'
 
 const themeLabels: Record<ThemeType, string> = {
   default: 'Azul',
@@ -12,7 +12,8 @@ const themeLabels: Record<ThemeType, string> = {
   purple: 'Roxo',
   orange: 'Laranja',
   pink: 'Rosa',
-  cyan: 'Ciano'
+  cyan: 'Ciano',
+  portal: 'Claro'
 }
 
 const themeColors: Record<ThemeType, string> = {
@@ -21,11 +22,12 @@ const themeColors: Record<ThemeType, string> = {
   purple: '#7c3aed',
   orange: '#f97316',
   pink: '#ec4899',
-  cyan: '#06b6d4'
+  cyan: '#06b6d4',
+  portal: '#2563eb'
 }
 
 export default function PortalView() {
-  const [theme, setTheme] = useState<ThemeType>('default')
+  const [theme, setTheme] = useState<ThemeType>('portal')
   const [selectedJob, setSelectedJob] = useState<Job | null>(null)
   const [activeTab, setActiveTab] = useState<'vagas' | 'candidaturas' | 'perfil'>('vagas')
   const [mounted, setMounted] = useState(false)
@@ -38,6 +40,7 @@ export default function PortalView() {
     bio: 'Profissional de RH com 5 anos de experiência.'
   })
   const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null)
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   useEffect(() => {
     // Carregar candidaturas
@@ -52,8 +55,11 @@ export default function PortalView() {
     const themeParam = params.get('theme') as ThemeType
     const jobId = params.get('job')
     
-    if (themeParam && ['default', 'teal', 'purple', 'orange', 'pink', 'cyan'].includes(themeParam)) {
+    if (themeParam && ['default', 'teal', 'purple', 'orange', 'pink', 'cyan', 'portal'].includes(themeParam)) {
       setTheme(themeParam)
+    } else {
+      // Default to portal theme for cleaner look
+      setTheme('portal')
     }
     
     if (jobId) {
@@ -119,29 +125,41 @@ export default function PortalView() {
             <div className="navbar-subtitle">Portal do Candidato</div>
           </div>
         </a>
-        <div className="navbar-nav">
+        
+        {/* Mobile Menu Toggle */}
+        <button 
+          className="mobile-menu-toggle"
+          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          aria-label="Menu"
+        >
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+
+        <div className={`navbar-nav ${mobileMenuOpen ? 'mobile-open' : ''}`}>
           <button 
             className={`navbar-link ${activeTab === 'vagas' ? 'navbar-link-active' : ''}`}
-            onClick={() => { setActiveTab('vagas'); setSelectedJob(null); }}
-            style={{ background: 'none', border: 'none', cursor: 'pointer' }}
+            onClick={() => { setActiveTab('vagas'); setSelectedJob(null); setMobileMenuOpen(false); }}
+            style={{ background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left' }}
           >
-            Explorar Vagas
+            <span style={{ marginRight: '8px' }}>🔍</span> Explorar Vagas
           </button>
           <button 
             className={`navbar-link ${activeTab === 'candidaturas' ? 'navbar-link-active' : ''}`}
-            onClick={() => { setActiveTab('candidaturas'); setSelectedJob(null); }}
-            style={{ background: 'none', border: 'none', cursor: 'pointer' }}
+            onClick={() => { setActiveTab('candidaturas'); setSelectedJob(null); setMobileMenuOpen(false); }}
+            style={{ background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left' }}
           >
-            Minhas Candidaturas
+            <span style={{ marginRight: '8px' }}>📂</span> Minhas Candidaturas
           </button>
           <button 
             className={`navbar-link ${activeTab === 'perfil' ? 'navbar-link-active' : ''}`}
-            onClick={() => { setActiveTab('perfil'); setSelectedJob(null); }}
-            style={{ background: 'none', border: 'none', cursor: 'pointer' }}
+            onClick={() => { setActiveTab('perfil'); setSelectedJob(null); setMobileMenuOpen(false); }}
+            style={{ background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left' }}
           >
-            Meu Perfil
+            <span style={{ marginRight: '8px' }}>👤</span> Meu Perfil
           </button>
-          <div className="avatar">
+          <div className="avatar" style={{ marginLeft: '8px' }}>
             {user.name.split(' ').map(n => n[0]).join('')}
           </div>
         </div>
@@ -273,15 +291,86 @@ export default function PortalView() {
               {/* Welcome Banner */}
               <div className="card animate-fadeInUp" style={{ 
                 padding: 'var(--space-8)',
-                background: 'var(--gradient-hero)',
+                background: 'linear-gradient(135deg, #6366f1 0%, #4f46e5 50%, #4338ca 100%)',
                 marginBottom: 'var(--space-8)',
-                color: 'white'
+                color: 'white',
+                position: 'relative',
+                overflow: 'hidden',
+                boxShadow: '0 8px 30px rgba(79, 70, 229, 0.35)'
               }}>
-                <h2 className="text-h1" style={{ color: 'white' }}>Olá, {user.name.split(' ')[0]}! 👋</h2>
-                <p className="text-body" style={{ marginTop: 'var(--space-2)', maxWidth: '500px', color: 'rgba(255,255,255,0.9)' }}>
-                  Você tem {user.applications} candidaturas ativas e {user.savedJobs} vagas salvas.
-                  Continue explorando novas oportunidades!
-                </p>
+                {/* Decorative elements */}
+                <div style={{
+                  position: 'absolute',
+                  top: '-50%',
+                  right: '-10%',
+                  width: '200px',
+                  height: '200px',
+                  background: 'rgba(255,255,255,0.15)',
+                  borderRadius: '50%'
+                }} />
+                <div style={{
+                  position: 'absolute',
+                  bottom: '-30%',
+                  left: '-5%',
+                  width: '150px',
+                  height: '150px',
+                  background: 'rgba(255,255,255,0.1)',
+                  borderRadius: '50%'
+                }} />
+                <div style={{ position: 'relative', zIndex: 1 }}>
+                  <h2 className="text-h1" style={{ color: 'white', marginBottom: 'var(--space-2)' }}>
+                    Olá, {user.name.split(' ')[0]}! 👋
+                  </h2>
+                  <p style={{ 
+                    fontSize: '1rem', 
+                    maxWidth: '500px', 
+                    color: 'rgba(255,255,255,0.95)',
+                    lineHeight: 1.6,
+                    fontWeight: 500
+                  }}>
+                    Você tem <strong style={{ color: '#fef08a' }}>{user.applications}</strong> candidaturas ativas e <strong style={{ color: '#fef08a' }}>{user.savedJobs}</strong> vagas salvas.
+                    Continue explorando novas oportunidades!
+                  </p>
+                  
+                  {/* Quick stats */}
+                  <div style={{ 
+                    display: 'flex', 
+                    gap: 'var(--space-6)', 
+                    marginTop: 'var(--space-6)',
+                    flexWrap: 'wrap'
+                  }}>
+                    <div style={{ 
+                      background: 'rgba(255,255,255,0.2)', 
+                      padding: 'var(--space-3) var(--space-4)',
+                      borderRadius: 'var(--radius-md)',
+                      backdropFilter: 'blur(4px)',
+                      border: '1px solid rgba(255,255,255,0.2)'
+                    }}>
+                      <div style={{ fontSize: '1.5rem', fontWeight: 700 }}>{user.applications}</div>
+                      <div style={{ fontSize: '0.75rem', opacity: 0.9 }}>Candidaturas</div>
+                    </div>
+                    <div style={{ 
+                      background: 'rgba(255,255,255,0.2)', 
+                      padding: 'var(--space-3) var(--space-4)',
+                      borderRadius: 'var(--radius-md)',
+                      backdropFilter: 'blur(4px)',
+                      border: '1px solid rgba(255,255,255,0.2)'
+                    }}>
+                      <div style={{ fontSize: '1.5rem', fontWeight: 700 }}>{user.savedJobs}</div>
+                      <div style={{ fontSize: '0.75rem', opacity: 0.9 }}>Salvas</div>
+                    </div>
+                    <div style={{ 
+                      background: 'rgba(255,255,255,0.2)', 
+                      padding: 'var(--space-3) var(--space-4)',
+                      borderRadius: 'var(--radius-md)',
+                      backdropFilter: 'blur(4px)',
+                      border: '1px solid rgba(255,255,255,0.2)'
+                    }}>
+                      <div style={{ fontSize: '1.5rem', fontWeight: 700 }}>85%</div>
+                      <div style={{ fontSize: '0.75rem', opacity: 0.9 }}>Perfil</div>
+                    </div>
+                  </div>
+                </div>
               </div>
 
               {/* Jobs Section */}
@@ -298,25 +387,95 @@ export default function PortalView() {
                     key={job.id}
                     className={`job-card animate-fadeInUp delay-${Math.min((i % 5) + 1, 5) * 100}`}
                     onClick={() => setSelectedJob(job)}
+                    style={{
+                      cursor: 'pointer',
+                      transition: 'all 0.3s ease',
+                      border: '2px solid #e5e7eb',
+                      background: '#ffffff'
+                    }}
                   >
                     <div className="job-card-header">
                       <div className="job-card-badges">
-                        <span className="badge badge-primary">{job.type}</span>
-                        <span className="badge badge-neutral">{job.modality}</span>
+                        <span className="badge badge-primary" style={{ 
+                          background: '#e0e7ff', 
+                          color: '#4f46e5',
+                          fontWeight: 600,
+                          padding: '4px 10px'
+                        }}>{job.type}</span>
+                        <span className="badge badge-neutral" style={{ 
+                          background: '#f3f4f6', 
+                          color: '#4b5563',
+                          fontWeight: 500,
+                          padding: '4px 10px'
+                        }}>{job.modality}</span>
                       </div>
+                      {/* Bookmark icon */}
+                      <button 
+                        onClick={(e) => {
+                          e.stopPropagation()
+                        }}
+                        style={{
+                          background: 'none',
+                          border: 'none',
+                          cursor: 'pointer',
+                          fontSize: '1.25rem',
+                          padding: '4px',
+                          opacity: 0.6
+                        }}
+                      >
+                        🔖
+                      </button>
                     </div>
-                    <h3 className="job-card-title">{job.title}</h3>
-                    <p className="job-card-company">{job.company}</p>
-                    <p className="job-card-location">
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <h3 className="job-card-title" style={{ 
+                      color: '#111827', 
+                      fontWeight: 700,
+                      fontSize: '1.125rem'
+                    }}>{job.title}</h3>
+                    <p className="job-card-company" style={{ 
+                      color: '#4f46e5', 
+                      fontWeight: 600,
+                      fontSize: '0.95rem'
+                    }}>{job.company}</p>
+                    <p className="job-card-location" style={{ 
+                      color: '#6b7280', 
+                      display: 'flex', 
+                      alignItems: 'center', 
+                      gap: '6px',
+                      fontSize: '0.875rem'
+                    }}>
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6b7280" strokeWidth="2">
                         <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
                         <circle cx="12" cy="10" r="3"></circle>
                       </svg>
                       {job.location}
                     </p>
                     {job.salary && (
-                      <p className="job-card-salary">{job.salary}</p>
+                      <p className="job-card-salary" style={{ 
+                        color: '#059669', 
+                        fontWeight: 700,
+                        fontSize: '1rem',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '6px'
+                      }}>
+                        💰 {job.salary}
+                      </p>
                     )}
+                    
+                    {/* Quick apply hint */}
+                    <div style={{
+                      marginTop: 'var(--space-4)',
+                      paddingTop: 'var(--space-3)',
+                      borderTop: '1px solid #f3f4f6',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between'
+                    }}>
+                      <span style={{ fontSize: '0.8125rem', color: '#9ca3af' }}>
+                        Clique para ver detalhes
+                      </span>
+                      <span style={{ fontSize: '1rem', color: '#4f46e5', fontWeight: 600 }}>→</span>
+                    </div>
                   </div>
                 ))}
               </div>

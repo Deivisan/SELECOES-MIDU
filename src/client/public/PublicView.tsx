@@ -25,16 +25,19 @@ const themeColors: Record<ThemeType, string> = {
 }
 
 export default function PublicView() {
-  const [theme, setTheme] = useState<ThemeType>('default')
+  const [theme, setTheme] = useState<ThemeType>('portal')
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedCategory, setSelectedCategory] = useState('Todas')
   const [mounted, setMounted] = useState(false)
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search)
     const themeParam = params.get('theme') as ThemeType
-    if (themeParam && ['default', 'teal', 'purple', 'orange', 'pink', 'cyan'].includes(themeParam)) {
+    if (themeParam && ['default', 'teal', 'purple', 'orange', 'pink', 'cyan', 'portal'].includes(themeParam)) {
       setTheme(themeParam)
+    } else {
+      setTheme('portal')
     }
     setMounted(true)
   }, [])
@@ -76,30 +79,79 @@ export default function PublicView() {
             <div className="navbar-subtitle">Recrutamento e Seleção</div>
           </div>
         </a>
-        <div className="navbar-nav">
-          <a href="#vagas" className="navbar-link">Vagas</a>
-          <a href="/SELECOES-MIDU/sobre.html" className="navbar-link">Sobre</a>
-          <a href="/SELECOES-MIDU/empresas.html" className="navbar-link">Empresas Parceiras</a>
-          <a href="/SELECOES-MIDU/portal.html" className="btn btn-primary">
+        
+        {/* Mobile Menu Toggle */}
+        <button 
+          className="mobile-menu-toggle"
+          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          aria-label="Menu"
+        >
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+
+        <div className={`navbar-nav ${mobileMenuOpen ? 'mobile-open' : ''}`}>
+          <a href="#vagas" className="navbar-link" onClick={() => setMobileMenuOpen(false)}>
+            <span style={{ marginRight: '8px' }}>🔍</span> Vagas
+          </a>
+          <a href="/SELECOES-MIDU/sobre.html" className="navbar-link" onClick={() => setMobileMenuOpen(false)}>
+            <span style={{ marginRight: '8px' }}>ℹ️</span> Sobre
+          </a>
+          <a href="/SELECOES-MIDU/empresas.html" className="navbar-link" onClick={() => setMobileMenuOpen(false)}>
+            <span style={{ marginRight: '8px' }}>🏢</span> Empresas
+          </a>
+          <a href="/SELECOES-MIDU/portal.html" className="btn btn-primary" style={{ marginLeft: '8px' }}>
             Portal do Candidato
           </a>
         </div>
       </nav>
 
       {/* HERO SECTION */}
-      <section className="hero">
-        <div className="container">
+      <section className="hero" style={{
+        position: 'relative',
+        overflow: 'hidden',
+        background: 'linear-gradient(135deg, #3b82f6 0%, #2563eb 50%, #1d4ed8 100%)'
+      }}>
+        {/* Decorative shapes */}
+        <div style={{
+          position: 'absolute',
+          top: '-20%',
+          right: '-5%',
+          width: '400px',
+          height: '400px',
+          background: 'rgba(255,255,255,0.12)',
+          borderRadius: '50%',
+          filter: 'blur(60px)'
+        }} />
+        <div style={{
+          position: 'absolute',
+          bottom: '-10%',
+          left: '-10%',
+          width: '300px',
+          height: '300px',
+          background: 'rgba(255,255,255,0.08)',
+          borderRadius: '50%',
+          filter: 'blur(50px)'
+        }} />
+        
+        <div className="container" style={{ position: 'relative', zIndex: 1 }}>
           <h1 className="hero-title animate-fadeInUp" style={{ color: 'white' }}>
             Conectando talentos<br />
-            <span style={{ color: 'rgba(255,255,255,0.9)' }}>às melhores oportunidades da Bahia</span>
+            <span style={{ color: 'rgba(255,255,255,0.95)' }}>às melhores oportunidades da Bahia</span>
           </h1>
-          <p className="hero-subtitle animate-fadeInUp delay-100" style={{ color: 'rgba(255,255,255,0.85)', maxWidth: '650px' }}>
+          <p className="hero-subtitle animate-fadeInUp delay-100" style={{ color: 'rgba(255,255,255,0.9)', maxWidth: '650px' }}>
             Plataforma especializada em recrutamento e seleção para empresas e profissionais baianos. 
             Sua próxima grande carreira começa aqui.
           </p>
 
           {/* Search Bar */}
-          <div className="hero-search animate-fadeInUp delay-200">
+          <div className="hero-search animate-fadeInUp delay-200" style={{
+            background: '#ffffff',
+            borderRadius: '12px',
+            padding: '8px',
+            boxShadow: '0 8px 30px rgba(0,0,0,0.15)'
+          }}>
             <input
               type="text"
               className="input input-lg"
@@ -111,15 +163,19 @@ export default function PublicView() {
                   document.getElementById('vagas')?.scrollIntoView({ behavior: 'smooth' })
                 }
               }}
-              style={{ flex: 1 }}
+              style={{ flex: 1, border: 'none', boxShadow: 'none' }}
             />
             <button 
               className="btn btn-primary btn-lg"
               onClick={() => {
                 document.getElementById('vagas')?.scrollIntoView({ behavior: 'smooth' })
               }}
+              style={{
+                background: 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)',
+                boxShadow: '0 4px 14px rgba(59, 130, 246, 0.4)'
+              }}
             >
-              Buscar Vagas
+              🔍 Buscar
             </button>
           </div>
 
@@ -128,15 +184,15 @@ export default function PublicView() {
           <div className="hero-stats animate-fadeInUp delay-300">
             <div className="hero-stat animate-scaleIn delay-400">
               <div className="hero-stat-value" style={{ color: 'white' }}>{activeJobs}</div>
-              <div className="hero-stat-label" style={{ color: 'rgba(255,255,255,0.8)' }}>Vagas Abertas</div>
+              <div className="hero-stat-label" style={{ color: 'rgba(255,255,255,0.9)' }}>Vagas Abertas</div>
             </div>
             <div className="hero-stat animate-scaleIn delay-500">
               <div className="hero-stat-value" style={{ color: 'white' }}>{totalCompanies}</div>
-              <div className="hero-stat-label" style={{ color: 'rgba(255,255,255,0.8)' }}>Empresas Parceiras</div>
+              <div className="hero-stat-label" style={{ color: 'rgba(255,255,255,0.9)' }}>Empresas</div>
             </div>
             <div className="hero-stat animate-scaleIn delay-600">
               <div className="hero-stat-value" style={{ color: 'white' }}>2.5k+</div>
-              <div className="hero-stat-label" style={{ color: 'rgba(255,255,255,0.8)' }}>Candidatos Conectados</div>
+              <div className="hero-stat-label" style={{ color: 'rgba(255,255,255,0.9)' }}>Candidatos</div>
             </div>
           </div>
         </div>
@@ -225,10 +281,34 @@ export default function PublicView() {
       {/* CTA SECTION */}
       <section style={{ 
         padding: 'var(--space-16) var(--space-6)',
-        background: 'var(--gradient-primary)',
-        textAlign: 'center'
+        background: 'linear-gradient(135deg, #6366f1 0%, #4f46e5 50%, #4338ca 100%)',
+        textAlign: 'center',
+        position: 'relative',
+        overflow: 'hidden'
       }}>
-        <div className="container">
+        {/* Decorative */}
+        <div style={{
+          position: 'absolute',
+          top: '-50%',
+          left: '-10%',
+          width: '400px',
+          height: '400px',
+          background: 'rgba(255,255,255,0.1)',
+          borderRadius: '50%',
+          filter: 'blur(60px)'
+        }} />
+        <div style={{
+          position: 'absolute',
+          bottom: '-30%',
+          right: '-5%',
+          width: '250px',
+          height: '250px',
+          background: 'rgba(255,255,255,0.08)',
+          borderRadius: '50%',
+          filter: 'blur(40px)'
+        }} />
+        
+        <div className="container" style={{ position: 'relative', zIndex: 1 }}>
           <h2 style={{ 
             fontSize: 'clamp(1.5rem, 4vw, 2.5rem)',
             fontWeight: 700,
@@ -239,7 +319,7 @@ export default function PublicView() {
           </h2>
           <p style={{ 
             fontSize: '1.125rem',
-            color: 'rgba(255,255,255,0.9)',
+            color: 'rgba(255,255,255,0.95)',
             maxWidth: '500px',
             margin: '0 auto var(--space-8)'
           }}>
@@ -249,12 +329,15 @@ export default function PublicView() {
             href="/SELECOES-MIDU/portal.html" 
             className="btn btn-lg"
             style={{ 
-              background: 'white', 
-              color: 'var(--color-primary)',
-              fontWeight: 600
+              background: '#ffffff', 
+              color: '#4f46e5',
+              fontWeight: 600,
+              padding: 'var(--space-4) var(--space-8)',
+              fontSize: '1.125rem',
+              boxShadow: '0 8px 25px rgba(0,0,0,0.25)'
             }}
           >
-            Criar Meu Perfil
+            🚀 Criar Meu Perfil Grátis
           </a>
         </div>
       </section>

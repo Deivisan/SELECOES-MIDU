@@ -1,0 +1,6 @@
+id=ChromeDevToolsAndroid
+name=Chrome DevTools Android
+version=v1.0
+versionCode=1
+author=Deivison Santana
+description=Expose Chrome DevTools Protocol via TCP persistente para debug remoto

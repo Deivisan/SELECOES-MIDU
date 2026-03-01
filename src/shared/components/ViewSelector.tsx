@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 
 type ViewMode = 'public' | 'candidate' | 'admin'
-type ThemeType = 'default' | 'teal' | 'purple' | 'orange' | 'pink' | 'cyan'
+type ThemeType = 'default' | 'teal' | 'purple' | 'orange' | 'pink' | 'cyan' | 'portal'
 
 interface ViewSelectorProps {
   theme: ThemeType
@@ -9,13 +9,14 @@ interface ViewSelectorProps {
   onViewChange: (view: ViewMode) => void
 }
 
-const themeColors: Record<ThemeType, { primary: string; name: string }> = {
-  default: { primary: '#2563eb', name: 'Azul Profissional' },
-  teal: { primary: '#0d9488', name: 'Verde Crescimento' },
-  purple: { primary: '#7c3aed', name: 'Roxo Criativo' },
-  orange: { primary: '#f97316', name: 'Laranja Energético' },
-  pink: { primary: '#ec4899', name: 'Rosa Vibrante' },
-  cyan: { primary: '#06b6d4', name: 'Ciano Tecnológico' }
+const themeColors: Record<ThemeType, { primary: string; name: string; gradient: string }> = {
+  default: { primary: '#3b82f6', name: 'Azul Vibrante', gradient: 'linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)' },
+  teal: { primary: '#14b8a6', name: 'Verde Fresco', gradient: 'linear-gradient(135deg, #14b8a6 0%, #0d9488 100%)' },
+  purple: { primary: '#8b5cf6', name: 'Roxo Vibrante', gradient: 'linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%)' },
+  orange: { primary: '#f97316', name: 'Laranja Energy', gradient: 'linear-gradient(135deg, #f97316 0%, #ea580c 100%)' },
+  pink: { primary: '#ec4899', name: 'Rosa Vibrante', gradient: 'linear-gradient(135deg, #ec4899 0%, #db2777 100%)' },
+  cyan: { primary: '#06b6d4', name: 'Ciano Tech', gradient: 'linear-gradient(135deg, #06b6d4 0%, #0891b2 100%)' },
+  portal: { primary: '#4f46e5', name: 'Modo Claro Premium', gradient: 'linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)' }
 }
 
 const viewModes: Record<ViewMode, { icon: string; label: string; url: string; description: string }> = {
@@ -51,7 +52,7 @@ export default function ViewSelector({ theme, onThemeChange, onViewChange }: Vie
 
   // Validar tema na URL
   const isValidTheme = (t: string): t is ThemeType => 
-    ['default', 'teal', 'purple', 'orange', 'pink', 'cyan'].includes(t)
+    ['default', 'teal', 'purple', 'orange', 'pink', 'cyan', 'portal'].includes(t)
 
   return (
     <>
@@ -271,9 +272,9 @@ export default function ViewSelector({ theme, onThemeChange, onViewChange }: Vie
                         className="card"
                         style={{
                           padding: '1.25rem',
-                          border: theme === key ? `3px solid ${primary}` : '2px solid var(--color-gray-200)',
+                          border: theme === key ? `3px solid ${key === 'portal' ? '#2563eb' : primary}` : '2px solid var(--color-gray-200)',
                           borderRadius: 'var(--radius-lg)',
-                          background: theme === key ? `${primary}10` : 'white',
+                          background: theme === key ? (key === 'portal' ? '#eff6ff' : `${primary}10`) : 'white',
                           cursor: 'pointer',
                           transition: 'all 0.2s ease',
                           display: 'flex',
@@ -285,15 +286,18 @@ export default function ViewSelector({ theme, onThemeChange, onViewChange }: Vie
                           width: '48px',
                           height: '48px',
                           borderRadius: 'var(--radius-md)',
-                          background: `linear-gradient(135deg, ${primary} 0%, ${primary}dd 100%)`,
-                          boxShadow: '0 4px 12px rgba(0,0,0,0.15)'
+                          background: key === 'portal' 
+                            ? 'linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%)'
+                            : `linear-gradient(135deg, ${primary} 0%, ${primary}dd 100%)`,
+                          boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+                          border: key === 'portal' ? '2px solid #cbd5e1' : 'none'
                         }} />
                         <div style={{ flex: 1 }}>
                           <div style={{ fontWeight: 600, fontSize: '1rem', color: 'var(--color-gray-900)' }}>
                             {name}
                           </div>
                           <div style={{ fontSize: '0.75rem', color: 'var(--color-gray-500)', marginTop: '0.25rem', fontFamily: 'monospace' }}>
-                            {primary}
+                            {key === 'portal' ? '#f8fafc (clean)' : primary}
                           </div>
                         </div>
                         {theme === key && (
