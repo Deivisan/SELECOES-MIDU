@@ -1,0 +1,864 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Detalhes do Candidato - Admin | Midu Group</title>
+  <link rel="stylesheet" href="../styles.css">
+  <style>
+    body {
+      display: flex;
+      min-height: 100vh;
+      background: var(--bg-secondary);
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 260px;
+      background: var(--text);
+      color: white;
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      height: 100vh;
+      overflow-y: auto;
+    }
+    
+    .sidebar-header {
+      padding: var(--spacing-xl);
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+    
+    .sidebar-logo {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+      font-size: var(--font-size-lg);
+      font-weight: 700;
+    }
+    
+    .sidebar-logo img { height: 32px; width: auto; }
+    
+    .sidebar-user {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-md);
+      padding: var(--spacing-lg) var(--spacing-xl);
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+    
+    .user-avatar {
+      width: 40px;
+      height: 40px;
+      background: var(--primary);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+    }
+    
+    .user-info span {
+      display: block;
+    }
+    
+    .user-name {
+      font-weight: 500;
+      font-size: var(--font-size-sm);
+    }
+    
+    .user-role {
+      font-size: var(--font-size-xs);
+      color: rgba(255,255,255,0.6);
+    }
+    
+    .sidebar-nav {
+      flex: 1;
+      padding: var(--spacing-lg) 0;
+    }
+    
+    .nav-section {
+      margin-bottom: var(--spacing-lg);
+    }
+    
+    .nav-section-title {
+      padding: var(--spacing-sm) var(--spacing-xl);
+      font-size: var(--font-size-xs);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: rgba(255,255,255,0.4);
+    }
+    
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-md);
+      padding: var(--spacing-md) var(--spacing-xl);
+      color: rgba(255,255,255,0.8);
+      font-size: var(--font-size-sm);
+      transition: var(--transition);
+      cursor: pointer;
+      text-decoration: none;
+    }
+    
+    .nav-item:hover, .nav-item.active {
+      background: rgba(255,255,255,0.1);
+      color: white;
+    }
+    
+    .nav-item svg {
+      width: 20px;
+      height: 20px;
+    }
+    
+    .sidebar-footer {
+      padding: var(--spacing-lg) var(--spacing-xl);
+      border-top: 1px solid rgba(255,255,255,0.1);
+    }
+    
+    .btn-sair {
+      width: 100%;
+      background: transparent;
+      color: rgba(255,255,255,0.6);
+      padding: var(--spacing-md);
+      border-radius: var(--radius);
+      font-size: var(--font-size-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--spacing-sm);
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+    }
+    
+    .btn-sair:hover { color: white; background: rgba(255,255,255,0.1); }
+
+    /* Main Content */
+    .main-content {
+      flex: 1;
+      margin-left: 260px;
+      padding: var(--spacing-xl);
+      max-width: 1200px;
+    }
+
+    .page-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: var(--spacing-xl);
+    }
+
+    .page-header-left {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-lg);
+    }
+
+    .back-link {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-xs);
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: var(--font-size-sm);
+      transition: var(--transition);
+    }
+
+    .back-link:hover {
+      color: var(--primary);
+    }
+
+    .page-header h1 {
+      font-size: var(--font-size-2xl);
+      font-weight: 600;
+      margin: 0;
+    }
+
+    .breadcrumb {
+      font-size: var(--font-size-sm);
+      color: var(--text-muted);
+      margin-top: var(--spacing-xs);
+    }
+
+    /* Candidate Profile Card */
+    .profile-card {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: var(--spacing-xl);
+      margin-bottom: var(--spacing-lg);
+    }
+
+    .profile-header {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--spacing-xl);
+      margin-bottom: var(--spacing-xl);
+      padding-bottom: var(--spacing-xl);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .profile-avatar {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 36px;
+      font-weight: 700;
+      color: white;
+      flex-shrink: 0;
+    }
+
+    .profile-info {
+      flex: 1;
+    }
+
+    .profile-name {
+      font-size: var(--font-size-2xl);
+      font-weight: 600;
+      margin-bottom: var(--spacing-xs);
+    }
+
+    .profile-vaga {
+      color: var(--primary);
+      font-weight: 500;
+      margin-bottom: var(--spacing-md);
+    }
+
+    .profile-meta {
+      display: flex;
+      gap: var(--spacing-lg);
+      flex-wrap: wrap;
+    }
+
+    .meta-item {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-xs);
+      font-size: var(--font-size-sm);
+      color: var(--text-muted);
+    }
+
+    .meta-item svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    .profile-actions {
+      display: flex;
+      gap: var(--spacing-md);
+    }
+
+    /* Tabs */
+    .tabs {
+      display: flex;
+      gap: var(--spacing-xs);
+      margin-bottom: var(--spacing-lg);
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0;
+    }
+
+    .tab {
+      padding: var(--spacing-md) var(--spacing-lg);
+      background: transparent;
+      border: none;
+      border-bottom: 2px solid transparent;
+      color: var(--text-muted);
+      font-size: var(--font-size-sm);
+      font-weight: 500;
+      cursor: pointer;
+      transition: var(--transition);
+      margin-bottom: -1px;
+    }
+
+    .tab:hover {
+      color: var(--text);
+    }
+
+    .tab.active {
+      color: var(--primary);
+      border-bottom-color: var(--primary);
+    }
+
+    .tab-content {
+      display: none;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Info Grid */
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: var(--spacing-lg);
+      margin-bottom: var(--spacing-lg);
+    }
+
+    .info-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: var(--spacing-lg);
+    }
+
+    .info-card h4 {
+      font-size: var(--font-size-sm);
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-bottom: var(--spacing-sm);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .info-card p {
+      font-size: var(--font-size-base);
+      color: var(--text);
+      margin: 0;
+      line-height: 1.6;
+    }
+
+    /* Resume Preview */
+    .resume-preview {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: var(--spacing-xl);
+      text-align: center;
+    }
+
+    .resume-icon {
+      width: 80px;
+      height: 80px;
+      margin: 0 auto var(--spacing-lg);
+      background: rgba(37, 99, 235, 0.1);
+      border-radius: var(--radius);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .resume-icon svg {
+      width: 40px;
+      height: 40px;
+      color: var(--primary);
+    }
+
+    .resume-info {
+      font-size: var(--font-size-sm);
+      color: var(--text-muted);
+      margin-bottom: var(--spacing-lg);
+    }
+
+    .resume-actions {
+      display: flex;
+      gap: var(--spacing-md);
+      justify-content: center;
+    }
+
+    /* Timeline */
+    .timeline {
+      position: relative;
+      padding-left: var(--spacing-xl);
+      border-left: 2px solid var(--border);
+      margin: var(--spacing-xl) 0;
+    }
+
+    .timeline-item {
+      position: relative;
+      margin-bottom: var(--spacing-xl);
+    }
+
+    .timeline-item::before {
+      content: '';
+      position: absolute;
+      left: calc(-1 * var(--spacing-xl) - 5px);
+      top: 6px;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--primary);
+      border: 2px solid var(--bg);
+    }
+
+    .timeline-date {
+      font-size: var(--font-size-xs);
+      color: var(--text-muted);
+      margin-bottom: var(--spacing-xs);
+    }
+
+    .timeline-status {
+      display: inline-flex;
+      padding: var(--spacing-xs) var(--spacing-sm);
+      font-size: var(--font-size-sm);
+      font-weight: 500;
+      border-radius: var(--radius-full);
+      background: rgba(37, 99, 235, 0.1);
+      color: var(--primary);
+      border: 1px solid rgba(37, 99, 235, 0.2);
+    }
+
+    /* Form Actions */
+    .form-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: var(--spacing-lg);
+      border-top: 1px solid var(--border);
+      margin-top: var(--spacing-lg);
+    }
+
+    .btn {
+      padding: var(--spacing-sm) var(--spacing-xl);
+      border-radius: var(--radius);
+      font-weight: 500;
+      font-size: var(--font-size-sm);
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+      border: none;
+      transition: var(--transition);
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-dark);
+    }
+
+    .btn-secondary {
+      background: var(--bg-secondary);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    .btn-secondary:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    /* Status Select */
+    .status-select-wrapper {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-md);
+    }
+
+    .status-select {
+      padding: var(--spacing-sm) var(--spacing-lg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      font-size: var(--font-size-sm);
+      background: var(--bg-secondary);
+      color: var(--text);
+      cursor: pointer;
+    }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: var(--text);
+      color: white;
+      padding: var(--spacing-md) var(--spacing-xl);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-lg);
+      display: none;
+      animation: slideIn 0.3s ease;
+      z-index: 9999;
+    }
+
+    .toast.success { background: var(--success); }
+    .toast.error { background: var(--error); }
+
+    @keyframes slideIn {
+      from { transform: translateX(100%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+
+    @media (max-width: 1024px) {
+      .sidebar { width: 80px; }
+      .sidebar-header span, .sidebar-user, .nav-section-title, .nav-item span, .sidebar-footer span { display: none; }
+      .sidebar-nav { padding-top: var(--spacing-xl); }
+      .nav-item { justify-content: center; padding: var(--spacing-md); }
+      .main-content { margin-left: 80px; }
+      .info-grid { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 768px) {
+      .profile-header {
+        flex-direction: column;
+        text-align: center;
+      }
+      
+      .profile-actions {
+        justify-content: center;
+        width: 100%;
+      }
+      
+      .form-actions {
+        flex-direction: column;
+        gap: var(--spacing-md);
+        align-items: stretch;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-logo">
+        <img src="../assets/logo-white.png" alt="Midu Group" class="nav-logo-img">
+        <span>Midu Group</span>
+      </div>
+    </div>
+    
+    <div class="sidebar-user">
+      <div class="user-avatar">DD</div>
+      <div class="user-info">
+        <span class="user-name">Daniel Duarte</span>
+        <span class="user-role">Administrador</span>
+      </div>
+    </div>
+    
+    <nav class="sidebar-nav">
+      <div class="nav-section">
+        <div class="nav-section-title">Menu</div>
+        <a href="index.html" class="nav-item" onclick="navigateTo('index.html')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+          <span>Dashboard</span>
+        </a>
+        <a href="vagas.html" class="nav-item" onclick="navigateTo('vagas.html')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14,2 14,8 20,8"/></svg>
+          <span>Vagas</span>
+        </a>
+        <a href="candidatos.html" class="nav-item" onclick="navigateTo('candidatos.html')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          <span>Candidatos</span>
+        </a>
+        <a href="relatorios.html" class="nav-item" onclick="navigateTo('relatorios.html')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/></svg>
+          <span>Relatórios</span>
+        </a>
+      </div>
+    </nav>
+    
+    <div class="sidebar-footer">
+      <a href="login.html" class="btn-sair" onclick="logout()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16,17 21,12 16,7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        Sair
+      </a>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <div class="page-header">
+      <div class="page-header-left">
+        <a href="candidatos.html" class="back-link" onclick="navigateTo('candidatos.html')">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15,18 9,12 15,6"/></svg>
+          Voltar
+        </a>
+        <div>
+          <h1 id="candidateName">Carregando...</h1>
+          <div class="breadcrumb">Candidatos > Detalhes</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Profile Card -->
+    <div class="profile-card">
+      <div class="profile-header">
+        <div class="profile-avatar" id="profileAvatar">MS</div>
+        <div class="profile-info">
+          <h2 class="profile-name" id="candidateName2">Maria Santos</h2>
+          <div class="profile-vaga" id="candidateVaga">Candidata à: Analista de RH</div>
+          <div class="profile-meta">
+            <div class="meta-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+              <span id="candidateEmail">maria@email.com</span>
+            </div>
+            <div class="meta-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+              <span id="candidatePhone">(71) 99999-0001</span>
+            </div>
+            <div class="meta-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+              <span id="candidateDate">Candidatou-se em 08/05/2026</span>
+            </div>
+          </div>
+        </div>
+        <div class="profile-actions">
+          <div class="status-select-wrapper">
+            <label style="font-size: var(--font-size-sm); color: var(--text-muted);">Status:</label>
+            <select class="status-select" id="statusSelect" onchange="updateStatus()">
+              <option value="Pendente">Pendente</option>
+              <option value="Em Análise">Em Análise</option>
+              <option value="Entrevista">Entrevista</option>
+              <option value="Teste">Teste</option>
+              <option value="Final">Final</option>
+              <option value="Aprovado">Aprovado</option>
+              <option value="Reprovado">Reprovado</option>
+            </select>
+          </div>
+          <a href="https://wa.me/5571999990001" class="btn btn-primary" target="_blank">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                WhatsApp
+              </a>
+            </div>
+        </div>
+      </div>
+
+      <!-- Tabs -->
+      <div class="tabs">
+        <button class="tab active" onclick="switchTab('pessoais')">Dados Pessoais</button>
+        <button class="tab" onclick="switchTab('curriculo')">Currículo</button>
+        <button class="tab" onclick="switchTab('historico')">Histórico</button>
+      </div>
+
+      <!-- Tab: Dados Pessoais -->
+      <div id="tab-pessoais" class="tab-content active">
+        <div class="info-grid">
+          <div class="info-card">
+            <h4>Nome Completo</h4>
+            <p id="infoNome">Maria Santos</p>
+          </div>
+          <div class="info-card">
+            <h4>Email</h4>
+            <p id="infoEmail">maria.santos@email.com</p>
+          </div>
+          <div class="info-card">
+            <h4>Telefone</h4>
+            <p id="infoPhone">(71) 99999-0001</p>
+          </div>
+          <div class="info-card">
+            <h4>LinkedIn</h4>
+            <p id="infoLinkedIn">linkedin.com/in/mariasantos</p>
+          </div>
+          <div class="info-card">
+            <h4>Cidade</h4>
+            <p id="infoCidade">Salvador, BA</p>
+          </div>
+          <div class="info-card">
+            <h4>Vaga Pretendida</h4>
+            <p id="infoVaga">Analista de RH</p>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button class="btn btn-secondary" onclick="navigateTo('candidatos.html')">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15,18 9,12 15,6"/></svg>
+            Voltar
+          </button>
+          <button class="btn btn-primary" onclick="saveChanges()">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20,6 9,17 4,12"/></svg>
+            Salvar Alterações
+          </button>
+        </div>
+      </div>
+
+      <!-- Tab: Currículo -->
+      <div id="tab-curriculo" class="tab-content">
+        <div class="resume-preview">
+          <div class="resume-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+              <polyline points="14,2 14,8 20,8"/>
+              <line x1="16" y1="13" x2="8" y2="13"/>
+              <line x1="16" y1="17" x2="8" y2="17"/>
+              <polyline points="10,9 9,9 8,9"/>
+            </svg>
+          </div>
+          <h3>Currículo.pdf</h3>
+          <p class="resume-info">Tamanho: 245 KB • Enviado em 08/05/2026</p>
+          <div class="resume-actions">
+            <a href="#" class="btn btn-primary" onclick="downloadResume()">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7,10 12,15 17,10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              Baixar
+            </a>
+            <button class="btn btn-secondary" onclick="updateResume()">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17,8 12,3 7,8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+              Atualizar
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab: Histórico -->
+      <div id="tab-historico" class="tab-content">
+        <h3 style="font-size: var(--font-size-lg); font-weight: 600; margin-bottom: var(--spacing-lg);">Timeline da Candidatura</h3>
+        <div class="timeline">
+          <div class="timeline-item">
+            <div class="timeline-date">08/05/2026</div>
+            <div class="timeline-status">Candidatura Enviada</div>
+            <p style="color: var(--text-muted); font-size: var(--font-size-sm); margin-top: var(--spacing-xs);">Candidato enviou currículo via formulário</p>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-date">08/05/2026</div>
+            <div class="timeline-status">Em Análise</div>
+            <p style="color: var(--text-muted); font-size: var(--font-size-sm); margin-top: var(--spacing-xs);">Currículo recebido e em análise pelo recrutador</p>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-date">09/05/2026</div>
+            <div class="timeline-status">Entrevista</div>
+            <p style="color: var(--text-muted); font-size: var(--font-size-sm); margin-top: var(--spacing-xs);">Agendada entrevista para próxima semana</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+  </main>
+
+  <script>
+    // Mock candidate data
+    const candidate = {
+      id: 1,
+      nome: 'Maria Santos',
+      email: 'maria.santos@email.com',
+      telefone: '(71) 99999-0001',
+      linkedin: 'linkedin.com/in/mariasantos',
+      cidade: 'Salvador, BA',
+      vaga: 'Analista de RH',
+      status: 'Entrevista',
+      data: '08/05/2026',
+      curriculo: 'curriculo_maria_santos.pdf'
+    };
+
+    function navigateTo(page) {
+      const isLoggedIn = localStorage.getItem('adminLoggedIn') === 'true';
+      if (page !== 'login.html' && !isLoggedIn) {
+        window.location.href = 'login.html';
+        return;
+      }
+      window.location.href = page;
+    }
+
+    function logout() {
+      localStorage.removeItem('adminLoggedIn');
+      window.location.href = 'login.html';
+    }
+
+    function showToast(message, type = 'success') {
+      const toast = document.getElementById('toast');
+      toast.textContent = message;
+      toast.className = 'toast ' + type;
+      toast.style.display = 'block';
+      setTimeout(() => { toast.style.display = 'none'; }, 3000);
+    }
+
+    function loadCandidate() {
+      // Get ID from URL
+      const urlParams = new URLSearchParams(window.location.search);
+      const id = parseInt(urlParams.get('id'));
+      
+      if (id) {
+        // In a real app, fetch from API. Here we simulate
+        const candidatos = JSON.parse(localStorage.getItem('candidatos') || '[]');
+        const candidate = candidatos.find(c => c.id === id);
+        
+        if (candidate) {
+          fillCandidateData(candidate);
+        } else {
+          showToast('Candidato não encontrado', 'error');
+          setTimeout(() => navigateTo('candidatos.html'), 1500);
+        }
+      } else {
+        // Fallback to mock data
+        fillCandidateData(candidate);
+      }
+    }
+
+    function fillCandidateData(c) {
+      document.getElementById('profileAvatar').textContent = c.nome.split(' ').map(n => n[0]).join('').substring(0,2).toUpperCase();
+      document.getElementById('candidateName').textContent = c.nome;
+      document.getElementById('candidateName2').textContent = c.nome;
+      document.getElementById('candidateVaga').textContent = 'Candidata à: ' + c.vaga;
+      document.getElementById('candidateEmail').textContent = c.email;
+      document.getElementById('candidatePhone').textContent = c.telefone;
+      document.getElementById('candidateDate').textContent = 'Candidatou-se em ' + c.data;
+      document.getElementById('statusSelect').value = c.status;
+      
+      // Populate info cards
+      document.getElementById('infoNome').textContent = c.nome;
+      document.getElementById('infoEmail').textContent = c.email;
+      document.getElementById('infoPhone').textContent = c.telefone;
+      document.getElementById('infoLinkedIn').textContent = c.linkedin || 'Não informado';
+      document.getElementById('infoCidade').textContent = c.cidade;
+      document.getElementById('infoVaga').textContent = c.vaga;
+    }
+
+    function switchTab(tabId) {
+      // Update buttons
+      document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+      event.target.classList.add('active');
+      
+      // Update content
+      document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+      document.getElementById('tab-' + tabId).classList.add('active');
+    }
+
+    function updateStatus() {
+      const newStatus = document.getElementById('statusSelect').value;
+      
+      // Update candidate in storage
+      const urlParams = new URLSearchParams(window.location.search);
+      const id = parseInt(urlParams.get('id'));
+      
+      if (id) {
+        const candidatos = JSON.parse(localStorage.getItem('candidatos') || '[]');
+        const idx = candidatos.findIndex(c => c.id === id);
+        if (idx !== -1) {
+          candidatos[idx].status = newStatus;
+          localStorage.setItem('candidatos', JSON.stringify(candidatos));
+        }
+      }
+      
+      showToast('Status atualizado com sucesso!', 'success');
+    }
+
+    function saveChanges() {
+      showToast('Alterações salvas com sucesso!', 'success');
+      setTimeout(() => navigateTo('candidatos.html'), 1000);
+    }
+
+    function downloadResume() {
+      showToast('Download iniciado...', 'success');
+      // Simulate download
+    }
+
+    function updateResume() {
+      showToast('Funcionalidade de upload em desenvolvimento', 'success');
+    }
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', function() {
+      const isLoggedIn = localStorage.getItem('adminLoggedIn') === 'true';
+      if (!isLoggedIn) {
+        window.location.href = 'login.html';
+        return;
+      }
+
+      loadCandidate();
+    });
+  </script>
+</body>
+</html>

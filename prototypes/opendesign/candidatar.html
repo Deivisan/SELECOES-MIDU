@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Candidatar-se - Midu Group</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border);
+      z-index: 1000;
+      padding: var(--spacing-md) 0;
+    }
+
+    .navbar .container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+      font-size: var(--font-size-xl);
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    .nav-logo-img { width: 36px; height: 36px; }
+
+    .nav-links { display: flex; align-items: center; gap: var(--spacing-xl); }
+    .nav-link { font-size: var(--font-size-sm); font-weight: 500; color: var(--text); }
+    .nav-link:hover { color: var(--primary); }
+    .nav-cta { display: flex; align-items: center; gap: var(--spacing-md); }
+
+    .page-header {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+      padding: 120px 0 60px;
+      color: white;
+    }
+
+    .breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+      font-size: var(--font-size-sm);
+      margin-bottom: var(--spacing-lg);
+    }
+
+    .breadcrumb a { color: rgba(255,255,255,0.8); }
+    .breadcrumb span { color: white; }
+
+    .page-header h1 {
+      font-size: var(--font-size-3xl);
+      font-weight: 700;
+      margin-bottom: var(--spacing-sm);
+    }
+
+    .page-header p {
+      font-size: var(--font-size-lg);
+      opacity: 0.9;
+    }
+
+    .form-section {
+      padding: var(--spacing-3xl) 0;
+      background: var(--bg-secondary);
+    }
+
+    .form-container {
+      max-width: 640px;
+      margin: 0 auto;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: var(--spacing-2xl);
+    }
+
+    .form-title {
+      font-size: var(--font-size-2xl);
+      font-weight: 600;
+      margin-bottom: var(--spacing-xl);
+      padding-bottom: var(--spacing-lg);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .vaga-info {
+      background: var(--bg-secondary);
+      border-radius: var(--radius-md);
+      padding: var(--spacing-lg);
+      margin-bottom: var(--spacing-xl);
+    }
+
+    .vaga-info h3 {
+      font-size: var(--font-size-lg);
+      font-weight: 600;
+      margin-bottom: var(--spacing-xs);
+    }
+
+    .vaga-info p {
+      font-size: var(--font-size-sm);
+      color: var(--text-muted);
+    }
+
+    .form-group {
+      margin-bottom: var(--spacing-lg);
+    }
+
+    .form-label {
+      display: block;
+      font-size: var(--font-size-sm);
+      font-weight: 500;
+      color: var(--text);
+      margin-bottom: var(--spacing-sm);
+    }
+
+    .form-label .required {
+      color: var(--error);
+    }
+
+    .form-input {
+      width: 100%;
+      padding: var(--spacing-md);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      font-size: var(--font-size-base);
+      transition: var(--transition);
+    }
+
+    .form-input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+
+    .form-input.error {
+      border-color: var(--error);
+    }
+
+    .form-hint {
+      font-size: var(--font-size-xs);
+      color: var(--text-light);
+      margin-top: var(--spacing-xs);
+    }
+
+    .file-upload {
+      border: 2px dashed var(--border);
+      border-radius: var(--radius-md);
+      padding: var(--spacing-2xl);
+      text-align: center;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .file-upload:hover {
+      border-color: var(--primary);
+      background: var(--bg-secondary);
+    }
+
+    .file-upload.dragover {
+      border-color: var(--primary);
+      background: rgba(37, 99, 235, 0.05);
+    }
+
+    .file-upload svg {
+      width: 48px;
+      height: 48px;
+      color: var(--text-light);
+      margin-bottom: var(--spacing-md);
+    }
+
+    .file-upload p {
+      font-size: var(--font-size-sm);
+      color: var(--text-muted);
+      margin-bottom: var(--spacing-xs);
+    }
+
+    .file-upload .hint {
+      font-size: var(--font-size-xs);
+      color: var(--text-light);
+    }
+
+    .file-preview {
+      display: none;
+      align-items: center;
+      gap: var(--spacing-md);
+      padding: var(--spacing-md);
+      background: var(--bg-secondary);
+      border-radius: var(--radius);
+      margin-top: var(--spacing-md);
+    }
+
+    .file-preview.active {
+      display: flex;
+    }
+
+    .file-preview svg {
+      width: 24px;
+      height: 24px;
+      color: var(--primary);
+    }
+
+    .file-preview-info {
+      flex: 1;
+    }
+
+    .file-preview-name {
+      font-size: var(--font-size-sm);
+      font-weight: 500;
+    }
+
+    .file-preview-size {
+      font-size: var(--font-size-xs);
+      color: var(--text-muted);
+    }
+
+    .file-remove {
+      padding: var(--spacing-xs);
+      color: var(--error);
+      cursor: pointer;
+    }
+
+    .file-remove:hover {
+      color: var(--error);
+    }
+
+    .form-checkbox {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--spacing-sm);
+      cursor: pointer;
+    }
+
+    .form-checkbox input {
+      width: 18px;
+      height: 18px;
+      margin-top: 2px;
+      accent-color: var(--primary);
+    }
+
+    .form-checkbox span {
+      font-size: var(--font-size-sm);
+      color: var(--text);
+    }
+
+    .form-checkbox a {
+      color: var(--primary);
+      text-decoration: underline;
+    }
+
+    .form-actions {
+      display: flex;
+      gap: var(--spacing-md);
+      margin-top: var(--spacing-xl);
+    }
+
+    .btn-submit {
+      flex: 1;
+      padding: var(--spacing-md) var(--spacing-xl);
+      font-size: var(--font-size-base);
+    }
+
+    .btn-cancel {
+      padding: var(--spacing-md) var(--spacing-xl);
+    }
+
+    /* Success State */
+    .success-state {
+      display: none;
+      text-align: center;
+      padding: var(--spacing-3xl);
+    }
+
+    .success-state.active {
+      display: block;
+    }
+
+    .success-icon {
+      width: 80px;
+      height: 80px;
+      background: rgba(16, 185, 129, 0.1);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto var(--spacing-xl);
+    }
+
+    .success-icon svg {
+      width: 40px;
+      height: 40px;
+      color: var(--success);
+    }
+
+    .success-state h2 {
+      font-size: var(--font-size-2xl);
+      font-weight: 600;
+      margin-bottom: var(--spacing-sm);
+    }
+
+    .success-state p {
+      font-size: var(--font-size-base);
+      color: var(--text-muted);
+      margin-bottom: var(--spacing-xl);
+    }
+
+    .success-state .info {
+      background: var(--bg-secondary);
+      border-radius: var(--radius-md);
+      padding: var(--spacing-lg);
+      margin-bottom: var(--spacing-xl);
+      text-align: left;
+    }
+
+    .success-state .info p {
+      margin-bottom: var(--spacing-sm);
+    }
+
+    /* Error State */
+    .error-state {
+      display: none;
+      text-align: center;
+      padding: var(--spacing-3xl);
+    }
+
+    .error-state.active {
+      display: block;
+    }
+
+    .error-icon {
+      width: 80px;
+      height: 80px;
+      background: rgba(239, 68, 68, 0.1);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto var(--spacing-xl);
+    }
+
+    .error-icon svg {
+      width: 40px;
+      height: 40px;
+      color: var(--error);
+    }
+
+    .error-state h2 {
+      font-size: var(--font-size-2xl);
+      font-weight: 600;
+      margin-bottom: var(--spacing-sm);
+    }
+
+    .error-state p {
+      font-size: var(--font-size-base);
+      color: var(--text-muted);
+    }
+
+    .footer {
+      background: var(--text);
+      color: white;
+      padding: var(--spacing-2xl) 0 var(--spacing-lg);
+    }
+
+    .footer-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .footer-logo {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+      font-size: var(--font-size-lg);
+      font-weight: 700;
+    }
+
+    .footer-logo img { width: 28px; height: 28px; }
+    .footer p { font-size: var(--font-size-sm); color: rgba(255,255,255,0.6); }
+
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .form-actions { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <div class="container">
+      <a href="index.html" class="nav-logo">
+        <img src="assets/logo.png" alt="Midu Group" class="nav-logo-img">
+        Midu Group
+      </a>
+      <div class="nav-links">
+        <a href="index.html" class="nav-link">Início</a>
+        <a href="vagas.html" class="nav-link">Vagas</a>
+        <a href="index.html#sobre" class="nav-link">Sobre</a>
+        <a href="index.html#contato" class="nav-link">Contato</a>
+      </div>
+      <div class="nav-cta">
+        <a href="portal.html" class="btn btn-outline btn-sm">Portal do Candidato</a>
+      </div>
+    </div>
+  </nav>
+
+  <header class="page-header">
+    <div class="container">
+      <div class="breadcrumb">
+        <a href="index.html">Home</a>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9,18 15,12 9,6"/></svg>
+        <a href="vagas.html">Vagas</a>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9,18 15,12 9,6"/></svg>
+        <a href="vaga-detalhes.html">Analista de RH</a>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9,18 15,12 9,6"/></svg>
+        <span>Candidatar-se</span>
+      </div>
+      <h1>Candidatar-se</h1>
+      <p>Vaga: Analista de Recursos Humanos</p>
+    </div>
+  </header>
+
+  <section class="form-section">
+    <div class="container">
+      <!-- Form -->
+      <div class="form-container" id="formContainer">
+        <h2 class="form-title">Preencha seus dados</h2>
+        
+        <div class="vaga-info">
+          <h3>Analista de Recursos Humanos</h3>
+          <p>Empresa XPTO - Salvador, BA</p>
+        </div>
+
+        <form id="candidateForm">
+          <div class="form-group">
+            <label class="form-label">Nome completo <span class="required">*</span></label>
+            <input type="text" class="form-input" id="nome" name="nome" placeholder="Seu nome completo" required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Email <span class="required">*</span></label>
+            <input type="email" class="form-input" id="email" name="email" placeholder="seu@email.com" required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Telefone <span class="required">*</span></label>
+            <input type="tel" class="form-input" id="telefone" name="telefone" placeholder="(71) 99999-9999" required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">LinkedIn</label>
+            <input type="url" class="form-input" id="linkedin" name="linkedin" placeholder="https://linkedin.com/in/seu-perfil">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Cidade <span class="required">*</span></label>
+            <input type="text" class="form-input" id="cidade" name="cidade" placeholder="Sua cidade" required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Currículo <span class="required">*</span></label>
+            <div class="file-upload" id="fileUpload">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                <polyline points="14,2 14,8 20,8"/>
+                <line x1="12" y1="18" x2="12" y2="12"/>
+                <line x1="9" y1="15" x2="15" y2="15"/>
+              </svg>
+              <p>Arraste seu currículo aqui ou clique para selecionar</p>
+              <span class="hint">Formato: PDF, máximo 5MB</span>
+            </div>
+            <input type="file" id="curriculo" name="curriculo" accept=".pdf" style="display: none;">
+            <div class="file-preview" id="filePreview">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                <polyline points="14,2 14,8 20,8"/>
+              </svg>
+              <div class="file-preview-info">
+                <div class="file-preview-name" id="fileName">curriculum.pdf</div>
+                <div class="file-preview-size" id="fileSize">2.5 MB</div>
+              </div>
+              <button type="button" class="file-remove" id="fileRemove">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <line x1="18" y1="6" x2="6" y2="18"/>
+                  <line x1="6" y1="6" x2="18" y2="18"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-checkbox">
+              <input type="checkbox" id="termos" required>
+              <span>Li e aceito os <a href="#">termos de privacidade</a></span>
+            </label>
+          </div>
+
+          <div class="form-actions">
+            <button type="submit" class="btn btn-primary btn-submit" id="submitBtn">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="22" y1="2" x2="11" y2="13"/>
+                <polygon points="22,2 15,22 11,13 2,9 22,2"/>
+              </svg>
+              Enviar Candidatura
+            </button>
+            <a href="vaga-detalhes.html" class="btn btn-outline btn-cancel">Cancelar</a>
+          </div>
+        </form>
+      </div>
+
+      <!-- Success State -->
+      <div class="form-container" id="successState">
+        <div class="success-state active">
+          <div class="success-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="20,6 9,17 4,12"/>
+            </svg>
+          </div>
+          <h2>Candidatura Enviada!</h2>
+          <p>Sua candidatura foi recebida com sucesso.</p>
+          <div class="info">
+            <p><strong>Vaga:</strong> Analista de Recursos Humanos</p>
+            <p><strong>Empresa:</strong> Empresa XPTO</p>
+            <p><strong>Data:</strong> 08 de maio de 2026</p>
+          </div>
+          <a href="https://wa.me/5571999999999" class="btn btn-primary btn-lg" target="_blank">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+            </svg>
+            Conversar no WhatsApp
+          </a>
+          <div style="margin-top: var(--spacing-lg);">
+            <a href="vagas.html" class="btn btn-outline">Voltar às Vagas</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Error State -->
+      <div class="form-container" id="errorState">
+        <div class="error-state active">
+          <div class="error-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"/>
+              <line x1="15" y1="9" x2="9" y2="15"/>
+              <line x1="9" y1="9" x2="15" y2="15"/>
+            </svg>
+          </div>
+          <h2>Ops! Algo deu errado</h2>
+          <p id="errorMessage">Tente novamente em alguns minutos.</p>
+          <button class="btn btn-primary" onclick="resetForm()">Tentar novamente</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-logo">
+          <img src="assets/logo.png" alt="Midu Group" class="nav-logo-img">
+          Midu Group
+        </div>
+        <p>&copy; 2026 Midu Group - Todos os direitos reservados</p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const fileUpload = document.getElementById('fileUpload');
+    const fileInput = document.getElementById('curriculo');
+    const filePreview = document.getElementById('filePreview');
+    const fileName = document.getElementById('fileName');
+    const fileSize = document.getElementById('fileSize');
+    const fileRemove = document.getElementById('fileRemove');
+    const form = document.getElementById('candidateForm');
+    const formContainer = document.getElementById('formContainer');
+    const successState = document.getElementById('successState');
+    const errorState = document.getElementById('errorState');
+    const submitBtn = document.getElementById('submitBtn');
+
+    // File upload click
+    fileUpload.addEventListener('click', () => fileInput.click());
+
+    // File selected
+    fileInput.addEventListener('change', (e) => {
+      if (e.target.files.length > 0) {
+        const file = e.target.files[0];
+        if (file.size > 5 * 1024 * 1024) {
+          alert('O arquivo deve ter no máximo 5MB');
+          return;
+        }
+        if (file.type !== 'application/pdf') {
+          alert('O arquivo deve ser um PDF');
+          return;
+        }
+        fileName.textContent = file.name;
+        fileSize.textContent = (file.size / (1024 * 1024)).toFixed(2) + ' MB';
+        filePreview.classList.add('active');
+      }
+    });
+
+    // Remove file
+    fileRemove.addEventListener('click', () => {
+      fileInput.value = '';
+      filePreview.classList.remove('active');
+    });
+
+    // Drag and drop
+    fileUpload.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      fileUpload.classList.add('dragover');
+    });
+
+    fileUpload.addEventListener('dragleave', () => {
+      fileUpload.classList.remove('dragover');
+    });
+
+    fileUpload.addEventListener('drop', (e) => {
+      e.preventDefault();
+      fileUpload.classList.remove('dragover');
+      const files = e.dataTransfer.files;
+      if (files.length > 0) {
+        fileInput.files = files;
+        fileInput.dispatchEvent(new Event('change'));
+      }
+    });
+
+    // Form submit
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      
+      // Validate
+      const nome = document.getElementById('nome').value;
+      const email = document.getElementById('email').value;
+      const telefone = document.getElementById('telefone').value;
+      const cidade = document.getElementById('cidade').value;
+      const termos = document.getElementById('termos').checked;
+      const curriculo = fileInput.files.length > 0;
+
+      if (!nome || !email || !telefone || !cidade || !curriculo || !termos) {
+        alert('Por favor, preencha todos os campos obrigatórios');
+        return;
+      }
+
+      // Show loading
+      submitBtn.innerHTML = '<span class="spinner"></span> Enviando...';
+      submitBtn.disabled = true;
+
+      // Simulate API call
+      setTimeout(() => {
+        formContainer.style.display = 'none';
+        successState.style.display = 'block';
+      }, 2000);
+    });
+
+    function resetForm() {
+      errorState.style.display = 'none';
+      formContainer.style.display = 'block';
+      submitBtn.innerHTML = `
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="22" y1="2" x2="11" y2="13"/>
+          <polygon points="22,2 15,22 11,13 2,9 22,2"/>
+        </svg>
+        Enviar Candidatura
+      `;
+      submitBtn.disabled = false;
+    }
+  </script>
+</body>
+</html>

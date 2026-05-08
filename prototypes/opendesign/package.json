@@ -1,0 +1,18 @@
+{
+  "name": "4efd4bc6-35bf-4da0-8f6e-30d0e01a92f3",
+  "version": "1.0.0",
+  "description": "- `index.html` - Landing page principal (Hero, Sobre, Serviços, Time, CTA, Footer) - `vagas.html` - Portal de vagas público (grid, busca, filtros, paginação) - `vaga-detalhes.html` - Detalhes da vaga com descrição, requisitos, benefícios - `candidatar-se.html` - Formulário de candidatura com upload de currículo",
+  "main": "extract-colors.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "canvas": "^3.2.3",
+    "jimp": "^1.6.1",
+    "svg2img": "^1.0.0-beta.2"
+  }
+}
