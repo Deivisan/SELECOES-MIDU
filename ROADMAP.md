@@ -1,231 +1,395 @@
-# 🗺️ ROADMAP SELECOES-MIDU v3.0.0
-**Cliente:** Daniel Duarte - Midu Group  
-**Data Início:** 12 Janeiro 2026  
-**Objetivo:** Plataforma completa e funcional de Recrutamento e Seleção
+# 🗺️ ROADMAP MIDU GROUP v4.0.0
+**Cliente:** Daniel Duarte - Midu Group (Miranda + Duarte)  
+**Nome do Projeto:** Midu Group — Landing Page + Portal de Vagas  
+**Data Início:** 08 Maio 2026  
+**Objetivo:** Landing page institucional + Portal de recrutamento
 
 ---
 
-## 🎯 FASE 1: ADMIN DASHBOARD (PRIORIDADE MÁXIMA)
+## 📌 CONTEXTO DO PROJETO
 
-### ✅ Task 1.1: Sistema de Login Funcional ✅ COMPLETO
-- [x] Implementar autenticação real (admin/admin)
-- [x] Validação de credenciais
-- [x] Feedback visual de erro/sucesso
-- [x] Redirect para dashboard após login
-- [x] Botão "Sair" funcional
-- [x] Persistência de sessão (localStorage)
+**Estrutura Solicitada:**
+1. **Landing Page** (`/`) — Apresentação do Midu Group
+   - Hero, Sobre, Serviços, Time
+   - CTA: "Ver Vagas Abertas"
+2. **Portal de Vagas** (`/vagas`) — Grid de vagas abertas
+   - Filtros, busca, detalhes
+   - Candidatura com upload PDF
+3. **Portal Candidato** (`/vagas/portal`) — Área do candidato
+4. **Admin** (`/vagas/admin`) — Painel do recrutador
 
-### ✅ Task 1.2: Dashboard Completo com Gráficos ✅ COMPLETO
-**Biblioteca:** Recharts (instalada v3.6.0)
+**Visão do Daniel:**
+1. **Agora (Fase 1):** Landing page + Portal básico com candidatura redirecionada pro WhatsApp/Email
+2. **Futuro (Fase 2):** Tracker de etapas do processo seletivo na plataforma
+3. **Longo prazo (Fase 3):** Banco de talentos interno para filtrar candidatos sem abrir vaga
 
-**Métricas Implementadas:**
-- [x] Total de vagas ativas/inativas
-- [x] Candidatos por status (Pendente/Em Análise/Entrevista/Contratado/Rejeitado)
-- [x] Aplicações por mês (gráfico de linha)
-- [x] Vagas por categoria (gráfico de pizza)
-- [x] Top 5 vagas com mais candidatos
-- [x] Empresas parceiras ativas
-
-**Gráficos Implementados:**
-- [x] BarChart: Candidatos por status
-- [x] LineChart: Aplicações nos últimos 6 meses
-- [x] PieChart: Vagas por categoria
-- [x] AreaChart: Tendência de contratações
-
-### 🔧 Task 1.3: Seções Funcionais (PARCIAL - 50% COMPLETO)
-- [x] **Dashboard:** Visão geral com 6 KPI cards + 4 gráficos interativos
-- [x] **Vagas:** CRUD 100% COMPLETO ✅ (Commit c158bc3)
-  - [x] Formulário "Nova Vaga" funcional com validação TypeScript
-  - [x] Tabela responsiva com hover effects
-  - [x] Edição via modal (VagaForm)
-  - [x] Deletar com confirmação (window.confirm)
-  - [x] Ativar/Desativar vaga (toggle status)
-  - [x] Stats cards (Total/Ativas/Inativas)
-  - [x] 2 vagas de exemplo (Ford Brasil + Midu Group)
-- [ ] **Candidatos:** Gestão completa
-  - [ ] Lista com filtros avançados
-  - [ ] Visualizar currículo (modal)
-  - [ ] Mudar status do candidato
-  - [ ] Agendar entrevista
-  - [ ] Adicionar notas
-  - [ ] Exportar lista (CSV mock)
-- [ ] **Relatórios:** 
-  - [ ] Relatório de performance mensal
-  - [ ] Relatório por vaga
-  - [ ] Relatório por recrutador
-  - [ ] Download PDF (mock)
+**Restrições:**
+- TCC apresentação: dia 4 ou 6 de Maio 2026
+- Não quer lotar caixa de email com currículos
+- Quer mover candidatos DENTRO da plataforma futuramente
+- Volume esperado: 500-5.000 candidatos/mês
 
 ---
 
-## 👤 FASE 2: PORTAL CANDIDATO
+## 🎯 FASE 1: LANDING PAGE + PORTAL BÁSICO (TCC)
 
-### 🎨 Task 2.1: Legibilidade e Acessibilidade ✅ COMPLETO (Commit a7034ce)
-- [x] Aumentar font-size mínimo para 16px (mobile) / 18px (desktop)
-- [x] Line-height: 1.7 (antes 1.6) para melhor espaçamento vertical
-- [x] Contrast ratio: WCAG AA garantido (gray-700: 8.3:1 AAA, gray-600: 5.7:1 AA, gray-500: 4.6:1 AA)
-- [x] Garantir todas as palavras visíveis (word-wrap, overflow-wrap, hyphens: auto)
-- [x] Melhorar espaçamento entre elementos (CSS variables mantidas)
+### Task 1.1: Landing Page do Midu Group
+- [ ] **Hero Section:**
+  - Título: "Conectando Talentos às Oportunidades"
+  - Subtítulo: Apresentação do Midu Group
+  - CTA: "Ver Vagas Abertas" → `/vagas`
+  - Background/imagem profissional
+- [ ] **Seção Sobre:**
+  - Missão do Midu Group
+  - Visão
+  - Valores
+  - História breve
+- [ ] **Seção Serviços:**
+  - O que o Midu Group faz
+  - Consultoria em gestão de pessoas
+  - Recrutamento e seleção
+  - Treinamento e desenvolvimento
+- [ ] **Seção Time:**
+  - Foto e bio do Daniel (e outros se tiver)
+  - Credenciais
+- [ ] **Footer:**
+  - Contato (WhatsApp, email)
+  - Redes sociais
+  - Copyright
 
-### ⚙️ Task 2.2: Funcionalidades Completas
-- [ ] **Tab Vagas:** Busca e filtros funcionais
-  - [ ] Filtrar por categoria, localização, salário
-  - [ ] Ordenar por data, relevância
-  - [ ] Paginação
-  - [ ] Detalhes da vaga (modal ou página)
-  - [ ] Botão "Candidatar" funcional
-- [ ] **Tab Candidaturas:** Histórico completo
-  - [ ] Lista de vagas aplicadas
-  - [ ] Status em tempo real
-  - [ ] Cancelar candidatura
-  - [ ] Ver feedback (se disponível)
-- [ ] **Tab Perfil:** Edição completa
-  - [ ] Upload de foto (mock)
-  - [ ] Editar dados pessoais
-  - [ ] Upload currículo (mock)
-  - [ ] Adicionar experiências
-  - [ ] Adicionar formação
-  - [ ] Habilidades (tags)
-  - [ ] Preferências de vaga
+### Task 1.2: Portal de Vagas (/vagas)
+- [ ] **Header/Navbar** (comum a todas páginas):
+  - Logo Midu Group
+  - Links: Início, Vagas, Sobre, Contato
+  - Botão Admin (secreto ou discreto)
+- [ ] **Grid de Vagas:**
+  - Vagas vindas do banco Supabase
+  - Cards com: título, empresa, localização, salário, categoria
+  - Thumbnail/ícone
+- [ ] **Busca e Filtros:**
+  - Campo de busca por texto
+  - Filtro por categoria
+  - Filtro por localização
+  - Filtro por salário
+- [ ] **Detalhes da Vaga:**
+  - Título, empresa, descrição completa
+  - Requisitos
+  - Benefícios
+  - Localização
+  - Salário
+  - Botão "Candidatar-se"
+- [ ] **Candidatura:**
+  - Formulário: Nome, Email, Telefone, LinkedIn (opcional)
+  - Upload de currículo (PDF, máx 5MB)
+  - Ao candidatar: salva no banco + redireciona WhatsApp/Email
+  - Confirmação visual
 
----
+### Task 1.3: Supabase Setup
+- [ ] Criar projeto Supabase
+- [ ] Configurar Auth (email/senha)
+- [ ] Criar tabelas:
+  - `vagas` — id, título, empresa, descrição, requisitos, benefícios, localização, salário, categoria, status,created_at
+  - `candidatos` — id, nome, email, telefone, linkedin, created_at
+  - `candidaturas` — id, vaga_id, candidato_id, curriculum_url, status, created_at
+- [ ] Configurar Storage pra PDFs (bucket "curriculos")
+- [ ] Configurar RLS (Row Level Security)
+- [ ] Obter API keys
 
-## 🌐 FASE 3: PÁGINA PÚBLICA
+### Task 1.4: Portal Candidato (/vagas/portal)
+- [ ] Login/Cadastro do candidato
+- [ ] Tab "Meus Dados":
+  - Ver/editar perfil
+  - Upload currículo
+- [ ] Tab "Minhas Candidaturas":
+  - Lista de vagas que se candidatou
+  - Status (Pendente, Em Análise, etc.)
+- [ ] Tab "Currículo":
+  - Upload/visualizar PDF
 
-### ✅ Task 3.1: Seção Sobre (Página Separada) ✅ COMPLETO
-- [x] Criar `/sobre.html` dedicado
-- [x] Layout profissional com seções:
-  - [x] Missão e Visão
-  - [x] História da empresa
-  - [x] Time (fotos + bios)
-  - [x] Certificações
-  - [x] Parceiros/Clientes
-- [x] Hyperlink funcional na navbar (todas as páginas)
+### Task 1.5: Admin Dashboard (/vagas/admin)
+- [ ] Login com Supabase Auth (admin/admin)
+- [ ] Dashboard:
+  - Total de vagas
+  - Total de candidatos
+  - Total de candidaturas
+  - Gráficos (Recharts)
+- [ ] CRUD de Vagas:
+  - Criar vaga
+  - Editar vaga
+  - Ativar/Desativar vaga
+  - Deletar vaga
+- [ ] Gestão de Candidatos:
+  - Lista de candidatos
+  - Ver currículo (PDF)
+  - Mudar status da candidatura
+  - Filtros e busca
 
-### ⚙️ Task 2.2: Funcionalidades Completas (EM PROGRESSO)
-- [x] **Tab Vagas:** Candidatura real com persistência
-  - [x] Botão "Candidatar" funcional via localStorage
-  - [ ] Filtrar por localização, salário
-- [x] **Tab Candidaturas:** Histórico real
-  - [x] Lista de vagas aplicadas (localStorage)
-  - [x] Status mockado dinâmico
-- [ ] **Tab Perfil:** Edição completa
-  - [ ] Editar dados pessoais (Nome, Email, Telefone)
-  - [ ] Upload currículo (mock)
-  - [ ] Adicionar experiências
-
-### 💎 Task 5.1: Insights Avançados Dashboard
-- [ ] **KPIs Dinâmicos:**
-  - [x] Total de vagas e aplicações reais
-  - [ ] Taxa de aceitação de vagas
-
-  - Custo por contratação (mock)
-  - Diversidade (gênero, idade, localização)
-  - NPS de candidatos (mock)
-- [ ] **Alertas Inteligentes:**
-  - Vagas sem candidatos há > 7 dias
-  - Candidatos pendentes > 14 dias
-  - Entrevistas agendadas hoje/semana
-- [ ] **Comparações:**
-  - Mês atual vs mês anterior
-  - Tendências (↑↓ com %)
-- [ ] **Filtros Avançados:**
-  - Por período (hoje, semana, mês, trimestre, ano)
-  - Por recrutador (se implementar multi-user)
-  - Por localização (cidades da Bahia)
-
-### 🎨 Task 5.2: Melhorias Visuais
-- [ ] Skeleton loaders (carregamento)
-- [ ] Animações de transição (Framer Motion?)
-- [ ] Tooltips informativos
-- [ ] Modais polidos (confirmações, formulários)
-- [ ] Empty states elegantes ("Nenhuma vaga encontrada")
-- [ ] Success/Error toasts (notificações)
-
-### 📱 Task 5.3: Responsividade Total
-- [ ] Mobile First (320px+)
-- [ ] Tablet (768px+)
-- [ ] Desktop (1024px+)
-- [ ] Wide (1440px+)
-- [ ] Testar em Chrome, Firefox, Safari, Edge
-
----
-
-## 🚀 ORDEM DE EXECUÇÃO AGENTICA
-
-### Sprint 1: Admin Login + Dashboard Base (1-2h)
-1. Task 1.1: Login funcional
-2. Task 1.2: Dashboard com gráficos básicos
-3. Task 4.3: Verificar Pages online
-4. Commit: "feat: admin login funcional + dashboard com gráficos"
-
-### Sprint 2: Admin CRUD + Portal Legibilidade (1-2h)
-5. Task 1.3: CRUD de vagas
-6. Task 2.1: Melhorar legibilidade Portal
-7. Task 2.2: Funcionalidades Portal
-8. Commit: "feat: CRUD admin + portal candidato melhorado"
-
-### Sprint 3: Sobre + Cores + Temas (1h)
-9. Task 3.1: Página Sobre separada
-10. Task 3.2: Melhorar cores gerais
-11. Task 3.3: Adicionar 3 novos temas
-12. Commit: "feat: página sobre + 6 temas + cores vibrantes"
-
-### Sprint 4: Links Funcionais + Infra (1h)
-13. Task 3.4: Todos os links funcionais
-14. Task 4.1: Atualizar dependências
-15. Task 4.2: Resolver incompatibilidades
-16. Task 4.4: Limpar workspace
-17. Commit: "refactor: links funcionais + deps atualizadas + workspace limpo"
-
-### Sprint 5: Agregação de Valor + Polish (1h)
-18. Task 5.1: Insights avançados dashboard
-19. Task 5.2: Melhorias visuais
-20. Task 5.3: Responsividade total
-21. Task 4.3: Lighthouse + testes finais
-22. Commit: "feat: v3.0.0 - plataforma completa e profissional"
+### Task 1.6: Deploy e TCC
+- [ ] Build otimizado
+- [ ] Deploy GitHub Pages
+- [ ] Testar fluxo completo
+- [ ] Preparar apresentação TCC
 
 ---
 
-## ✅ CRITÉRIOS DE SUCESSO
+## 👤 FASE 2: PORTAL DE VERDADE (PÓS-TCC)
 
-### Admin Dashboard:
-- [x] Login com admin/admin funciona
-- [ ] Dashboard mostra 6+ gráficos diferentes
-- [ ] Todas as seções (Dashboard, Vagas, Candidatos, Relatórios) clicáveis
-- [ ] CRUD de vagas 100% funcional
-- [ ] Gestão de candidatos completa
+> "Quero que as pessoas se movimentem dentro da plataforma"
 
-### Portal Candidato:
-- [ ] Todas as palavras legíveis (nenhuma cortada)
-- [ ] Contrast ratio > 4.5:1
-- [ ] 3 tabs funcionais (Vagas, Candidaturas, Perfil)
-- [ ] Edição de perfil completa
+### Task 2.1: Tracker de Etapas
+- [ ] Definir etapas: Análise → Entrevista → Case/Teste → Final → Contratado/Reprovado
+- [ ] Admin pode mudar status
+- [ ] Candidato vê status em tempo real
+- [ ] Histórico de mudanças
 
-### Página Pública:
-- [ ] Seção Sobre em `/sobre.html`
-- [ ] 6+ temas de cores
-- [ ] Cores vibrantes (redução de 80% do branco)
-- [ ] Todos os links/botões funcionais
+### Task 2.2: Notificações por Email
+- [ ] Configurar Resend
+- [ ] Email quando candidatura é recebida
+- [ ] Email quando status muda
 
-### Infraestrutura:
-- [ ] Dependências atualizadas (latest stable)
-- [ ] Build sem erros
-- [ ] GitHub Pages funcionando 100%
-- [ ] Workspace limpo (sem arquivos de teste)
+### Task 2.3: Perfil Completo do Candidato
+- [ ] Dados pessoais
+- [ ] Experiências profissionais
+- [ ] Formação acadêmica
+- [ ] Habilidades (tags)
 
-### Valor Agregado:
-- [ ] Dashboard com 10+ KPIs
-- [ ] Gráficos interativos
-- [ ] Responsividade total (mobile → desktop)
-- [ ] Performance Lighthouse > 90
+---
+
+## 💎 FASE 3: BANCO DE TALENTOS (QUANDO PRECISAR)
+
+> "Quando estiver recebendo 200 currículos por semana, aí penso no banco"
+
+### Task 3.1: Banco de Candidatos
+- [ ] Candidatos ficam salvos mesmo sem vaga aberta
+- [ ] Perfis completos
+- [ ] Busca por habilidades
+- [ ] Pipeline de talentos
+
+### Task 3.2: Dashboard Analytics
+- [ ] Métricas de tempo de contratação
+- [ ] Taxa de conversão
+- [ ] Skills mais demandadas
+
+---
+
+## 📊 CRITÉRIOS DE SUCESSO
+
+### Fase 1 (TCC):
+- [ ] Landing page do Midu Group beautiful
+- [ ] Portal de vagas com dados reais
+- [ ] Candidatos consegue se cadastrar e fazer candidatura
+- [ ] Upload de PDF funcionando
+- [ ] Redirecionamento WhatsApp/Email
+- [ ] Admin vê candidatos no painel
+- [ ] Deploy no ar
+
+### Fase 2:
+- [ ] Tracker de etapas funcionando
+- [ ] Notificações por email
+- [ ] Perfil completo do candidato
+
+### Fase 3:
+- [ ] Banco de candidatos pesquisável
+- [ ] Busca sem necessidade de vaga aberta
+
+---
+
+## 💰 CUSTOS OPERACIONAIS
+
+| Fase | Serviço | Custo |
+|------|---------|-------|
+| Todas | Supabase Free | **$0** |
+| Todas | GitHub Pages | **$0** |
+| Todas | Domínio .com.br | **R$ 40/ano** |
+| Fase 2+ | Resend | **$0 (3K/mês)** |
+| Fase 4 | Supabase Pro | **$25/mês** |
+
+**Resumo:** Fase 1-3 rodando **de graça** (só domínio R$ 40/ano)
 
 ---
 
 ## 📅 PRAZO ESTIMADO
-**Total:** 6-8 horas de desenvolvimento agentico  
-**Entrega Final:** 13 Janeiro 2026
+
+| Fase | Estimativa |
+|------|------------|
+| Fase 1 (TCC) | 1-2 semanas |
+| Fase 2 | 2-4 semanas |
+| Fase 3 | Quando precisar |
 
 ---
 
-**Status:** 🚀 EM EXECUÇÃO  
-**Última Atualização:** 12 Janeiro 2026 20:30
+**Status:** 🚀 EM PLANEJAMENTO  
+**Última Atualização:** 08 Maio 2026
+
+---
+
+## 🎯 FASE 1: BASICÃO PRA APRESENTAÇÃO TCC (PRIORIDADE MÁXIMA)
+
+### ✅ Task 1.1: Supabase Setup ✅ EM PROGRESSO
+- [ ] Criar projeto Supabase
+- [ ] Configurar Auth (email/senha)
+- [ ] Criar tabelas: vagas, candidatos, aplicações, uploads
+- [ ] Configurar Storage pra PDFs (1GB grátis)
+- [ ] Configurar RLS (Row Level Security)
+- [ ] Obter API keys e configurar no projeto
+
+### Task 1.2: Backend com Supabase
+- [ ] Integrar Supabase Client no projeto
+- [ ] CRUD de vagas (admin)
+- [ ] CRUD de candidatos (cadastro/login)
+- [ ] Candidatura com upload de PDF
+- [ ] Redirecionamento WhatsApp/Email (configurável)
+- [ ] Admin Dashboard conectado no banco real
+
+### Task 1.3: Candidatura Funcional
+- [ ] Formulário candidacy com campos:
+  - Nome completo
+  - Email
+  - Telefone
+  - LinkedIn (opcional)
+  - Upload de currículo (PDF, máx 5MB)
+- [ ] Ao candidatar: guarda no banco + redireciona pra WhatsApp/Email
+- [ ] Confirmação visual de candidatura enviada
+
+### Task 1.4: Upload de Currículo
+- [ ] Supabase Storage bucket "currículos"
+- [ ] Validação de arquivo (PDF, máx 5MB)
+- [ ] Upload com progress indicator
+- [ ] Link do PDF salvo no banco
+
+### Task 1.5: Admin Dashboard Real
+- [ ] Login com Supabase Auth (admin/admin)
+- [ ] Listar vagas reais do banco
+- [ ] Listar candidatos reais do banco
+- [ ] Visualizar currículos (link/embed PDF)
+- [ ] CRUD completo de vagas
+- [ ] Dashboard com métricas reais
+
+### Task 1.6: Deploy e TCC
+- [ ] Build otimizado com dados reais
+- [ ] Deploy GitHub Pages
+- [ ] Testar fluxo completo candidacy → admin
+- [ ] Preparar apresentação TCC
+
+---
+
+## 👤 FASE 2: TRACKER DE ETAPAS (PÓS-TCC)
+
+> "Quero que as pessoas se movimentem dentro da plataforma"
+
+### Task 2.1: Status do Processo Seletivo
+- [ ] Definir etapas: Análise → Entrevista → Case/Teste → Final → Contratado/Reprovado
+- [ ] Admin pode mudar status do candidato
+- [ ] Candidato vê seu status em tempo real
+- [ ] Histórico de mudanças de status
+
+### Task 2.2: Notificações por Email
+- [ ] Configurar Resend (free tier 3K/mês)
+- [ ] Email quando candidacy é recebida
+- [ ] Email quando status muda (Análise → Entrevista, etc.)
+- [ ] Email quando é aprovado/reprovado
+
+### Task 2.3: Perfil Completo do Candidato
+- [ ] Dados pessoais (nome, email, telefone, cidade)
+- [ ] Experiências profissionais
+- [ ] Formação acadêmica
+- [ ] Habilidades (tags)
+- [ ] Currículo PDF (já incluso na Fase 1)
+
+### Task 2.4: Filtros Avançados Admin
+- [ ] Buscar por nome, email, skills
+- [ ] Filtrar por status de candidacy
+- [ ] Filtrar por vaga
+- [ ] Filtrar por data de candidacy
+- [ ] Exportar lista (CSV)
+
+---
+
+## 💎 FASE 3: BANCO DE TALENTOS (QUANDO PRECISAR)
+
+> "Quando estiver recebendo 200 currículos por semana, aí penso no banco"
+
+### Task 3.1: Banco de Candidatos
+- [ ] Candidatos ficam salvos mesmo sem vaga aberta
+- [ ] Perfis completos com skills e experiências
+- [ ] Busca por habilidades específicas
+- [ ] Filtro por localização, experiência, formação
+
+### Task 3.2: Pipeline de Talentos
+- [ ] Tag "em potencial" para candidates interesantes
+- [ ] Contato direto via plataforma (sem vaga)
+- [ ] Histórico de contactado
+- [ ] Status: Disponível, Contactado, Entrevistando, Contratado
+
+### Task 3.3: Dashboard Analytics
+- [ ] Métricas de tempo de contratação
+- [ ] Taxa de conversão (candidatos → contratados)
+- [ ] Origem dos candidatos (qual vaga veio)
+- [ ] Skills mais demandadas
+- [ ] NPS de candidates
+
+---
+
+## 🌟 FASE 4: SISTEMA COMPLETO (SONHO)
+
+> "Quero o sistema completo, tipo Gupy/Pontogyn"
+
+- [ ] Testes de aptidão online
+- [ ] Chat em tempo real (candidato ↔ recrutador)
+- [ ] Vídeo entrevista integrada
+- [ ] Matching automático com IA
+- [ ] Integração LinkedIn
+- [ ] App mobile
+
+---
+
+## 📊 CRITÉRIOS DE SUCESSO
+
+### Fase 1 (TCC):
+- [ ] Supabase conectado e funcionando
+- [ ] Candidatos consegue se cadastrar e fazer candidacy
+- [ ] Admin vê candidates no painel
+- [ ] Upload de PDF funcionando
+- [ ] Redirecionamento WhatsApp/Email configurável
+- [ ] Deploy no ar funcionando
+
+### Fase 2:
+- [ ] Tracker de etapas funcionando
+- [ ] Candidato vê status em tempo real
+- [ ] Notificações por email ativas
+- [ ] Perfil completo do candidato
+
+### Fase 3:
+- [ ] Banco de candidatos pesquisável
+- [ ] Pipeline de talentos
+- [ ] Busca sem necessidade de vaga aberta
+
+---
+
+## 💰 CUSTOS OPERACIONAIS
+
+| Fase | Serviço | Custo |
+|------|---------|-------|
+| Todas | Supabase Free | **$0** |
+| Todas | GitHub Pages | **$0** |
+| Todas | Domínio .com.br | **R$ 40/ano** |
+| Fase 2+ | Resend | **$0 (3K/mês)** |
+| Fase 4 | Supabase Pro | **$25/mês** |
+
+**Resumo:** Fase 1-3 rodando **de graça** (só domínio R$ 40/ano)
+
+---
+
+## 📅 PRAZO ESTIMADO
+
+| Fase | Estimativa |
+|------|------------|
+| Fase 1 (TCC) | 1-2 semanas |
+| Fase 2 | 2-4 semanas |
+| Fase 3 | Quando precisar |
+| Fase 4 | Longo prazo |
+
+---
+
+**Status:** 🚀 EM PLANEJAMENTO  
+**Última Atualização:** 08 Maio 2026
