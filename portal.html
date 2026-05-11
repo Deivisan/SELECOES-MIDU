@@ -5,702 +5,446 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Portal do Candidato - Midu Group</title>
   <link rel="stylesheet" href="styles.css">
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    
-    body {
-      font-family: var(--font-body);
-      background: var(--bg-secondary);
-      min-height: 100vh;
-      opacity: 0;
-      animation: portalFadeIn 0.4s ease forwards;
-    }
-    @keyframes portalFadeIn {
-      from { opacity: 0; transform: translateY(8px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    /* Header */
-    .portal-header {
-      background: var(--bg);
-      border-bottom: 1px solid var(--border);
-      padding: var(--spacing-md) 0;
-      position: sticky;
-      top: 0;
-      z-index: 100;
-    }
-
-    .header-container {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 0 var(--spacing-xl);
-    }
-
-    .header-left {
-      display: flex;
-      align-items: center;
-      gap: var(--spacing-lg);
-    }
-
-    .portal-logo {
-      display: flex;
-      align-items: center;
-      gap: var(--spacing-sm);
-      font-size: var(--font-size-lg);
-      font-weight: 700;
-      color: var(--text);
-      text-decoration: none;
-    }
-
-    .portal-logo img {
-      width: 32px;
-      height: 32px;
-    }
-
-    .portal-nav {
-      display: flex;
-      gap: var(--spacing-xl);
-    }
-
-    .portal-nav-link {
-      color: var(--text-muted);
-      text-decoration: none;
-      font-size: var(--font-size-sm);
-      font-weight: 500;
-      transition: var(--transition);
-    }
-
-    .portal-nav-link:hover,
-    .portal-nav-link.active {
-      color: var(--primary);
-    }
-
-    .header-right {
-      display: flex;
-      align-items: center;
-      gap: var(--spacing-lg);
-    }
-
-    .user-menu {
-      display: flex;
-      align-items: center;
-      gap: var(--spacing-md);
-      cursor: pointer;
-      position: relative;
-    }
-
-    .user-avatar {
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      background: var(--primary);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 600;
-      font-size: var(--font-size-sm);
-      color: white;
-    }
-
-    .user-name {
-      font-size: var(--font-size-sm);
-      font-weight: 500;
-      color: var(--text);
-    }
-
-    .dropdown-menu {
-      position: absolute;
-      top: 100%;
-      right: 0;
-      background: var(--bg);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      min-width: 180px;
-      box-shadow: var(--shadow-lg);
-      display: none;
-      flex-direction: column;
-      padding: var(--spacing-xs) 0;
-      margin-top: var(--spacing-xs);
-    }
-
-    .dropdown-menu.show {
-      display: flex;
-    }
-
-    .dropdown-item {
-      padding: var(--spacing-sm) var(--spacing-md);
-      color: var(--text);
-      text-decoration: none;
-      font-size: var(--font-size-sm);
-      transition: var(--transition);
-      cursor: pointer;
-      border: none;
-      background: none;
-      width: 100%;
-      text-align: left;
-    }
-
-    .dropdown-item:hover {
-      background: var(--bg-secondary);
-      color: var(--primary);
-    }
-
-    /* Main Content */
-    .portal-main {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: var(--spacing-2xl) var(--spacing-xl);
-    }
-
-    .section-title {
-      font-size: var(--font-size-2xl);
-      font-weight: 600;
-      margin-bottom: var(--spacing-sm);
-    }
-
-    .section-subtitle {
-      color: var(--text-muted);
-      font-size: var(--font-size-sm);
-      margin-bottom: var(--spacing-xl);
-    }
-
-    /* Tabs */
-    .tabs {
-      display: flex;
-      gap: var(--spacing-xs);
-      margin-bottom: var(--spacing-xl);
-      border-bottom: 1px solid var(--border);
-      background: var(--bg);
-      padding: 0 var(--spacing-lg);
-      border-radius: var(--radius-lg) var(--radius-lg) 0 0;
-    }
-
-    .tab {
-      padding: var(--spacing-md) var(--spacing-lg);
-      background: transparent;
-      border: none;
-      border-bottom: 2px solid transparent;
-      color: var(--text-muted);
-      font-size: var(--font-size-sm);
-      font-weight: 500;
-      cursor: pointer;
-      transition: var(--transition);
-      margin-bottom: -1px;
-    }
-
-    .tab:hover {
-      color: var(--text);
-    }
-
-    .tab.active {
-      color: var(--primary);
-      border-bottom-color: var(--primary);
-    }
-
-    .tab-count {
-      display: inline-flex;
-      min-width: 20px;
-      height: 20px;
-      padding: 0 6px;
-      background: rgba(37, 99, 235, 0.1);
-      color: var(--primary);
-      border-radius: 10px;
-      font-size: var(--font-size-xs);
-      font-weight: 600;
-      align-items: center;
-      justify-content: center;
-      margin-left: var(--spacing-xs);
-    }
-
-    .tab-content {
-      display: none;
-      animation: fadeIn 0.3s ease;
-    }
-
-    .tab-content.active {
-      display: block;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    /* Candidate Cards */
-    .candidates-list {
-      display: flex;
-      flex-direction: column;
-      gap: var(--spacing-md);
-    }
-
-    .candidate-card {
-      background: var(--bg);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-lg);
-      padding: var(--spacing-lg);
-      transition: var(--transition);
-      cursor: pointer;
-    }
-
-    .candidate-card:hover {
-      border-color: var(--primary);
-      box-shadow: var(--shadow-md);
-    }
-
-    .candidate-card-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      margin-bottom: var(--spacing-md);
-    }
-
-    .candidate-vaga {
-      font-size: var(--font-size-lg);
-      font-weight: 600;
-      color: var(--text);
-      margin-bottom: var(--spacing-xs);
-    }
-
-    .candidate-company {
-      font-size: var(--font-size-sm);
-      color: var(--text-muted);
-    }
-
-    .candidate-status {
-      padding: var(--spacing-xs) var(--spacing-md);
-      border-radius: var(--radius-full);
-      font-size: var(--font-size-xs);
-      font-weight: 600;
-      white-space: nowrap;
-    }
-
-    .candidate-meta {
-      display: flex;
-      gap: var(--spacing-lg);
-      font-size: var(--font-size-sm);
-      color: var(--text-muted);
-    }
-
-    .candidate-meta span {
-      display: flex;
-      align-items: center;
-      gap: var(--spacing-xs);
-    }
-
-    .candidate-meta svg {
-      width: 16px;
-      height: 16px;
-    }
-
-    /* Empty State */
-    .empty-state {
-      text-align: center;
-      padding: var(--spacing-3xl);
-      background: var(--bg);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-lg);
-    }
-
-    .empty-state svg {
-      width: 64px;
-      height: 64px;
-      color: var(--text-muted);
-      margin-bottom: var(--spacing-lg);
-    }
-
-    .empty-state h3 {
-      font-size: var(--font-size-lg);
-      font-weight: 600;
-      margin-bottom: var(--spacing-sm);
-    }
-
-    .empty-state p {
-      color: var(--text-muted);
-      font-size: var(--font-size-sm);
-      margin-bottom: var(--spacing-xl);
-    }
-
-    /* Profile Form */
-    .profile-form {
-      background: var(--bg);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-lg);
-      padding: var(--spacing-xl);
-      max-width: 600px;
-    }
-
-    .form-group {
-      margin-bottom: var(--spacing-lg);
-    }
-
-    .form-label {
-      display: block;
-      font-size: var(--font-size-sm);
-      font-weight: 500;
-      color: var(--text);
-      margin-bottom: var(--spacing-xs);
-    }
-
-    .form-input {
-      width: 100%;
-      padding: var(--spacing-sm) var(--spacing-md);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      font-size: var(--font-size-base);
-      background: var(--bg-secondary);
-      color: var(--text);
-    }
-
-    .form-input:focus {
-      outline: none;
-      border-color: var(--primary);
-      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
-    }
-
-    .form-actions {
-      display: flex;
-      gap: var(--spacing-md);
-      margin-top: var(--spacing-xl);
-    }
-
-    .btn {
-      padding: var(--spacing-sm) var(--spacing-xl);
-      border-radius: var(--radius);
-      font-weight: 500;
-      font-size: var(--font-size-sm);
-      cursor: pointer;
-      text-decoration: none;
-      display: inline-flex;
-      align-items: center;
-      gap: var(--spacing-sm);
-      border: none;
-      transition: var(--transition);
-    }
-
-    .btn-primary {
-      background: var(--primary);
-      color: white;
-    }
-
-    .btn-primary:hover {
-      background: var(--primary-dark);
-    }
-
-    .btn-secondary {
-      background: var(--bg-secondary);
-      color: var(--text);
-      border: 1px solid var(--border);
-    }
-
-    /* Resume Upload */
-    .resume-section {
-      background: var(--bg);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-lg);
-      padding: var(--spacing-xl);
-      max-width: 600px;
-    }
-
-    .resume-upload {
-      border: 2px dashed var(--border);
-      border-radius: var(--radius-lg);
-      padding: var(--spacing-2xl);
-      text-align: center;
-      cursor: pointer;
-      transition: var(--transition);
-    }
-
-    .resume-upload:hover {
-      border-color: var(--primary);
-      background: rgba(37, 99, 235, 0.02);
-    }
-
-    .resume-upload-icon {
-      width: 64px;
-      height: 64px;
-      margin: 0 auto var(--spacing-lg);
-      color: var(--text-muted);
-    }
-
-    .resume-upload p {
-      color: var(--text-muted);
-      font-size: var(--font-size-sm);
-      margin-bottom: var(--spacing-sm);
-    }
-
-    .resume-upload a {
-      color: var(--primary);
-      font-weight: 500;
-    }
-
-    .resume-current {
-      display: none;
-    }
-
-    .resume-current.show {
-      display: block;
-      margin-top: var(--spacing-lg);
-      padding: var(--spacing-lg);
-      background: var(--bg-secondary);
-      border-radius: var(--radius);
-    }
-
-    .resume-current h4 {
-      font-size: var(--font-size-base);
-      margin-bottom: var(--spacing-sm);
-    }
-
-    .resume-info {
-      font-size: var(--font-size-sm);
-      color: var(--text-muted);
-      margin-bottom: var(--spacing-md);
-    }
-
-    .candidate-card {
-      animation: cardFadeIn 0.5s ease forwards;
-    }
-
-    @keyframes cardFadeIn {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    .candidate-card:nth-child(1) { animation-delay: 0s; }
-    .candidate-card:nth-child(2) { animation-delay: 0.1s; }
-    .candidate-card:nth-child(3) { animation-delay: 0.2s; }
-    .candidate-card:nth-child(4) { animation-delay: 0.3s; }
-    .candidate-card:nth-child(5) { animation-delay: 0.4s; }
-
-    @media (max-width: 768px) {
-      .portal-nav {
-        display: none;
-      }
-      
-      .candidate-meta {
-        flex-direction: column;
-        gap: var(--spacing-sm);
-      }
-    }
-  </style>
+  <link rel="stylesheet" href="portal/portal.css">
 </head>
 <body>
+  <!-- Loading Overlay -->
+  <div class="page-loading-overlay" id="loadingOverlay">
+    <div class="loading-spinner"></div>
+  </div>
+
   <!-- Header -->
   <header class="portal-header">
-    <div class="header-container">
-      <div class="header-left">
-        <a href="index.html" class="portal-logo">
-          <img src="assets/logo.png" alt="Midu Group" class="nav-logo-img">
+    <div class="container">
+      <a href="index.html" class="portal-logo">
+        <img src="assets/logo.png" alt="Midu Group" class="nav-logo-img">
+        <span class="portal-logo-text">Portal do Candidato</span>
+      </a>
+      
+      <nav class="portal-nav">
+        <a href="vagas.html" class="portal-nav-link">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="2" y="7" width="20" height="14" rx="2" ry="2"/>
+            <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>
+          </svg>
+          Vagas
         </a>
-        <nav class="portal-nav">
-          <a href="vagas.html" class="portal-nav-link">Vagas</a>
-          <a href="candidatar-se.html" class="portal-nav-link">Candidatar-se</a>
-        </nav>
-      </div>
+        <a href="portal/vagas-salvas.html" class="portal-nav-link">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>
+          </svg>
+          Salvas
+        </a>
+      </nav>
 
       <div class="header-right">
-        <div class="user-menu" onclick="toggleDropdown()">
+        <!-- Notifications -->
+        <button class="notification-btn" id="notificationBtn" onclick="toggleNotifications()">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+            <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+          </svg>
+          <span class="notification-badge" id="notifCount">3</span>
+        </button>
+        
+        <!-- Notifications Dropdown -->
+        <div class="notifications-dropdown" id="notificationsDropdown">
+          <div class="notifications-header">
+            <h4>Notificações</h4>
+            <button onclick="markAllRead()">Marcar todas como lidas</button>
+          </div>
+          <div class="notifications-list" id="notificationsList">
+            <div class="notification-item unread" data-id="1">
+              <div class="notification-icon success">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="20,6 9,17 4,12"/>
+                </svg>
+              </div>
+              <div class="notification-content">
+                <p><strong>Parabéns!</strong> Você passou para a fase de entrevista na vaga de Analista de RH.</p>
+                <span class="notification-time">Há 2 horas</span>
+              </div>
+            </div>
+            <div class="notification-item unread" data-id="2">
+              <div class="notification-icon warning">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="10"/>
+                  <line x1="12" y1="8" x2="12" y2="12"/>
+                  <line x1="12" y1="16" x2="12.01" y2="16"/>
+                </svg>
+              </div>
+              <div class="notification-content">
+                <p>Sua candidatura para <strong>Desenvolvedor Frontend</strong> está sendo analisada.</p>
+                <span class="notification-time">Há 1 dia</span>
+              </div>
+            </div>
+            <div class="notification-item" data-id="3">
+              <div class="notification-icon info">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="10"/>
+                  <line x1="12" y1="16" x2="12" y2="12"/>
+                  <line x1="12" y1="8" x2="12.01" y2="8"/>
+                </svg>
+              </div>
+              <div class="notification-content">
+                <p>Nova vaga compatível com seu perfil: <strong>Gerente de Projetos</strong></p>
+                <span class="notification-time">Há 2 dias</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- User Menu -->
+        <div class="user-menu" onclick="toggleUserMenu()">
           <div class="user-avatar" id="userAvatar">MS</div>
-          <span class="user-name" id="userName">Maria Santos</span>
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--text-muted);">
+          <div class="user-info">
+            <span class="user-name" id="userName">Maria Santos</span>
+            <span class="user-role">Candidato</span>
+          </div>
+          <svg class="dropdown-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <polyline points="6,9 12,15 18,9"/>
           </svg>
-          <div class="dropdown-menu" id="dropdownMenu">
-            <button class="dropdown-item" onclick="showMyProfile()">Meu Perfil</button>
-            <button class="dropdown-item" onclick="logout()">Sair</button>
+          
+          <div class="user-dropdown" id="userDropdown">
+            <a href="portal/perfil.html" class="dropdown-item">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                <circle cx="12" cy="7" r="4"/>
+              </svg>
+              Meu Perfil
+            </a>
+            <a href="portal/candidaturas.html" class="dropdown-item">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                <polyline points="14,2 14,8 20,8"/>
+                <line x1="16" y1="13" x2="8" y2="13"/>
+                <line x1="16" y1="17" x2="8" y2="17"/>
+              </svg>
+              Minhas Candidaturas
+            </a>
+            <a href="portal/curriculo.html" class="dropdown-item">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                <polyline points="14,2 14,8 20,8"/>
+              </svg>
+              Meu Currículo
+            </a>
+            <div class="dropdown-divider"></div>
+            <a href="portal/ajuda.html" class="dropdown-item">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"/>
+                <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
+                <line x1="12" y1="17" x2="12.01" y2="17"/>
+              </svg>
+              Ajuda
+            </a>
+            <button class="dropdown-item logout" onclick="logout()">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+                <polyline points="16,17 21,12 16,7"/>
+                <line x1="21" y1="12" x2="9" y2="12"/>
+              </svg>
+              Sair
+            </button>
           </div>
         </div>
       </div>
     </div>
   </header>
 
-  <!-- Main Content -->
-  <main class="portal-main reveal">
-    <h1 class="section-title">Portal do Candidato</h1>
-    <p class="section-subtitle">Gerencie suas candidaturas e perfil</p>
-
-    <!-- Tabs -->
-    <div class="tabs reveal">
-      <button class="tab active" id="tab-candidaturas" onclick="switchTab('candidaturas')">
-        Minhas Candidaturas
-        <span class="tab-count" id="candidaturasCount">3</span>
-      </button>
-      <button class="tab" id="tab-perfil" onclick="switchTab('perfil')">
-        Meu Perfil
-      </button>
-      <button class="tab" id="tab-curriculo" onclick="switchTab('curriculo')">
-        Meu Currículo
-      </button>
-    </div>
-
-    <!-- Tab: Candidaturas -->
-    <div id="candidaturas-tab" class="tab-content active reveal">
-      <div class="candidates-list" id="candidatesList">
-        <!-- Populated by JS -->
+  <!-- Hero Banner -->
+  <section class="portal-hero">
+    <div class="container">
+      <div class="hero-content">
+        <div class="hero-text">
+          <h1>Bem-vindo(a), <span id="heroName">Maria</span>!</h1>
+          <p>Acompanhe suas candidaturas e mantenha seu perfil atualizado.</p>
+        </div>
+        <div class="hero-stats-mini">
+          <div class="stat-mini">
+            <span class="stat-value" id="statCandidaturas">3</span>
+            <span class="stat-label">Candidaturas</span>
+          </div>
+          <div class="stat-mini">
+            <span class="stat-value" id="statEmAnalise">1</span>
+            <span class="stat-label">Em Análise</span>
+          </div>
+          <div class="stat-mini">
+            <span class="stat-value" id="statEntrevistas">1</span>
+            <span class="stat-label">Entrevistas</span>
+          </div>
+        </div>
       </div>
     </div>
+  </section>
 
-    <!-- Tab: Perfil -->
-    <div id="perfil-tab" class="tab-content reveal">
-      <form class="profile-form" id="profileForm" onsubmit="saveProfile(event)">
-        <div class="form-group">
-          <label class="form-label">Nome Completo</label>
-          <input type="text" class="form-input" name="nome" id="profileNome" value="">
+  <!-- Main Content -->
+  <main class="portal-main">
+    <div class="container">
+      
+      <!-- Quick Actions -->
+      <section class="quick-actions">
+        <a href="vagas.html" class="quick-action-card primary">
+          <div class="qa-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="2" y="7" width="20" height="14" rx="2" ry="2"/>
+              <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>
+            </svg>
+          </div>
+          <div class="qa-text">
+            <h3>Ver Vagas Abertas</h3>
+            <p>Explore novas oportunidades</p>
+          </div>
+          <svg class="qa-arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M5 12h14M12 5l7 7-7 7"/>
+          </svg>
+        </a>
+        
+        <a href="portal/perfil.html" class="quick-action-card">
+          <div class="qa-icon secondary">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+              <circle cx="12" cy="7" r="4"/>
+            </svg>
+          </div>
+          <div class="qa-text">
+            <h3>Atualizar Perfil</h3>
+            <p>Mantenha seus dados atualizados</p>
+          </div>
+          <svg class="qa-arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M5 12h14M12 5l7 7-7 7"/>
+          </svg>
+        </a>
+        
+        <a href="portal/curriculo.html" class="quick-action-card">
+          <div class="qa-icon accent">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+              <polyline points="14,2 14,8 20,8"/>
+            </svg>
+          </div>
+          <div class="qa-text">
+            <h3>Gerenciar Currículo</h3>
+            <p>Atualize seu PDF</p>
+          </div>
+          <svg class="qa-arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M5 12h14M12 5l7 7-7 7"/>
+          </svg>
+        </a>
+      </section>
+
+      <!-- Recent Applications -->
+      <section class="section">
+        <div class="section-header">
+          <h2>Candidaturas Recentes</h2>
+          <a href="portal/candidaturas.html" class="see-all-link">
+            Ver todas
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M5 12h14M12 5l7 7-7 7"/>
+            </svg>
+          </a>
         </div>
         
-        <div class="form-group">
-          <label class="form-label">Email</label>
-          <input type="email" class="form-input" name="email" id="profileEmail" value="">
+        <div class="applications-grid" id="recentApplications">
+          <!-- Populated by JS -->
         </div>
+      </section>
 
-        <div class="form-group">
-          <label class="form-label">Telefone</label>
-          <input type="tel" class="form-input" name="telefone" id="profilePhone" value="">
-        </div>
-
-        <div class="form-group">
-          <label class="form-label">LinkedIn (opcional)</label>
-          <input type="text" class="form-input" name="linkedin" id="profileLinkedin" value="linkedin.com/in/mariasantos">
-        </div>
-
-        <div class="form-group">
-          <label class="form-label">Cidade</label>
-          <input type="text" class="form-input" name="cidade" id="profileCidade" value="">
-        </div>
-
-        <div class="form-actions">
-          <button type="button" class="btn btn-secondary" onclick="switchTab('candidaturas')">Cancelar</button>
-          <button type="submit" class="btn btn-primary">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20,6 9,17 4,12"/></svg>
-            Salvar Alterações
-          </button>
-        </div>
-      </form>
-    </div>
-
-    <!-- Tab: Currículo -->
-    <div id="curriculo-tab" class="tab-content reveal">
-      <div class="resume-section">
-        <div class="resume-upload" id="resumeUpload" onclick="triggerUpload()">
-          <svg class="resume-upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-            <polyline points="17,8 12,3 7,8"/>
-            <line x1="12" y1="3" x2="12" y2="15"/>
+      <!-- Tips Section -->
+      <section class="tips-section">
+        <div class="tips-header">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="12" y1="16" x2="12" y2="12"/>
+            <line x1="12" y1="8" x2="12.01" y2="8"/>
           </svg>
-          <h3>Arraste seu currículo aqui</h3>
-          <p>ou clique para selecionar</p>
-          <p style="font-size: var(--font-size-xs); color: var(--text-muted);">PDF, máximo 5MB</p>
-          <input type="file" id="fileInput" accept=".pdf" style="display: none;" onchange="handleFileSelect(event)">
+          <h3>Dicas para seu sucesso</h3>
         </div>
+        <div class="tips-grid">
+          <div class="tip-card">
+            <div class="tip-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                <polyline points="14,2 14,8 20,8"/>
+              </svg>
+            </div>
+            <h4>Mantenha seu currículo atualizado</h4>
+            <p>Um currículo bem elaborado aumenta suas chances de ser chamado para entrevistas.</p>
+          </div>
+          <div class="tip-card">
+            <div class="tip-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                <circle cx="9" cy="7" r="4"/>
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+              </svg>
+            </div>
+            <h4>Personalize para cada vaga</h4>
+            <p>Adapte seu currículo e carta de apresentação para cada oportunidade.</p>
+          </div>
+          <div class="tip-card">
+            <div class="tip-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                <line x1="16" y1="2" x2="16" y2="6"/>
+                <line x1="8" y1="2" x2="8" y2="6"/>
+                <line x1="3" y1="10" x2="21" y2="10"/>
+              </svg>
+            </div>
+            <h4>Acompanhe suas candidaturas</h4>
+            <p>Acompanhe o status das suas candidaturas para se preparar para próximas etapas.</p>
+          </div>
+        </div>
+      </section>
 
-        <div class="resume-current" id="resumeCurrent">
-          <h4>Currículo atual</h4>
-          <div class="resume-info">
-            <p><strong>Arquivo:</strong> <span id="resumeName">curriculo_maria_santos.pdf</span></p>
-            <p><strong>Tamanho:</strong> 245 KB</p>
-            <p><strong>Enviado em:</strong> 08/05/2026</p>
-          </div>
-          <div style="display: flex; gap: var(--spacing-md);">
-            <button class="btn btn-primary" onclick="downloadResume()">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7,10 12,15 17,10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-              Baixar
-            </button>
-            <button class="btn btn-secondary" onclick="removeResume()">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3,6 5,6 21,6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
-              Remover
-            </button>
-          </div>
-        </div>
-      </div>
     </div>
   </main>
 
+  <!-- Footer -->
+  <footer class="portal-footer">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-brand">
+          <img src="assets/logo.png" alt="Midu Group">
+          <p>Consultoria em gestão de pessoas e recrutamento especializado na Bahia.</p>
+        </div>
+        <div class="footer-links">
+          <a href="index.html">Home</a>
+          <a href="vagas.html">Vagas</a>
+          <a href="contato.html">Contato</a>
+          <a href="portal-login.html">Portal</a>
+        </div>
+        <div class="footer-social">
+          <a href="#" aria-label="LinkedIn">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+            </svg>
+          </a>
+          <a href="#" aria-label="Instagram">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+            </svg>
+          </a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2026 Midu Group - Todos os direitos reservados</p>
+      </div>
+    </div>
+  </footer>
+
   <script>
-    // Mock data for candidate's applications
+    // Mock data
     const myApplications = [
       { 
         id: 1, 
-        vaga: 'Analista de RH', 
+        vaga: 'Analista de Recursos Humanos', 
         empresa: 'Empresa XPTO',
         status: 'Entrevista', 
+        statusClass: 'entrevista',
         data: '08/05/2026',
-        descricao: 'Buscamos Analista de RH para atuar com rotinas de pessoal, recrutamento e seleção.'
+        local: 'Salvador, BA',
+        salario: 'R$ 3.500 - R$ 4.500',
+        urgente: true
       },
       { 
         id: 2, 
-        vaga: 'Desenvolvedor Frontend', 
-        empresa: 'Tech Solutions',
+        vaga: 'Desenvolvedor Frontend React', 
+        empresa: 'Tech Solutions BA',
         status: 'Em Análise', 
-        data: '07/05/2026',
-        descricao: 'Desenvolvedor Frontend com experiência em React/Next.js'
+        statusClass: 'analise',
+        data: '05/05/2026',
+        local: 'Remoto',
+        salario: 'R$ 5.000 - R$ 7.000',
+        urgente: false
       },
       { 
         id: 3, 
-        vaga: 'Gerente de Vendas', 
-        empresa: 'Comercial Silva',
-        status: 'Aprovado', 
-        data: '06/05/2026',
-        descricao: 'Gerente de vendas para liderar equipe comercial'
+        vaga: 'Gerente de Projetos', 
+        empresa: 'Startup Digital',
+        status: 'Pendente', 
+        statusClass: 'pendente',
+        data: '02/05/2026',
+        local: 'Salvador, BA',
+        salario: 'R$ 6.000 - R$ 8.000',
+        urgente: false
       }
     ];
 
-    function toggleDropdown() {
-      const menu = document.getElementById('dropdownMenu');
-      menu.classList.toggle('show');
-    }
+    const notifications = [
+      { id: 1, type: 'success', text: 'Você passou para entrevista em Analista de RH', time: '2 horas', read: false },
+      { id: 2, type: 'info', text: 'Candidatura para Desenvolvedor Frontend em análise', time: '1 dia', read: false },
+      { id: 3, type: 'info', text: 'Nova vaga compatível: Gerente de Projetos', time: '2 dias', read: true }
+    ];
 
-    function closeDropdown() {
-      document.getElementById('dropdownMenu').classList.remove('show');
-    }
+    // Initialize
+    document.addEventListener('DOMContentLoaded', function() {
+      // Check auth
+      if (localStorage.getItem('candidateLoggedIn') !== 'true') {
+        window.location.href = 'portal-login.html';
+        return;
+      }
 
-    function switchTab(tabId) {
-      // Update tab buttons
-      document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
-      document.getElementById('tab-' + tabId).classList.add('active');
-      
-      // Update content
-      document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
-      document.getElementById(tabId + '-tab').classList.add('active');
-    }
+      // Load profile
+      const profile = JSON.parse(localStorage.getItem('candidateProfile')) || {};
+      if (profile.nome) {
+        document.getElementById('userName').textContent = profile.nome;
+        document.getElementById('heroName').textContent = profile.nome.split(' ')[0];
+        document.getElementById('userAvatar').textContent = profile.nome.split(' ').map(n => n[0]).join('').substring(0,2).toUpperCase();
+      }
 
-    function getStatusClass(status) {
-      const map = {
-        'Pendente': 'status-pendente',
-        'Em Análise': 'status-analise',
-        'Entrevista': 'status-entrevista',
-        'Teste': 'status-teste',
-        'Final': 'status-final',
-        'Aprovado': 'status-aprovado',
-        'Reprovado': 'status-reprovado'
-      };
-      return map[status] || 'status-pendente';
-    }
+      // Render applications
+      renderApplications();
+
+      // Update stats
+      updateStats();
+
+      // Hide loading
+      setTimeout(() => {
+        document.getElementById('loadingOverlay').classList.add('fade-out');
+      }, 300);
+
+      // Close dropdowns on outside click
+      document.addEventListener('click', function(e) {
+        if (!e.target.closest('.user-menu')) {
+          document.getElementById('userDropdown').classList.remove('show');
+        }
+        if (!e.target.closest('.notification-btn') && !e.target.closest('.notifications-dropdown')) {
+          document.getElementById('notificationsDropdown').classList.remove('show');
+        }
+      });
+    });
 
     function renderApplications() {
-      const list = document.getElementById('candidatesList');
-      list.innerHTML = '';
-
-      myApplications.forEach((app, i) => {
-        const card = document.createElement('div');
-        card.className = 'candidate-card';
-        card.style.opacity = '0';
-        card.style.transform = 'translateY(20px)';
-        card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
-        card.style.transitionDelay = (i * 0.12) + 's';
-        card.innerHTML = `
-          <div class="candidate-card-header">
-            <div>
-              <div class="candidate-vaga">${app.vaga}</div>
-              <div class="candidate-company">${app.empresa}</div>
-            </div>
-            <span class="candidate-status ${getStatusClass(app.status)}">${app.status}</span>
+      const container = document.getElementById('recentApplications');
+      container.innerHTML = myApplications.map(app => `
+        <div class="application-card" onclick="window.location.href='vaga-detalhes.html?id=${app.id}'">
+          ${app.urgente ? '<span class="urgent-badge">Urgente</span>' : ''}
+          <div class="app-header">
+            <h3>${app.vaga}</h3>
+            <span class="status-badge ${app.statusClass}">${app.status}</span>
           </div>
-          <p style="color: var(--text-muted); font-size: var(--font-size-sm); margin-bottom: var(--spacing-md);">${app.descricao}</p>
-          <div class="candidate-meta">
+          <div class="app-company">${app.empresa}</div>
+          <div class="app-details">
             <span>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+                <circle cx="12" cy="10" r="3"/>
+              </svg>
+              ${app.local}
+            </span>
+            <span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="12" y1="1" x2="12" y2="23"/>
+                <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+              </svg>
+              ${app.salario}
+            </span>
+          </div>
+          <div class="app-footer">
+            <span class="app-date">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
                 <line x1="16" y1="2" x2="16" y2="6"/>
                 <line x1="8" y1="2" x2="8" y2="6"/>
@@ -708,162 +452,44 @@
               </svg>
               Candidatou-se em ${app.data}
             </span>
-            <span>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <circle cx="12" cy="12" r="10"/>
-                <polyline points="12,6 12,12 16,14"/>
-              </svg>
-              Atualizado há 2 dias
-            </span>
+            <a href="vaga-detalhes.html?id=${app.id}" class="btn btn-sm btn-outline">Ver detalhes</a>
           </div>
-        `;
-        list.appendChild(card);
+        </div>
+      `).join('');
+    }
+
+    function updateStats() {
+      const emAnalise = myApplications.filter(a => a.statusClass === 'analise').length;
+      const entrevistas = myApplications.filter(a => a.statusClass === 'entrevista').length;
+      
+      document.getElementById('statCandidaturas').textContent = myApplications.length;
+      document.getElementById('statEmAnalise').textContent = emAnalise;
+      document.getElementById('statEntrevistas').textContent = entrevistas;
+    }
+
+    function toggleUserMenu() {
+      document.getElementById('userDropdown').classList.toggle('show');
+      document.getElementById('notificationsDropdown').classList.remove('show');
+    }
+
+    function toggleNotifications() {
+      document.getElementById('notificationsDropdown').classList.toggle('show');
+      document.getElementById('userDropdown').classList.remove('show');
+    }
+
+    function markAllRead() {
+      document.querySelectorAll('.notification-item').forEach(item => {
+        item.classList.remove('unread');
       });
-
-      document.getElementById('candidaturasCount').textContent = myApplications.length;
-
-      // Trigger stagger animation after a microtask
-      requestAnimationFrame(function() {
-        list.querySelectorAll('.candidate-card').forEach(function(c) {
-          c.style.opacity = '1';
-          c.style.transform = 'translateY(0)';
-        });
-      });
-    }
-
-    function showMyProfile() {
-      switchTab('perfil');
-      closeDropdown();
-    }
-
-    function saveProfile(e) {
-      e.preventDefault();
-      const formData = new FormData(e.target);
-      
-      const profile = {
-        nome: formData.get('nome'),
-        email: formData.get('email'),
-        telefone: formData.get('telefone'),
-        linkedin: formData.get('linkedin'),
-        cidade: formData.get('cidade')
-      };
-
-      // Save to localStorage
-      localStorage.setItem('candidateProfile', JSON.stringify(profile));
-      
-      // Update header
-      document.getElementById('userName').textContent = profile.nome;
-      document.getElementById('userAvatar').textContent = profile.nome.split(' ').map(n => n[0]).join('').substring(0,2).toUpperCase();
-      
-      alert('Perfil atualizado com sucesso!');
-    }
-
-    function triggerUpload() {
-      document.getElementById('fileInput').click();
-    }
-
-    function handleFileSelect(event) {
-      const file = event.target.files[0];
-      if (file && file.type === 'application/pdf') {
-        if (file.size > 5 * 1024 * 1024) {
-          alert('Arquivo muito grande. Máximo 5MB.');
-          return;
-        }
-        
-        const resumeData = {
-          name: file.name,
-          size: (file.size / 1024).toFixed(0) + ' KB',
-          date: new Date().toLocaleDateString('pt-BR')
-        };
-        
-        localStorage.setItem('candidateResume', JSON.stringify(resumeData));
-        document.getElementById('resumeUpload').style.display = 'none';
-        document.getElementById('resumeCurrent').classList.add('show');
-        document.getElementById('resumeName').textContent = resumeData.name;
-        
-        alert('Currículo enviado com sucesso!');
-      } else {
-        alert('Apenas arquivos PDF são aceitos.');
-      }
-    }
-
-    function downloadResume() {
-      const resume = JSON.parse(localStorage.getItem('candidateResume'));
-      if (resume) {
-        alert('Download iniciado: ' + resume.name);
-      }
-    }
-
-    function removeResume() {
-      if (confirm('Tem certeza que deseja remover o currículo?')) {
-        localStorage.removeItem('candidateResume');
-        document.getElementById('resumeUpload').style.display = 'block';
-        document.getElementById('resumeCurrent').classList.remove('show');
-      }
+      document.getElementById('notifCount').textContent = '0';
     }
 
     function logout() {
-      localStorage.removeItem('candidateLoggedIn');
-      window.location.href = 'portal-login.html';
-    }
-
-    // Initialize
-    document.addEventListener('DOMContentLoaded', function() {
-      const isLoggedIn = localStorage.getItem('candidateLoggedIn') === 'true';
-      if (!isLoggedIn) {
+      if (confirm('Tem certeza que deseja sair?')) {
+        localStorage.removeItem('candidateLoggedIn');
         window.location.href = 'portal-login.html';
-        return;
       }
-
-      // Load profile
-      const profile = JSON.parse(localStorage.getItem('candidateProfile'));
-      if (profile) {
-        document.getElementById('profileNome').value = profile.nome;
-        document.getElementById('profileEmail').value = profile.email;
-        document.getElementById('profilePhone').value = profile.telefone;
-        document.getElementById('profileLinkedin').value = profile.linkedin || '';
-        document.getElementById('profileCidade').value = profile.cidade;
-        
-        document.getElementById('userName').textContent = profile.nome;
-        document.getElementById('userAvatar').textContent = profile.nome.split(' ').map(n => n[0]).join('').substring(0,2).toUpperCase();
-      }
-
-      // Check resume
-      const resume = JSON.parse(localStorage.getItem('candidateResume'));
-      if (resume) {
-        document.getElementById('resumeUpload').style.display = 'none';
-        document.getElementById('resumeCurrent').classList.add('show');
-        document.getElementById('resumeName').textContent = resume.name;
-      }
-
-      renderApplications();
-
-      // Close dropdown when clicking outside
-      document.addEventListener('click', (e) => {
-        if (!e.target.closest('.user-menu')) {
-          closeDropdown();
-        }
-      });
-    });
-  </script>
-  <!-- Scroll Reveal Observer -->
-  <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      var reveals = document.querySelectorAll('.reveal, .reveal-scale');
-      if (reveals.length > 0 && 'IntersectionObserver' in window) {
-        var observer = new IntersectionObserver(function(entries) {
-          entries.forEach(function(entry) {
-            if (entry.isIntersecting) {
-              entry.target.classList.add('revealed');
-              observer.unobserve(entry.target);
-            }
-          });
-        }, { threshold: 0.1 });
-        reveals.forEach(function(el) { observer.observe(el); });
-      } else {
-        reveals.forEach(function(el) { el.classList.add('revealed'); });
-      }
-    });
+    }
   </script>
 </body>
 </html>

@@ -3,406 +3,542 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Meu Perfil - Portal do Candidato</title>
+  <title>Meu Perfil - Midu Group</title>
   <link rel="stylesheet" href="../styles.css">
+  <link rel="stylesheet" href="portal.css">
+  <link rel="stylesheet" href="pages.css">
   <style>
-    * { margin:0; padding:0; box-sizing: border-box; }
-    
-    body {
-      font-family: var(--font-family);
-      background: var(--bg-secondary);
-    }
-    
-    /* Header */
-    .header {
-      background: var(--bg);
-      border-bottom: 1px solid var(--border);
-      padding: var(--spacing-md) 0;
-    }
-    
-    .header .container {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-    
-    .logo {
-      display: flex;
-      align-items: center;
-      gap: var(--spacing-sm);
-      font-size: var(--font-size-xl);
-      font-weight: 700;
-      color: var(--primary);
-      text-decoration: none;
-    }
-    
-    .logo img { width: 36px; height: 36px; }
-    
-    .header-nav {
-      display: flex;
-      align-items: center;
-      gap: var(--spacing-xl);
-    }
-    
-    .header-nav a {
-      font-size: var(--font-size-sm);
-      color: var(--text);
-      text-decoration: none;
-      transition: var(--transition);
-    }
-    
-    .header-nav a:hover { color: var(--primary); }
-    
-    /* User Menu */
-    .user-menu {
-      display: flex;
-      align-items: center;
-      gap: var(--spacing-md);
+    .profile-cover {
+      height: 180px;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
       position: relative;
+      margin: -20px -24px 0;
     }
     
-    .user-avatar {
-      width: 36px;
-      height: 36px;
-      background: var(--primary);
+    .profile-avatar-edit {
+      position: absolute;
+      bottom: -50px;
+      left: var(--spacing-xl);
+    }
+    
+    .profile-avatar-preview {
+      width: 100px;
+      height: 100px;
       border-radius: 50%;
+      border: 4px solid white;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
       display: flex;
       align-items: center;
       justify-content: center;
+      font-size: var(--font-size-3xl);
+      font-weight: 700;
       color: white;
-      font-weight: 600;
-      font-size: var(--font-size-sm);
-      cursor: pointer;
     }
     
-    .dropdown-menu {
-      position: absolute;
-      top: 100%;
-      right: 0;
-      margin-top: var(--spacing-sm);
-      background: var(--bg);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow-lg);
-      min-width: 200px;
-      z-index: 100;
-      opacity: 0;
-      visibility: hidden;
-      transform: translateY(-10px);
-      transition: var(--transition);
-    }
-    
-    .dropdown.active .dropdown-menu {
-      opacity: 1;
-      visibility: visible;
-      transform: translateY(0);
-    }
-    
-    .dropdown-item {
-      display: flex;
-      align-items: center;
-      gap: var(--spacing-sm);
-      padding: var(--spacing-md);
-      font-size: var(--font-size-sm);
-      color: var(--text);
-      text-decoration: none;
-      transition: var(--transition);
-      border: none;
-      background: none;
-      width: 100%;
-      text-align: left;
-      cursor: pointer;
-    }
-    
-    .dropdown-item:hover {
-      background: var(--bg-secondary);
-      color: var(--primary);
-    }
-    
-    .dropdown-item svg { width: 16px; height: 16px; }
-    
-    .dropdown-divider {
-      height: 1px;
-      background: var(--border);
-      margin: var(--spacing-xs) 0;
-    }
-    
-    /* Breadcrumb */
-    .breadcrumb {
-      padding: var(--spacing-lg) 0;
-      font-size: var(--font-size-sm);
-      color: var(--text-muted);
-    }
-    
-    .breadcrumb a {
-      color: var(--primary);
-      text-decoration: none;
-    }
-    
-    .breadcrumb a:hover { text-decoration: underline; }
-    
-    .breadcrumb span { margin: 0 var(--spacing-xs); }
-    
-    /* Main */
-    .main-content {
-      max-width: 800px;
-      margin: var(--spacing-xl) auto;
-      padding: 0 var(--spacing-lg);
-    }
-    
-    .page-title {
-      font-size: var(--font-size-2xl);
-      font-weight: 600;
-      margin-bottom: var(--spacing-xs);
-    }
-    
-    .page-subtitle {
-      font-size: var(--font-size-base);
-      color: var(--text-muted);
+    .profile-info {
+      padding-left: 130px;
+      margin-top: var(--spacing-lg);
       margin-bottom: var(--spacing-xl);
     }
     
-    /* Form Card */
-    .form-card {
+    .profile-info h1 {
+      font-size: var(--font-size-2xl);
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    
+    .profile-info .role {
+      font-size: var(--font-size-base);
+      color: var(--text-muted);
+      margin-bottom: var(--spacing-sm);
+    }
+    
+    .profile-info .location {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: var(--font-size-sm);
+      color: var(--text-muted);
+    }
+    
+    .profile-completion {
       background: var(--bg);
       border: 1px solid var(--border);
       border-radius: var(--radius-lg);
-      padding: var(--spacing-xl);
+      padding: var(--spacing-lg);
       margin-bottom: var(--spacing-lg);
     }
     
-    .form-card-title {
-      font-size: var(--font-size-lg);
-      font-weight: 600;
-      margin-bottom: var(--spacing-lg);
-      padding-bottom: var(--spacing-md);
-      border-bottom: 1px solid var(--border);
-    }
-    
-    .form-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: var(--spacing-lg);
-      margin-bottom: var(--spacing-lg);
-    }
-    
-    .form-group {
+    .completion-header {
       display: flex;
-      flex-direction: column;
-      gap: var(--spacing-sm);
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: var(--spacing-md);
     }
     
-    .form-group.full { grid-column: 1 / -1; }
-    
-    .form-label {
-      font-size: var(--font-size-sm);
-      font-weight: 500;
-      color: var(--text);
-    }
-    
-    .form-input {
-      padding: var(--spacing-md);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
+    .completion-header h3 {
       font-size: var(--font-size-base);
-      font-family: var(--font-family);
-      transition: var(--transition);
-      width: 100%;
+      font-weight: 600;
     }
     
-    .form-input:focus {
-      outline: none;
-      border-color: var(--primary);
-      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    .completion-header span {
+      font-size: var(--font-size-sm);
+      font-weight: 600;
+      color: var(--primary);
     }
     
-    .form-actions {
-      display: flex;
-      gap: var(--spacing-md);
-      justify-content: flex-end;
+    .completion-bar {
+      height: 8px;
+      background: var(--border);
+      border-radius: var(--radius-full);
+      overflow: hidden;
     }
     
-    @media (max-width: 768px) {
-      .form-grid { grid-template-columns: 1fr; }
-      .form-actions { flex-direction: column; }
-      .form-actions .btn { width: 100%; }
+    .completion-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%);
+      border-radius: var(--radius-full);
+      transition: width 0.5s ease;
+    }
+    
+    .completion-tips {
+      margin-top: var(--spacing-md);
+      font-size: var(--font-size-sm);
+      color: var(--text-muted);
     }
   </style>
 </head>
 <body>
-  <!-- Header -->
-  <header class="header">
+  <div class="page-loading-overlay" id="loadingOverlay">
+    <div class="loading-spinner"></div>
+  </div>
+
+  <header class="portal-header">
     <div class="container">
-      <a href="../index.html" class="logo">
+      <a href="../index.html" class="portal-logo">
         <img src="../assets/logo.png" alt="Midu Group" class="nav-logo-img">
+        <span class="portal-logo-text">Portal do Candidato</span>
       </a>
       
-      <nav class="header-nav">
-        <a href="../vagas.html">Vagas</a>
-        <a href="candidaturas.html" style="color: var(--primary);">Minhas Candidaturas</a>
-        <a href="perfil.html" style="font-weight: 600;">Meu Perfil</a>
-        <a href="curriculo.html">Meu Currículo</a>
+      <nav class="portal-nav">
+        <a href="../portal.html" class="portal-nav-link">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9,22 9,12 15,12 15,22"/></svg>
+          Início
+        </a>
+        <a href="candidaturas.html" class="portal-nav-link">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14,2 14,8 20,8"/></svg>
+          Candidaturas
+        </a>
       </nav>
-      
-      <div class="user-menu dropdown" id="userMenu">
-        <div style="display: flex; align-items: center; gap: var(--spacing-md);">
-          <span id="userNameDisplay" style="font-size: var(--font-size-sm); font-weight: 500;">Carregando...</span>
-          <div class="user-avatar" onclick="toggleDropdown()">--</div>
+
+      <div class="header-right">
+        <div class="user-menu" onclick="toggleUserMenu()">
+          <div class="user-avatar" id="userAvatar">MS</div>
+          <div class="user-info">
+            <span class="user-name" id="userName">Maria Santos</span>
+            <span class="user-role">Candidato</span>
+          </div>
+          
+          <div class="user-dropdown" id="userDropdown">
+            <a href="perfil.html" class="dropdown-item active">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+              Meu Perfil
+            </a>
+            <a href="candidaturas.html" class="dropdown-item">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14,2 14,8 20,8"/></svg>
+              Minhas Candidaturas
+            </a>
+            <a href="curriculo.html" class="dropdown-item">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14,2 14,8 20,8"/></svg>
+              Meu Currículo
+            </a>
+            <div class="dropdown-divider"></div>
+            <button class="dropdown-item logout" onclick="logout()">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16,17 21,12 16,7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+              Sair
+            </button>
+          </div>
         </div>
-        
-        <div class="dropdown-menu">
-          <a href="perfil.html" class="dropdown-item">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-              <circle cx="12" cy="7" r="4"/>
-            </svg>
-            Meu Perfil
-          </a>
-          <a href="candidaturas.html" class="dropdown-item">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
-              <circle cx="9" cy="7" r="4"/>
-            </svg>
-            Minhas Candidaturas
-          </a>
-          <a href="curriculo.html" class="dropdown-item">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-              <polyline points="14,2 14,8 20,8"/>
-            </svg>
-            Meu Currículo
-          </a>
-          <div class="dropdown-divider"></div>
-          <button class="dropdown-item" onclick="sair()">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
-              <polyline points="16,17 21,12 16,7"/>
-              <line x1="21" y1="12" x2="9" y2="12"/>
-            </svg>
-            Sair
+      </div>
+    </div>
+  </header>
+
+  <main class="portal-page-content">
+    <div class="container" style="max-width: 800px;">
+      
+      <div class="page-header" style="margin-bottom: 0;">
+        <div class="breadcrumb">
+          <a href="../portal.html">Portal</a>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9,18 15,12 9,6"/></svg>
+          <span>Meu Perfil</span>
+        </div>
+      </div>
+
+      <div class="profile-cover">
+        <div class="profile-avatar-edit">
+          <div class="profile-avatar-preview" id="avatarPreview">MS</div>
+        </div>
+      </div>
+
+      <div class="profile-info">
+        <h1 id="displayName">Maria Santos</h1>
+        <p class="role">Analista de Recursos Humanos</p>
+        <p class="location">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          Salvador, BA
+        </p>
+      </div>
+
+      <div class="profile-completion">
+        <div class="completion-header">
+          <h3>Completude do Perfil</h3>
+          <span id="completionPercent">75%</span>
+        </div>
+        <div class="completion-bar">
+          <div class="completion-fill" id="completionFill" style="width: 75%;"></div>
+        </div>
+        <p class="completion-tips">Adicione suas habilidades e experiências para aumentar suas chances!</p>
+      </div>
+
+      <form id="profileForm">
+        <div class="profile-section">
+          <div class="profile-section-header">
+            <div class="profile-section-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            </div>
+            <div>
+              <h2>Informações Pessoais</h2>
+              <p>Dados básicos do seu perfil</p>
+            </div>
+          </div>
+          
+          <div class="profile-form-grid">
+            <div class="profile-form-group">
+              <label class="profile-form-label">Nome Completo <span class="required">*</span></label>
+              <input type="text" class="profile-form-input" id="nome" value="Maria Santos" required>
+            </div>
+            <div class="profile-form-group">
+              <label class="profile-form-label">Email <span class="required">*</span></label>
+              <input type="email" class="profile-form-input" id="email" value="maria.santos@email.com" required>
+            </div>
+            <div class="profile-form-group">
+              <label class="profile-form-label">Telefone <span class="required">*</span></label>
+              <input type="tel" class="profile-form-input" id="telefone" value="(71) 99999-8888" required>
+            </div>
+            <div class="profile-form-group">
+              <label class="profile-form-label">WhatsApp</label>
+              <input type="tel" class="profile-form-input" id="whatsapp" value="(71) 99999-8888">
+            </div>
+            <div class="profile-form-group">
+              <label class="profile-form-label">Cidade <span class="required">*</span></label>
+              <input type="text" class="profile-form-input" id="cidade" value="Salvador" required>
+            </div>
+            <div class="profile-form-group">
+              <label class="profile-form-label">Estado</label>
+              <select class="profile-form-input" id="estado">
+                <option value="BA" selected>Bahia</option>
+                <option value="SP">São Paulo</option>
+                <option value="RJ">Rio de Janeiro</option>
+                <option value="MG">Minas Gerais</option>
+              </select>
+            </div>
+            <div class="profile-form-group">
+              <label class="profile-form-label">LinkedIn</label>
+              <input type="url" class="profile-form-input" id="linkedin" placeholder="linkedin.com/in/seu-perfil">
+            </div>
+            <div class="profile-form-group">
+              <label class="profile-form-label">Portfólio</label>
+              <input type="url" class="profile-form-input" id="portfolio" placeholder="seusite.com.br">
+            </div>
+          </div>
+        </div>
+
+        <div class="profile-section">
+          <div class="profile-section-header">
+            <div class="profile-section-icon" style="background: rgba(13, 148, 136, 0.1); color: var(--secondary);">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+            </div>
+            <div>
+              <h2>Experiência Profissional</h2>
+              <p>Suas experiências anteriores</p>
+            </div>
+          </div>
+          
+          <div id="experiencias">
+            <div class="experience-item" style="padding: var(--spacing-lg); background: var(--bg-secondary); border-radius: var(--radius-md); margin-bottom: var(--spacing-md);">
+              <div class="profile-form-grid">
+                <div class="profile-form-group">
+                  <label class="profile-form-label">Cargo</label>
+                  <input type="text" class="profile-form-input" value="Analista de Recursos Humanos Jr.">
+                </div>
+                <div class="profile-form-group">
+                  <label class="profile-form-label">Empresa</label>
+                  <input type="text" class="profile-form-input" value="RH Solutions Ltda">
+                </div>
+                <div class="profile-form-group">
+                  <label class="profile-form-label">Data de Início</label>
+                  <input type="month" class="profile-form-input" value="2024-01">
+                </div>
+                <div class="profile-form-group">
+                  <label class="profile-form-label">Data de Término</label>
+                  <input type="month" class="profile-form-input" value="">
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <button type="button" class="btn btn-outline" onclick="addExperiencia()" style="margin-top: var(--spacing-md);">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Adicionar Experiência
           </button>
         </div>
-      </div>
-    </div>
-  </div>
-</header>
 
-  <!-- Main Content -->
-  <main class="main-content">
-    <div class="breadcrumb">
-      <a href="../index.html">Home</a>
-      <span>›</span>
-      <a href="candidaturas.html">Portal do Candidato</a>
-      <span>›</span>
-      <span>Meu Perfil</span>
-    </div>
+        <div class="profile-section">
+          <div class="profile-section-header">
+            <div class="profile-section-icon" style="background: rgba(245, 158, 11, 0.1); color: var(--accent);">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c0 2 2 3 6 3s6-1 6-3v-5"/></svg>
+            </div>
+            <div>
+              <h2>Formação Acadêmica</h2>
+              <p>Sua educação e certificações</p>
+            </div>
+          </div>
+          
+          <div id="formacoes">
+            <div class="formation-item" style="padding: var(--spacing-lg); background: var(--bg-secondary); border-radius: var(--radius-md); margin-bottom: var(--spacing-md);">
+              <div class="profile-form-grid">
+                <div class="profile-form-group">
+                  <label class="profile-form-label">Curso</label>
+                  <input type="text" class="profile-form-input" value="Psicologia">
+                </div>
+                <div class="profile-form-group">
+                  <label class="profile-form-label">Instituição</label>
+                  <input type="text" class="profile-form-input" value="UFBA - Universidade Federal da Bahia">
+                </div>
+                <div class="profile-form-group">
+                  <label class="profile-form-label">Nível</label>
+                  <select class="profile-form-input">
+                    <option selected>Graduação</option>
+                    <option>Pós-Graduação</option>
+                    <option>Mestrado</option>
+                    <option>Doutorado</option>
+                  </select>
+                </div>
+                <div class="profile-form-group">
+                  <label class="profile-form-label">Status</label>
+                  <select class="profile-form-input">
+                    <option>Em andamento</option>
+                    <option selected>Concluído</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <button type="button" class="btn btn-outline" onclick="addFormacao()" style="margin-top: var(--spacing-md);">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Adicionar Formação
+          </button>
+        </div>
 
-    <h1 class="page-title">Meu Perfil</h1>
-    <p class="page-subtitle">Mantenha seus dados atualizados</p>
-
-    <form id="perfilForm" onsubmit="salvarPerfil(event)">
-      <div class="form-card">
-        <h2 class="form-card-title">Informações Pessoais</h2>
-        <div class="form-grid">
-          <div class="form-group">
-            <label class="form-label">Nome Completo</label>
-            <input type="text" class="form-input" id="nome" value="">
+        <div class="profile-section">
+          <div class="profile-section-header">
+            <div class="profile-section-icon" style="background: rgba(168, 85, 247, 0.1); color: #a855f7;">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>
+            </div>
+            <div>
+              <h2>Habilidades</h2>
+              <p>Competências e habilidades profissionais</p>
+            </div>
           </div>
           
-          <div class="form-group">
-            <label class="form-label">Email</label>
-            <input type="email" class="form-input" id="email" value="">
+          <div class="skills-container" id="skillsContainer">
+            <span class="skill-tag">Recrutamento e Seleção <span class="remove" onclick="removeSkill(this)">×</span></span>
+            <span class="skill-tag">Entrevistas <span class="remove" onclick="removeSkill(this)">×</span></span>
+            <span class="skill-tag">Gestão de Pessoas <span class="remove" onclick="removeSkill(this)">×</span></span>
+            <span class="skill-tag">DP <span class="remove" onclick="removeSkill(this)">×</span></span>
+            <span class="skill-tag">Pacote Office <span class="remove" onclick="removeSkill(this)">×</span></span>
           </div>
           
-          <div class="form-group">
-            <label class="form-label">Telefone</label>
-            <input type="tel" class="form-input" id="telefone" value="">
-          </div>
-          
-          <div class="form-group">
-            <label class="form-label">LinkedIn (Opcional)</label>
-            <input type="url" class="form-input" id="linkedin" value="https://linkedin.com/in/mariasantos">
-          </div>
-          
-          <div class="form-group full">
-            <label class="form-label">Cidade</label>
-            <input type="text" class="form-input" id="cidade" value="">
+          <div class="add-skill-input" style="margin-top: var(--spacing-md);">
+            <input type="text" id="newSkill" placeholder="Digite uma habilidade...">
+            <button type="button" class="add-skill-btn" onclick="addSkill()">Adicionar</button>
           </div>
         </div>
-      </div>
 
-      <div class="form-actions">
-        <button type="button" class="btn btn-ghost" onclick="cancelar()">Cancelar</button>
-        <button type="submit" class="btn btn-primary">Salvar Alterações</button>
-      </div>
-    </form>
+        <div style="display: flex; gap: var(--spacing-md); justify-content: flex-end; padding: var(--spacing-xl) 0;">
+          <button type="button" class="btn btn-ghost" onclick="resetForm()">Cancelar</button>
+          <button type="submit" class="btn btn-primary">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20,6 9,17 4,12"/></svg>
+            Salvar Alterações
+          </button>
+        </div>
+      </form>
+
+    </div>
   </main>
 
+  <footer class="portal-footer">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-brand">
+          <img src="../assets/logo.png" alt="Midu Group">
+          <p>Consultoria em gestão de pessoas e recrutamento especializado na Bahia.</p>
+        </div>
+        <div class="footer-links">
+          <a href="../index.html">Home</a>
+          <a href="../vagas.html">Vagas</a>
+          <a href="../contato.html">Contato</a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2026 Midu Group - Todos os direitos reservados</p>
+      </div>
+    </div>
+  </footer>
+
   <script>
-    function toggleDropdown() {
-      document.getElementById('userMenu').classList.toggle('active');
-    }
-
-    // Close dropdown when clicking outside
-    document.addEventListener('click', function(e) {
-      var dropdown = document.getElementById('userMenu');
-      if (!dropdown.contains(e.target)) {
-        dropdown.classList.remove('active');
-      }
-    });
-
-    function carregarPerfil() {
-      var profile = JSON.parse(localStorage.getItem('candidateProfile'));
-      if (profile) {
-        document.getElementById('nome').value = profile.nome || '';
-        document.getElementById('email').value = profile.email || '';
-        document.getElementById('telefone').value = profile.telefone || '';
-        document.getElementById('linkedin').value = profile.linkedin || '';
-        document.getElementById('cidade').value = profile.cidade || '';
-
-        // Update header user info
-        var nameSpan = document.querySelector('.user-menu span');
-        var avatar = document.querySelector('.user-avatar');
-        if (nameSpan) nameSpan.textContent = profile.nome;
-        if (avatar) avatar.textContent = profile.nome.split(' ').map(function(n) { return n[0]; }).join('').substring(0,2).toUpperCase();
-      }
-    }
-
-    function salvarPerfil(e) {
-      e.preventDefault();
-      var profile = {
-        nome: document.getElementById('nome').value,
-        email: document.getElementById('email').value,
-        telefone: document.getElementById('telefone').value,
-        linkedin: document.getElementById('linkedin').value,
-        cidade: document.getElementById('cidade').value
-      };
-      localStorage.setItem('candidateProfile', JSON.stringify(profile));
-      carregarPerfil();
-      alert('Perfil atualizado com sucesso!');
-    }
-
-    function cancelar() {
-      if (confirm('Descartar alterações?')) {
-        window.location.reload();
-      }
-    }
-
-    function sair() {
-      if (confirm('Tem certeza que deseja sair?')) {
-        localStorage.removeItem('candidateLoggedIn');
-        window.location.href = '../portal-login.html';
-      }
-    }
-
-    // Checar login + carregar perfil
     document.addEventListener('DOMContentLoaded', function() {
       if (localStorage.getItem('candidateLoggedIn') !== 'true') {
         window.location.href = '../portal-login.html';
         return;
       }
-      carregarPerfil();
+
+      const profile = JSON.parse(localStorage.getItem('candidateProfile')) || {};
+      if (profile.nome) {
+        document.getElementById('userName').textContent = profile.nome;
+        document.getElementById('displayName').textContent = profile.nome;
+        document.getElementById('avatarPreview').textContent = profile.nome.split(' ').map(n => n[0]).join('').substring(0,2).toUpperCase();
+        document.getElementById('userAvatar').textContent = profile.nome.split(' ').map(n => n[0]).join('').substring(0,2).toUpperCase();
+        document.getElementById('nome').value = profile.nome;
+      }
+
+      // Add skill on Enter
+      document.getElementById('newSkill').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          addSkill();
+        }
+      });
+
+      setTimeout(() => {
+        document.getElementById('loadingOverlay').classList.add('fade-out');
+      }, 300);
+
+      document.addEventListener('click', function(e) {
+        if (!e.target.closest('.user-menu')) document.getElementById('userDropdown').classList.remove('show');
+      });
     });
+
+    function toggleUserMenu() {
+      document.getElementById('userDropdown').classList.toggle('show');
+    }
+
+    function addSkill() {
+      const input = document.getElementById('newSkill');
+      const skill = input.value.trim();
+      if (skill) {
+        const container = document.getElementById('skillsContainer');
+        const tag = document.createElement('span');
+        tag.className = 'skill-tag';
+        tag.innerHTML = `${skill} <span class="remove" onclick="removeSkill(this)">×</span>`;
+        container.appendChild(tag);
+        input.value = '';
+      }
+    }
+
+    function removeSkill(el) {
+      el.parentElement.remove();
+    }
+
+    function addExperiencia() {
+      const container = document.getElementById('experiencias');
+      const div = document.createElement('div');
+      div.className = 'experience-item';
+      div.style.cssText = 'padding: var(--spacing-lg); background: var(--bg-secondary); border-radius: var(--radius-md); margin-bottom: var(--spacing-md);';
+      div.innerHTML = `
+        <div class="profile-form-grid">
+          <div class="profile-form-group">
+            <label class="profile-form-label">Cargo</label>
+            <input type="text" class="profile-form-input" placeholder="Ex: Analista de RH">
+          </div>
+          <div class="profile-form-group">
+            <label class="profile-form-label">Empresa</label>
+            <input type="text" class="profile-form-input" placeholder="Nome da empresa">
+          </div>
+          <div class="profile-form-group">
+            <label class="profile-form-label">Data de Início</label>
+            <input type="month" class="profile-form-input">
+          </div>
+          <div class="profile-form-group">
+            <label class="profile-form-label">Data de Término</label>
+            <input type="month" class="profile-form-input" placeholder="Ocupado até o momento">
+          </div>
+        </div>
+      `;
+      container.appendChild(div);
+    }
+
+    function addFormacao() {
+      const container = document.getElementById('formacoes');
+      const div = document.createElement('div');
+      div.className = 'formation-item';
+      div.style.cssText = 'padding: var(--spacing-lg); background: var(--bg-secondary); border-radius: var(--radius-md); margin-bottom: var(--spacing-md);';
+      div.innerHTML = `
+        <div class="profile-form-grid">
+          <div class="profile-form-group">
+            <label class="profile-form-label">Curso</label>
+            <input type="text" class="profile-form-input" placeholder="Ex: Administração">
+          </div>
+          <div class="profile-form-group">
+            <label class="profile-form-label">Instituição</label>
+            <input type="text" class="profile-form-input" placeholder="Nome da instituição">
+          </div>
+          <div class="profile-form-group">
+            <label class="profile-form-label">Nível</label>
+            <select class="profile-form-input">
+              <option>Graduação</option>
+              <option>Pós-Graduação</option>
+              <option>Mestrado</option>
+              <option>Doutorado</option>
+            </select>
+          </div>
+          <div class="profile-form-group">
+            <label class="profile-form-label">Status</label>
+            <select class="profile-form-input">
+              <option>Em andamento</option>
+              <option>Concluído</option>
+            </select>
+          </div>
+        </div>
+      `;
+      container.appendChild(div);
+    }
+
+    document.getElementById('profileForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const profile = {
+        nome: document.getElementById('nome').value,
+        email: document.getElementById('email').value,
+        telefone: document.getElementById('telefone').value,
+        cidade: document.getElementById('cidade').value
+      };
+      localStorage.setItem('candidateProfile', JSON.stringify(profile));
+      alert('Perfil atualizado com sucesso!');
+    });
+
+    function resetForm() {
+      if (confirm('Descartar todas as alterações?')) {
+        window.location.reload();
+      }
+    }
+
+    function logout() {
+      if (confirm('Tem certeza que deseja sair?')) {
+        localStorage.removeItem('candidateLoggedIn');
+        window.location.href = '../portal-login.html';
+      }
+    }
   </script>
 </body>
 </html>
