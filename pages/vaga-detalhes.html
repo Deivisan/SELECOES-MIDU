@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vaga - Midu Group</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    * { margin:0; padding:0; box-sizing: border-box; }
+    
+    body {
+      background: var(--bg-secondary);
+      font-family: var(--font-family);
+    }
+    
+    /* Header */
+    .header {
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+      padding: var(--spacing-md) 0;
+    }
+    
+    .header .container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+      font-size: var(--font-size-xl);
+      font-weight: 700;
+      color: var(--primary);
+      text-decoration: none;
+    }
+    
+    .logo img { width: 36px; height: 36px; }
+    
+    .header-nav {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-xl);
+    }
+    
+    .header-nav {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-xl);
+    }
+
+    .header-nav a {
+      font-size: var(--font-size-sm);
+      color: var(--text);
+      text-decoration: none;
+      transition: var(--transition);
+    }
+    
+    .header-nav a:hover { color: var(--primary); }
+
+    .mobile-menu-btn {
+      display: none;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: var(--spacing-sm);
+      color: var(--text);
+      z-index: 1001;
+    }
+
+    .header-nav.active {
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      top: 72px;
+      left: 0;
+      right: 0;
+      background: white;
+      padding: var(--spacing-lg);
+      box-shadow: 0 4px 24px rgba(0,0,0,0.1);
+      gap: var(--spacing-md);
+      z-index: 999;
+      animation: slideDown 0.3s ease;
+    }
+
+    @keyframes slideDown {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .btn { display: inline-flex; align-items: center; gap: var(--spacing-sm); padding: var(--spacing-sm) var(--spacing-lg); border-radius: var(--radius); font-size: var(--font-size-sm); font-weight: 500; cursor: pointer; text-decoration: none; transition: var(--transition); }
+    .btn-primary { background: var(--primary); color: white; border: none; }
+    .btn-primary:hover { background: var(--primary-dark); }
+    .btn-ghost { background: transparent; color: var(--text-muted); border: 1px solid var(--border); }
+    .btn-ghost:hover { background: var(--bg-secondary); }
+    
+    /* Breadcrumb */
+    .breadcrumb {
+      padding: var(--spacing-lg) 0;
+      font-size: var(--font-size-sm);
+      color: var(--text-muted);
+    }
+    
+    .breadcrumb a {
+      color: var(--primary);
+      text-decoration: none;
+    }
+    
+    .breadcrumb a:hover { text-decoration: underline; }
+    
+    .breadcrumb span { margin: 0 var(--spacing-xs); }
+    
+    /* Main */
+    .main-content {
+      max-width: 1000px;
+      margin: var(--spacing-xl) auto;
+      padding: 0 var(--spacing-lg);
+    }
+    
+    .content-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: var(--spacing-xl);
+    }
+    
+    /* Vaga Details */
+    .vaga-header {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: var(--spacing-xl);
+      margin-bottom: var(--spacing-lg);
+    }
+    
+    .badge {
+      display: inline-flex;
+      padding: var(--spacing-xs) var(--spacing-sm);
+      font-size: var(--font-size-xs);
+      font-weight: 500;
+      border-radius: var(--radius-full);
+      margin-bottom: var(--spacing-md);
+    }
+    
+    .badge.primary { background: rgba(37, 99, 235, 0.1); color: var(--primary); }
+    .badge.success { background: rgba(16, 185, 129, 0.1); color: var(--success); }
+    
+    .vaga-header h1 {
+      font-size: var(--font-size-2xl);
+      font-weight: 600;
+      margin-bottom: var(--spacing-md);
+    }
+    
+    .vaga-meta {
+      display: flex;
+      gap: var(--spacing-xl);
+      flex-wrap: wrap;
+    }
+    
+    .meta-item {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+      font-size: var(--font-size-sm);
+      color: var(--text-muted);
+    }
+    
+    .meta-item svg { width: 16px; height: 16px; }
+    
+    /* Sections */
+    .section-card {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: var(--spacing-xl);
+      margin-bottom: var(--spacing-lg);
+    }
+    
+    .section-card h2 {
+      font-size: var(--font-size-lg);
+      font-weight: 600;
+      margin-bottom: var(--spacing-lg);
+      padding-bottom: var(--spacing-md);
+      border-bottom: 1px solid var(--border);
+    }
+    
+    .section-card p {
+      font-size: var(--font-size-base);
+      line-height: 1.7;
+      color: var(--text);
+      margin-bottom: var(--spacing-md);
+    }
+    
+    .section-card ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-sm);
+    }
+    
+    .section-card li {
+      font-size: var(--font-size-sm);
+      color: var(--text);
+      padding-left: var(--spacing-lg);
+      position: relative;
+      line-height: 1.6;
+    }
+    
+    .section-card li::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 8px;
+      width: 6px;
+      height: 6px;
+      background: var(--primary);
+      border-radius: 50%;
+    }
+    
+    /* Sidebar */
+    .sidebar-info {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: var(--spacing-xl);
+      position: sticky;
+      top: var(--spacing-lg);
+    }
+    
+    .sidebar-info h3 {
+      font-size: var(--font-size-base);
+      font-weight: 600;
+      margin-bottom: var(--spacing-lg);
+      padding-bottom: var(--spacing-md);
+      border-bottom: 1px solid var(--border);
+    }
+    
+    .info-grid {
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-md);
+      margin-bottom: var(--spacing-xl);
+    }
+    
+    .info-item {
+      display: flex;
+      justify-content: space-between;
+      font-size: var(--font-size-sm);
+    }
+    
+    .info-label {
+      color: var(--text-muted);
+    }
+    
+    .info-value {
+      font-weight: 500;
+      color: var(--text);
+    }
+    
+    .btn-full {
+      display: block;
+      width: 100%;
+      padding: var(--spacing-md);
+      border-radius: var(--radius);
+      font-size: var(--font-size-base);
+      font-weight: 500;
+      cursor: pointer;
+      text-align: center;
+      text-decoration: none;
+      transition: var(--transition);
+      margin-bottom: var(--spacing-md);
+    }
+    
+    .share-section {
+      margin-top: var(--spacing-xl);
+      padding-top: var(--spacing-lg);
+      border-top: 1px solid var(--border);
+    }
+    
+    .share-buttons {
+      display: flex;
+      gap: var(--spacing-sm);
+    }
+    
+    .share-btn {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: var(--spacing-sm);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--bg);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    
+    .share-btn:hover { background: var(--bg-secondary); }
+    .share-btn svg { width: 18px; height: 18px; }
+    
+    /* Responsive */
+    @media (max-width: 1024px) {
+      .content-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .header-nav {
+        display: none;
+      }
+
+      .mobile-menu-btn {
+        display: flex;
+      }
+
+      .header-nav.active {
+        display: flex;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Loading overlay -->
+  <div id="loadingOverlay" class="page-loading-overlay" style="display:none;">
+    <div class="loading-spinner"></div>
+  </div>
+
+  <!-- Header -->
+  <header class="header">
+    <div class="container">
+      <a href="index.html" class="logo">
+        <img src="assets/logo.png" alt="Midu Group" class="nav-logo-img">
+      </a>
+      <nav class="header-nav">
+        <a href="index.html">Início</a>
+        <a href="vagas.html" style="color: var(--primary);">Vagas</a>
+        <a href="index.html#sobre">Sobre</a>
+        <a href="portal.html" class="btn btn-ghost">Portal do Candidato</a>
+      </nav>
+      <button class="btn btn-icon mobile-menu-btn">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M3 12h18M3 6h18M3 18h18"/>
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- Breadcrumb -->
+  <div class="container">
+    <div class="breadcrumb">
+      <a href="index.html">Home</a>
+      <span>›</span>
+      <a href="vagas.html">Vagas</a>
+      <span>›</span>
+      <span id="breadcrumbVaga">Carregando...</span>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <div class="content-grid">
+      <div>
+        <!-- Vaga Header -->
+        <div class="vaga-header reveal">
+          <span class="badge primary" id="vagaCategoria">Categoria</span>
+          <h1 id="vagaTitle">Título da Vaga</h1>
+          <div class="vaga-meta">
+            <div class="meta-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+              </svg>
+              <span id="vagaEmpresa">Empresa</span>
+            </div>
+            <div class="meta-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+                <circle cx="12" cy="10" r="3"/>
+              </svg>
+              <span id="vagaLocalizacao">Localização</span>
+            </div>
+            <div class="meta-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+              </svg>
+              <span id="vagaSalario">Salário</span>
+            </div>
+            <div class="meta-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/>
+              </svg>
+              <span id="vagaData">Data</span>
+            </div>
+            <div class="meta-item">
+              <span class="badge success">Ativa</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Descrição -->
+        <div class="section-card reveal">
+          <h2>Sobre a Vaga</h2>
+          <p id="vagaDescricao">Carregando descrição...</p>
+        </div>
+
+        <!-- Requisitos -->
+        <div class="section-card reveal">
+          <h2>Requisitos</h2>
+          <ul id="vagaRequisitos">
+            <!-- Preenchido via JS -->
+          </ul>
+        </div>
+
+        <!-- Benefícios -->
+        <div class="section-card reveal">
+          <h2>Benefícios</h2>
+          <ul id="vagaBeneficios">
+            <!-- Preenchido via JS -->
+          </ul>
+        </div>
+      </div>
+
+      <div>
+        <!-- Sidebar Info -->
+        <div class="sidebar-info reveal">
+          <h3>Informações</h3>
+          <div class="info-grid">
+            <div class="info-item">
+              <span class="info-label">Tipo de Contrato</span>
+              <span class="info-value" id="infoContrato">CLT</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Carga Horária</span>
+              <span class="info-value" id="infoCarga">40h semanais</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Nível</span>
+              <span class="info-value" id="infoNivel">Pleno</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Quantidade</span>
+              <span class="info-value">1 vaga</span>
+            </div>
+          </div>
+
+          <a href="candidatar-se.html" class="btn-full btn-primary">Candidatar-se</a>
+          <a href="vagas.html" class="btn-full btn-ghost">Voltar às Vagas</a>
+
+          <div class="share-section">
+            <div class="info-label" style="margin-bottom: var(--spacing-md);">Compartilhar:</div>
+            <div class="share-buttons">
+              <button class="share-btn" onclick="alert('Compartilhando no LinkedIn...')">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.063-2.064 2.063zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                </svg>
+              </button>
+              <button class="share-btn" onclick="alert('Compartilhando no WhatsApp...')">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.459.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+                </svg>
+              </button>
+              <button class="share-btn" onclick="alert('Compartilhando por Email...')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                  <polyline points="22,6 12,13 2,6"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    // Seed data (same as index and admin)
+    const seedVagas = [
+      { id: 1, title: 'Desenvolvedor Frontend', empresa: 'Tech Solutions Bahia', categoria: 'Tecnologia', localizacao: 'Salvador, BA', salario: 'R$ 3.500 - R$ 5.000', data: '2 dias', descricao: 'Buscamos Desenvolvedor Frontend com experiência em React/Next.js para atuar em projetos desafiadores. Responsável por desenvolver interfaces modernas e responsivas, colaborar com designers e backend developers.', requisitos: '3+ anos com React/TypeScript\nExperiência com Next.js\nConhecimento em CSS/SCSS\nInglês técnico', beneficios: 'Vale-refeição\nPlano de saúde\nHome office', tipoContrato: 'CLT', cargaHoraria: '40h', nivel: 'Pleno' },
+      { id: 2, title: 'Enfermeiro(a) Coordenador(a)', empresa: 'Hospital São Rafael', categoria: 'Saúde', localizacao: 'Salvador, BA', salario: 'R$ 4.000 - R$ 6.000', data: '3 dias', descricao: 'Coordenador de enfermagem para liderar equipe de profissionais, garantir qualidade dos atendimentos e supervisionar procedimentos.', requisitos: 'Graduação em Enfermagem\nCoren ativo\nExperiência em coordenação\nPós-graduação completa', beneficios: 'Vale-transporte\nPlano de saúde\nBonus mensal', tipoContrato: 'CLT', cargaHoraria: '40h', nivel: 'Sênior' },
+      { id: 3, title: 'Gerente de Vendas', empresa: 'Grupo Pão de Açúcar', categoria: 'Vendas', localizacao: 'Salvador, BA', salario: 'R$ 5.000 - R$ 8.000', data: '1 dia', descricao: 'Gerente responsável por equipe de vendas, metas, treinamentos e estratégia comercial.', requisitos: 'Superior completo\nExperiência em gestão de equipes\nConhecimento de KPIs de vendas\nPerfil liderança', beneficios: 'Comissão\nVale-refeição\nPlano de saúde', tipoContrato: 'CLT', cargaHoraria: '44h', nivel: 'Sênior' },
+      { id: 4, title: 'Professor(a) de Matemática', empresa: 'Colégio Integral', categoria: 'Educação', localizacao: 'Feira de Santana, BA', salario: 'R$ 1.800 - R$ 2.200', data: '5 dias', descricao: 'Professor para lecionar matemática no ensino médio, preparar aulas e corrigir atividades.', requisitos: 'Licenciatura em Matemática\nExperiência em sala de aula\nBoa didática', beneficios: 'Vale-transporte\nPlano odontológico', tipoContrato: 'CLT', cargaHoraria: '40h', nivel: 'Pleno' },
+      { id: 5, title: 'Analista de Recursos Humanos', empresa: 'Empresa XPTO', categoria: 'Administração', localizacao: 'Salvador, BA', salario: 'R$ 3.500,00', data: '3 dias', descricao: 'Responsável por recrutamento e seleção, gestão de pessoa, treinamentos e folha de pagamento.', requisitos: 'Superior completo em RH ou Psicologia\nExperiência em RH generalista\nConhecimento em Excel avançado', beneficios: 'Vale-transporte\nVale-refeição\nPlano de saúde\nAuxílio home office', tipoContrato: 'CLT', cargaHoraria: '40h', nivel: 'Pleno' },
+      { id: 6, title: 'Desenvolvedor Full Stack', empresa: 'Startup Digital', categoria: 'Tecnologia', localizacao: 'Remoto', salario: 'R$ 6.000 - R$ 10.000', data: '1 dia', descricao: 'Desenvolvedor full stack para atuar em startup, construir features novas e manter código existente.', requisitos: 'React + Node.js\nTypeScript\nBancos de dados SQL/NoSQL\nExperiência com APIs REST', beneficios: 'Home office 100%\nVale-refeição\nPlano de saúde', tipoContrato: 'PJ', cargaHoraria: '40h', nivel: 'Sênior' },
+      { id: 7, title: 'Vendedor(a) Atacado', empresa: 'Distribuidora Brasil', categoria: 'Vendas', localizacao: 'Salvador, BA', salario: 'R$ 2.500 + Comissão', data: '4 dias', descricao: 'Vendedor para atuar no segmento atacado, captação de clientes e pós-venda.', requisitos: 'Experiência em vendas\nCNH B\nDisponibilidade para viagens regionais', beneficios: 'Comissão atrativa\nVale-transporte', tipoContrato: 'CLT', cargaHoraria: '44h', nivel: 'Júnior' },
+      { id: 8, title: 'Assistente Administrativo', empresa: 'Escritório Contábil', categoria: 'Administração', localizacao: 'Salvador, BA', salario: 'A combinar', data: '6 dias', descricao: 'Assistente para apoiar rotinas administrativas, arquivo, atendimento telefônico e organização de documentos.', requisitos: 'Ensino médio completo\nConhecimento em Pacote Office\nOrganização', beneficios: 'Vale-transporte', tipoContrato: 'CLT', cargaHoraria: '40h', nivel: 'Júnior' },
+      { id: 9, title: 'Analista de Sistemas', empresa: 'Banco do Brasil', categoria: 'Tecnologia', localizacao: 'Salvador, BA', salario: 'R$ 4.500 - R$ 6.000', data: '2 dias', descricao: 'Analista para desenvolver soluções, manter sistemas e suporte a usuários.', requisitos: 'Superior em TI\nExperiência em análise de sistemas\nConhecimento em SQL e Java', beneficios: 'Plano de saúde\nVale-refeição\nSeguro de vida', tipoContrato: 'CLT', cargaHoraria: '40h', nivel: 'Pleno' },
+      { id: 10, title: 'Técnico(a) de Enfermagem', empresa: 'Clínica Saúde', categoria: 'Saúde', localizacao: 'Feira de Santana, BA', salario: 'R$ 1.800 - R$ 2.200', data: '3 dias', descricao: 'Técnico para auxiliar em procedimentos, atendimento e cuidados com pacientes.', requisitos: 'Técnico completo em enfermagem\nCoren ativo\nExperiência em clínica', beneficios: 'Vale-transporte', tipoContrato: 'CLT', cargaHoraria: '36h', nivel: 'Técnico' },
+      { id: 11, title: 'Coordenador de Marketing', empresa: 'Agência Criativa', categoria: 'Outros', localizacao: 'Remoto', salario: 'R$ 4.000 - R$ 6.000', data: 'Hoje', descricao: 'Coordenador responsável por liderar equipe de marketing digital, planejar campanhas e gerenciar presença digital dos clientes.', requisitos: 'Superior em Marketing ou Publicidade\nExperiência em gestão de equipes\nConhecimento em tráfego pago\nInglês avançado', beneficios: 'Home office\nVale-refeição\nBônus por performance', tipoContrato: 'PJ', cargaHoraria: '40h', nivel: 'Sênior' },
+      { id: 12, title: 'Analista de Dados', empresa: 'Tech Analytics BA', categoria: 'Tecnologia', localizacao: 'Salvador, BA', salario: 'R$ 5.000 - R$ 7.500', data: '2 dias', descricao: 'Analista de dados para extrair insights, construir dashboards e apoiar decisões estratégicas com dados.', requisitos: 'Python/SQL\nPower BI ou Tableau\nExperiência com estatística\n storytelling com dados', beneficios: 'Vale-refeição\nPlano de saúde\nAuxílio educação', tipoContrato: 'CLT', cargaHoraria: '40h', nivel: 'Pleno' }
+    ];
+
+    function getVagaById(id) {
+      // Try admin vagas first (most recent)
+      const adminVagas = JSON.parse(localStorage.getItem('vagas')) || [];
+      const vaga = adminVagas.find(v => v.id == id) || seedVagas.find(v => v.id == id);
+      return vaga || seedVagas[0];
+    }
+
+    function renderVaga() {
+      const params = new URLSearchParams(window.location.search);
+      const id = parseInt(params.get('id')) || 1;
+      const vaga = getVagaById(id);
+      
+      // Update page title
+      document.title = vaga.title + ' - Midu Group';
+      
+      // Breadcrumb
+      document.getElementById('breadcrumbVaga').textContent = vaga.title;
+      
+      // Vaga header
+      document.getElementById('vagaCategoria').textContent = vaga.categoria;
+      document.getElementById('vagaTitle').textContent = vaga.title;
+      document.getElementById('vagaEmpresa').textContent = vaga.empresa;
+      document.getElementById('vagaLocalizacao').textContent = vaga.localizacao;
+      document.getElementById('vagaSalario').textContent = vaga.salario;
+      document.getElementById('vagaData').textContent = 'Publicada há ' + vaga.data;
+      
+      // Description
+      document.getElementById('vagaDescricao').textContent = vaga.descricao || 'Descrição não disponível.';
+      
+      // Requisitos
+      const reqList = document.getElementById('vagaRequisitos');
+      reqList.innerHTML = '';
+      (vaga.requisitos || '').split('\n').forEach(req => {
+        if (req.trim()) {
+          const li = document.createElement('li');
+          li.textContent = req.trim();
+          reqList.appendChild(li);
+        }
+      });
+      
+      // Benefícios
+      const benList = document.getElementById('vagaBeneficios');
+      benList.innerHTML = '';
+      (vaga.beneficios || '').split('\n').forEach(ben => {
+        if (ben.trim()) {
+          const li = document.createElement('li');
+          li.textContent = ben.trim();
+          benList.appendChild(li);
+        }
+      });
+      
+      // Sidebar info
+      document.getElementById('infoContrato').textContent = vaga.contrato || vaga.tipoContrato || 'CLT';
+      document.getElementById('infoCarga').textContent = vaga.cargaHoraria || '40h semanais';
+      document.getElementById('infoNivel').textContent = vaga.nivel || 'Pleno';
+      
+      // Update candidatar-se link with vaga id
+      document.querySelector('.btn-full.btn-primary').href = 'candidatar-se.html?id=' + vaga.id;
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+      renderVaga();
+
+      // Navbar links with loading transition
+      document.querySelectorAll('.header-nav a, .logo').forEach(function(a) {
+        a.addEventListener('click', function(e) {
+          var href = this.getAttribute('href');
+          if (href && href.indexOf('#') === -1 && href !== '') {
+            e.preventDefault();
+            document.getElementById('loadingOverlay').style.display = 'flex';
+            setTimeout(function() { window.location.href = href; }, 300);
+          }
+        });
+      });
+    });
+  </script>
+  <!-- Scroll Reveal Observer -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      var reveals = document.querySelectorAll('.reveal, .reveal-scale');
+      if (reveals.length > 0 && 'IntersectionObserver' in window) {
+        var observer = new IntersectionObserver(function(entries) {
+          entries.forEach(function(entry) {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('revealed');
+              observer.unobserve(entry.target);
+            }
+          });
+        }, { threshold: 0.1 });
+        reveals.forEach(function(el) { observer.observe(el); });
+      } else {
+        reveals.forEach(function(el) { el.classList.add('revealed'); });
+      }
+    });
+  </script>
+  <!-- Mobile Menu JS -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      var menuBtn = document.querySelector('.mobile-menu-btn');
+      var headerNav = document.querySelector('.header-nav');
+      if (menuBtn && headerNav) {
+        menuBtn.addEventListener('click', function() {
+          headerNav.classList.toggle('active');
+        });
+        document.querySelectorAll('.header-nav a').forEach(function(link) {
+          link.addEventListener('click', function() {
+            headerNav.classList.remove('active');
+          });
+        });
+      }
+    });
+  </script>
+</body>
+</html>

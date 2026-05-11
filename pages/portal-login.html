@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - Portal do Candidato | Midu Group</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .login-page {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, var(--primary) 0%, #1c0f2e 100%);
+      padding: 1rem;
+    }
+
+    .login-card {
+      background: white;
+      border-radius: 20px;
+      padding: 2.5rem;
+      width: 100%;
+      max-width: 420px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      animation: loginIn 0.5s ease;
+    }
+
+    @keyframes loginIn {
+      from { opacity: 0; transform: translateY(20px) scale(0.96); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .login-logo {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .login-logo img {
+      width: 40px;
+      height: 40px;
+    }
+
+    .login-logo span {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    .login-card h1 {
+      font-size: 1.5rem;
+      color: var(--text-primary);
+      margin-bottom: 0.25rem;
+    }
+
+    .login-card > p {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      margin-bottom: 2rem;
+    }
+
+    .login-card .form-group {
+      margin-bottom: 1.25rem;
+    }
+
+    .login-card .form-input {
+      padding: 0.875rem 1rem;
+    }
+
+    .login-options {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1.5rem;
+      font-size: 0.85rem;
+    }
+
+    .login-options label {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--text-secondary);
+      cursor: pointer;
+    }
+
+    .login-options a {
+      color: var(--primary);
+      text-decoration: none;
+    }
+
+    .login-options a:hover {
+      text-decoration: underline;
+    }
+
+    .login-card .btn {
+      width: 100%;
+      justify-content: center;
+      padding: 0.875rem;
+      font-size: 1rem;
+    }
+
+    .login-divider {
+      text-align: center;
+      margin: 1.5rem 0;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      position: relative;
+    }
+
+    .login-divider::before,
+    .login-divider::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      width: 40%;
+      height: 1px;
+      background: var(--border);
+    }
+
+    .login-divider::before { left: 0; }
+    .login-divider::after { right: 0; }
+
+    .login-back {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      margin-top: 1.5rem;
+      color: var(--text-secondary);
+      font-size: 0.85rem;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .login-back:hover {
+      color: var(--primary);
+    }
+
+    .login-error {
+      display: none;
+      padding: 0.75rem 1rem;
+      background: #fef2f2;
+      color: #dc2626;
+      border-radius: 10px;
+      font-size: 0.85rem;
+      margin-bottom: 1rem;
+      text-align: center;
+    }
+
+    .login-error.show {
+      display: block;
+    }
+
+    .guest-btn-loading {
+      pointer-events: none;
+      opacity: 0.7;
+    }
+    .btn-outline {
+      background: transparent;
+      border: 2px solid var(--border);
+      color: var(--text);
+      border-radius: 12px;
+      padding: 0.75rem;
+      font-weight: 500;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.9rem;
+      transition: all 0.2s;
+    }
+    .btn-outline:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+  </style>
+</head>
+<body>
+  <!-- Loading overlay for page transitions -->
+  <div id="loadingOverlay" class="page-loading-overlay" style="display:none;">
+    <div class="loading-spinner"></div>
+  </div>
+  <div class="login-page">
+    <div class="login-card">
+      <div class="login-logo">
+        <img src="assets/logo.png" alt="Midu Group">
+
+      </div>
+      <h1>Portal do Candidato</h1>
+      <p>Acesse suas candidaturas e gerencie seu perfil.</p>
+
+      <div class="login-error" id="loginError">
+        E-mail ou senha inválidos.
+      </div>
+
+      <form id="loginForm" novalidate>
+        <div class="form-group">
+          <label class="form-label" for="email">E-mail</label>
+          <input type="email" id="email" class="form-input" placeholder="seu@email.com">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="senha">Senha</label>
+          <input type="password" id="senha" class="form-input" placeholder="Sua senha">
+        </div>
+
+        <div class="login-options">
+          <label>
+            <input type="checkbox" checked> Lembrar-me
+          </label>
+          <a href="#">Esqueci minha senha</a>
+        </div>
+
+        <button type="submit" class="btn btn-primary">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+          </svg>
+          Entrar no Portal
+        </button>
+      </form>
+
+      <div class="login-divider">ou</div>
+
+      <a href="cadastro.html" class="btn btn-secondary" style="width:100%;justify-content:center;padding:0.875rem;text-decoration:none;display:flex;margin-bottom:0.75rem;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+          <circle cx="8.5" cy="7" r="4"/>
+          <line x1="20" y1="8" x2="20" y2="14"/>
+          <line x1="23" y1="11" x2="17" y2="11"/>
+        </svg>
+        Criar minha conta
+      </a>
+
+      <button class="btn btn-outline" style="width:100%;justify-content:center;padding:0.875rem;font-size:0.9rem;" onclick="entrarComoConvidado()">
+        Continuar como Convidado
+      </button>
+
+      <a href="index.html" class="login-back">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M19 12H5M12 19l-7-7 7-7"/>
+        </svg>
+        Voltar para o site
+      </a>
+    </div>
+  </div>
+
+  <script>
+    function showLoading() {
+      var overlay = document.getElementById('loadingOverlay');
+      overlay.style.display = 'flex';
+      // force reflow
+      overlay.offsetHeight;
+      overlay.classList.remove('fade-out');
+    }
+
+    function entrarComoConvidado() {
+      var btn = event.currentTarget;
+      btn.classList.add('guest-btn-loading');
+      // Add spinner
+      btn.innerHTML = '<span class="loading-spinner-sm"></span> Entrando...';
+      
+      localStorage.setItem('candidateLoggedIn', 'true');
+      if (!localStorage.getItem('candidateProfile')) {
+        var profile = {
+          nome: 'Convidado',
+          email: 'convidado@midugroup.com.br',
+          telefone: '(71) 99999-0000',
+          linkedin: '',
+          cidade: 'Salvador, BA'
+        };
+        localStorage.setItem('candidateProfile', JSON.stringify(profile));
+      }
+
+      // Simular loading real
+      setTimeout(function() {
+        showLoading();
+        setTimeout(function() {
+          window.location.href = 'portal.html';
+        }, 400);
+      }, 300);
+    }
+
+    document.getElementById('loginForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      var email = document.getElementById('email').value.trim() || 'convidado@midugroup.com.br';
+      var error = document.getElementById('loginError');
+      var submitBtn = this.querySelector('button[type="submit"]');
+
+      // Show loading on button
+      submitBtn.classList.add('btn-loading');
+      submitBtn.innerHTML = '<span class="loading-spinner-sm"></span> Entrando...';
+
+      setTimeout(function() {
+        localStorage.setItem('candidateLoggedIn', 'true');
+        localStorage.setItem('candidateEmail', email);
+
+        if (!localStorage.getItem('candidateProfile')) {
+          var profile = {
+            nome: email.split('@')[0].replace(/[.]/g, ' ').replace(/\b\w/g, function(l) { return l.toUpperCase(); }),
+            email: email,
+            telefone: '(71) 99999-0000',
+            linkedin: '',
+            cidade: 'Salvador, BA'
+          };
+          localStorage.setItem('candidateProfile', JSON.stringify(profile));
+        }
+
+        showLoading();
+        setTimeout(function() {
+          window.location.href = 'portal.html';
+        }, 400);
+      }, 600);
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vagas Abertas - Midu Group</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    /* Navbar */
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border);
+      z-index: 1000;
+      padding: var(--spacing-md) 0;
+    }
+
+    .navbar .container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+      font-size: var(--font-size-xl);
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    .nav-logo-img {
+      width: 36px;
+      height: 36px;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-xl);
+    }
+
+    .nav-link {
+      font-size: var(--font-size-sm);
+      font-weight: 500;
+      color: var(--text);
+      transition: var(--transition);
+    }
+
+    .nav-link:hover, .nav-link.active {
+      color: var(--primary);
+    }
+
+    .nav-cta {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-md);
+    }
+
+    /* Page Header */
+    .page-header {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+      padding: 120px 0 60px;
+      color: white;
+    }
+
+    .breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+      font-size: var(--font-size-sm);
+      margin-bottom: var(--spacing-lg);
+    }
+
+    .breadcrumb a {
+      color: rgba(255, 255, 255, 0.8);
+    }
+
+    .breadcrumb span {
+      color: white;
+    }
+
+    .page-header h1 {
+      font-size: var(--font-size-4xl);
+      font-weight: 700;
+      margin-bottom: var(--spacing-sm);
+    }
+
+    .page-header p {
+      font-size: var(--font-size-lg);
+      opacity: 0.9;
+    }
+
+    /* Filters */
+    .filters-section {
+      background: var(--bg-secondary);
+      padding: var(--spacing-xl) 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .search-box {
+      position: relative;
+      margin-bottom: var(--spacing-lg);
+    }
+
+    .search-box input {
+      width: 100%;
+      padding: var(--spacing-md) var(--spacing-md) var(--spacing-md) 48px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      font-size: var(--font-size-base);
+      background: var(--bg);
+    }
+
+    .search-box input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+
+    .search-box svg {
+      position: absolute;
+      left: var(--spacing-md);
+      top: 50%;
+      transform: translateY(-50%);
+      width: 20px;
+      height: 20px;
+      color: var(--text-light);
+    }
+
+    .filters-row {
+      display: flex;
+      gap: var(--spacing-md);
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .filter-group {
+      min-width: 180px;
+    }
+
+    .filter-group label {
+      display: block;
+      font-size: var(--font-size-xs);
+      font-weight: 500;
+      color: var(--text-muted);
+      margin-bottom: var(--spacing-xs);
+    }
+
+    .filter-select {
+      width: 100%;
+      padding: var(--spacing-sm) var(--spacing-md);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      font-size: var(--font-size-sm);
+      background: var(--bg);
+      cursor: pointer;
+    }
+
+    .filter-btn {
+      padding: var(--spacing-sm) var(--spacing-md);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      font-size: var(--font-size-sm);
+      background: var(--bg);
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .filter-btn:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    /* Jobs Grid */
+    .jobs-section {
+      padding: var(--spacing-3xl) 0;
+    }
+
+    .jobs-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: var(--spacing-xl);
+    }
+
+    .jobs-count {
+      font-size: var(--font-size-sm);
+      color: var(--text-muted);
+    }
+
+    .jobs-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--spacing-lg);
+    }
+
+    .job-card {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: var(--spacing-xl);
+      transition: var(--transition);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .job-card:hover {
+      border-color: var(--primary);
+      box-shadow: var(--shadow-lg);
+      transform: translateY(-2px);
+    }
+
+    .job-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: var(--spacing-md);
+    }
+
+    .job-category {
+      font-size: var(--font-size-xs);
+      font-weight: 500;
+      padding: var(--spacing-xs) var(--spacing-sm);
+      border-radius: var(--radius-full);
+    }
+
+    .job-category.tech { background: rgba(99, 102, 241, 0.1); color: #6366f1; }
+    .job-category.health { background: rgba(236, 72, 153, 0.1); color: #ec4899; }
+    .job-category.education { background: rgba(168, 85, 247, 0.1); color: #a855f7; }
+    .job-category.sales { background: rgba(34, 197, 94, 0.1); color: #22c55e; }
+    .job-category.admin { background: rgba(59, 130, 246, 0.1); color: #3b82f6; }
+
+    .job-title {
+      font-size: var(--font-size-lg);
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: var(--spacing-sm);
+    }
+
+    .job-company {
+      font-size: var(--font-size-sm);
+      color: var(--text-muted);
+      margin-bottom: var(--spacing-md);
+    }
+
+    .job-details {
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-sm);
+      margin-bottom: var(--spacing-lg);
+    }
+
+    .job-detail {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+      font-size: var(--font-size-sm);
+      color: var(--text-muted);
+    }
+
+    .job-detail svg {
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+    }
+
+    .job-date {
+      font-size: var(--font-size-xs);
+      color: var(--text-light);
+      margin-bottom: var(--spacing-lg);
+    }
+
+    .job-card-footer {
+      margin-top: auto;
+    }
+
+    .btn-job {
+      width: 100%;
+      justify-content: center;
+    }
+
+    /* Pagination */
+    .pagination {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: var(--spacing-sm);
+      margin-top: var(--spacing-3xl);
+    }
+
+    .pagination-btn {
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      font-size: var(--font-size-sm);
+      color: var(--text);
+      background: var(--bg);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .pagination-btn:hover:not(:disabled) {
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    .pagination-btn.active {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+
+    .pagination-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .pagination-info {
+      font-size: var(--font-size-sm);
+      color: var(--text-muted);
+      margin-left: var(--spacing-lg);
+    }
+
+    /* Empty State */
+    .empty-state {
+      text-align: center;
+      padding: var(--spacing-3xl);
+    }
+
+    .empty-state svg {
+      width: 80px;
+      height: 80px;
+      color: var(--text-light);
+      margin-bottom: var(--spacing-lg);
+    }
+
+    .empty-state h3 {
+      font-size: var(--font-size-xl);
+      margin-bottom: var(--spacing-sm);
+    }
+
+    .empty-state p {
+      color: var(--text-muted);
+      margin-bottom: var(--spacing-lg);
+    }
+
+    /* Footer */
+    .footer {
+      background: var(--text);
+      color: white;
+      padding: var(--spacing-2xl) 0 var(--spacing-lg);
+    }
+
+    .footer-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .footer-logo {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+      font-size: var(--font-size-lg);
+      font-weight: 700;
+      color: white;
+    }
+
+    .footer-logo img {
+      width: 28px;
+      height: 28px;
+    }
+
+    .footer p {
+      font-size: var(--font-size-sm);
+      color: rgba(255, 255, 255, 0.6);
+    }
+
+    .mobile-menu-btn {
+      display: none;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: var(--spacing-sm);
+      color: var(--text);
+      z-index: 1001;
+    }
+
+    .nav-links.active {
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      top: 72px;
+      left: 0;
+      right: 0;
+      background: white;
+      padding: var(--spacing-lg);
+      box-shadow: 0 4px 24px rgba(0,0,0,0.1);
+      gap: var(--spacing-md);
+      z-index: 999;
+      animation: slideDown 0.3s ease;
+    }
+
+    @keyframes slideDown {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Mobile */
+    @media (max-width: 1024px) {
+      .jobs-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 768px) {
+      .nav-links {
+        display: none;
+      }
+
+      .mobile-menu-btn {
+        display: flex;
+      }
+
+      .filters-row {
+        flex-direction: column;
+      }
+
+      .filter-group {
+        width: 100%;
+      }
+
+      .jobs-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .pagination-info {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Loading overlay for page transitions -->
+  <div id="loadingOverlay" class="page-loading-overlay" style="display:none;">
+    <div class="loading-spinner"></div>
+  </div>
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="container">
+      <a href="index.html" class="nav-logo">
+        <img src="assets/logo.png" alt="Midu Group" class="nav-logo-img">
+      </a>
+      <div class="nav-links">
+        <a href="index.html" class="nav-link">Início</a>
+        <a href="vagas.html" class="nav-link active">Vagas</a>
+        <a href="index.html#sobre" class="nav-link">Sobre</a>
+        <a href="index.html#contato" class="nav-link">Contato</a>
+      </div>
+      <div class="nav-cta">
+        <a href="portal.html" class="btn btn-outline btn-sm">Portal do Candidato</a>
+        <a href="admin/login.html" class="btn btn-ghost btn-sm" style="color: var(--text-light);">Admin</a>
+        <button class="btn btn-icon mobile-menu-btn">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M3 12h18M3 6h18M3 18h18"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Page Header -->
+  <header class="page-header">
+    <div class="container reveal">
+      <div class="breadcrumb">
+        <a href="index.html">Home</a>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="9,18 15,12 9,6"/>
+        </svg>
+        <span>Vagas</span>
+      </div>
+      <h1>Vagas Abertas</h1>
+      <p>Encontre a oportunidade ideal para sua carreira</p>
+    </div>
+  </header>
+
+  <!-- Filters -->
+  <section class="filters-section">
+    <div class="container reveal">
+      <div class="search-box">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8"/>
+          <path d="M21 21l-4.35-4.35"/>
+        </svg>
+        <input type="text" id="searchInput" placeholder="Buscar por título, empresa ou palavra-chave...">
+      </div>
+      
+      <div class="filters-row">
+        <div class="filter-group">
+          <label>Categoria</label>
+          <select class="filter-select" id="categoryFilter">
+            <option value="">Todos</option>
+            <option value="tech">Tecnologia</option>
+            <option value="health">Saúde</option>
+            <option value="education">Educação</option>
+            <option value="sales">Vendas</option>
+            <option value="admin">Administração</option>
+            <option value="other">Outros</option>
+          </select>
+        </div>
+        
+        <div class="filter-group">
+          <label>Localização</label>
+          <select class="filter-select" id="locationFilter">
+            <option value="">Todos</option>
+            <option value="salvador">Salvador</option>
+            <option value="feira">Feira de Santana</option>
+            <option value="remoto">Remoto</option>
+          </select>
+        </div>
+        
+        <div class="filter-group">
+          <label>Salário</label>
+          <select class="filter-select" id="salaryFilter">
+            <option value="">Todos</option>
+            <option value="combinar">A combinar</option>
+            <option value="under2">Até R$2.000</option>
+            <option value="2-5">R$2.000 - R$5.000</option>
+            <option value="over5">R$5.000+</option>
+          </select>
+        </div>
+        
+        <button class="filter-btn" onclick="clearFilters()">Limpar Filtros</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Jobs Grid -->
+  <section class="jobs-section">
+    <div class="container">
+      <div class="jobs-header">
+        <span class="jobs-count">Mostrando 1-10 de 47 vagas</span>
+      </div>
+      
+      <div class="jobs-grid" id="jobsGrid">
+        <!-- Skeleton loading -->
+        <div class="skeleton skeleton-card"></div>
+        <div class="skeleton skeleton-card"></div>
+        <div class="skeleton skeleton-card"></div>
+        <div class="skeleton skeleton-card"></div>
+        <div class="skeleton skeleton-card"></div>
+      </div>
+
+      <!-- Pagination -->
+      <div class="pagination">
+        <button class="pagination-btn" disabled>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="15,18 9,12 15,6"/>
+          </svg>
+        </button>
+        <button class="pagination-btn active">1</button>
+        <button class="pagination-btn">2</button>
+        <button class="pagination-btn">3</button>
+        <span style="color: var(--text-light);">...</span>
+        <button class="pagination-btn">10</button>
+        <button class="pagination-btn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="9,18 15,12 9,6"/>
+          </svg>
+        </button>
+        <span class="pagination-info">Mostrando 1-10 de 47 vagas</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-logo">
+          <img src="assets/logo.png" alt="Midu Group" class="nav-logo-img">
+        </div>
+        <p>&copy; 2026 Midu Group - Todos os direitos reservados</p>
+      </div>
+    </div>
+  </footer>
+
+    <script>
+      // === SEED DE VAGAS ===
+      var seedVagas = [
+        { id: 1, title: 'Analista de Recursos Humanos', empresa: 'Midu Group', categoria: 'RH', localizacao: 'Salvador, BA', salario: 'R$ 2.800 - R$ 4.200', data: '1 dia', tipo: 'CLT', categoriaClass: 'admin' },
+        { id: 2, title: 'Desenvolvedor Frontend React', empresa: 'Tech Solutions Bahia', categoria: 'Tecnologia', localizacao: 'Salvador, BA', salario: 'R$ 4.500 - R$ 7.000', data: '2 dias', tipo: 'PJ', categoriaClass: 'tech' },
+        { id: 3, title: 'Enfermeiro(a) Coordenador(a)', empresa: 'Hospital São Rafael', categoria: 'Saúde', localizacao: 'Salvador, BA', salario: 'R$ 4.000 - R$ 6.000', data: '3 dias', tipo: 'CLT', categoriaClass: 'health' },
+        { id: 4, title: 'Gerente de Vendas', empresa: 'Grupo Comercial Bahia', categoria: 'Vendas', localizacao: 'Salvador, BA', salario: 'R$ 5.000 - R$ 8.000', data: '1 dia', tipo: 'CLT', categoriaClass: 'sales' },
+        { id: 5, title: 'Professor(a) de Matemática', empresa: 'Colégio Integral', categoria: 'Educação', localizacao: 'Feira de Santana, BA', salario: 'R$ 1.800 - R$ 2.200', data: '5 dias', tipo: 'CLT', categoriaClass: 'education' },
+        { id: 6, title: 'Desenvolvedor Full Stack', empresa: 'Startup Digital', categoria: 'Tecnologia', localizacao: 'Remoto', salario: 'R$ 6.000 - R$ 10.000', data: '1 dia', tipo: 'PJ', categoriaClass: 'tech' },
+        { id: 7, title: 'Consultor de RH', empresa: 'Midu Group', categoria: 'RH', localizacao: 'Salvador, BA', salario: 'R$ 3.500 - R$ 5.500', data: 'Hoje', tipo: 'CLT', categoriaClass: 'admin' },
+        { id: 8, title: 'Vendedor(a) Externo', empresa: 'Distribuidora Brasil', categoria: 'Vendas', localizacao: 'Salvador, BA', salario: 'R$ 2.500 + Comissão', data: '4 dias', tipo: 'CLT', categoriaClass: 'sales' },
+        { id: 9, title: 'Assistente Administrativo', empresa: 'Escritório Contábil', categoria: 'Administração', localizacao: 'Salvador, BA', salario: 'A combinar', data: '6 dias', tipo: 'CLT', categoriaClass: 'admin' },
+        { id: 10, title: 'Analista de Sistemas', empresa: 'Banco do Brasil', categoria: 'Tecnologia', localizacao: 'Salvador, BA', salario: 'R$ 4.500 - R$ 6.000', data: '2 dias', tipo: 'CLT', categoriaClass: 'tech' },
+        { id: 11, title: 'Técnico(a) de Enfermagem', empresa: 'Clínica Saúde', categoria: 'Saúde', localizacao: 'Feira de Santana, BA', salario: 'R$ 1.800 - R$ 2.200', data: '3 dias', tipo: 'CLT', categoriaClass: 'health' },
+        { id: 12, title: 'Coordenador de Marketing', empresa: 'Agência Criativa', categoria: 'Outros', localizacao: 'Remoto', salario: 'R$ 4.000 - R$ 6.000', data: 'Hoje', tipo: 'PJ', categoriaClass: 'other' }
+      ];
+
+      // === FUNÇÕES AUXILIARES ===
+      function getCategoryClass(categoria) {
+        var map = {
+          'Tecnologia': 'tech', 'Saúde': 'health', 'Educação': 'education',
+          'Vendas': 'sales', 'Administração': 'admin', 'RH': 'admin', 'Outros': 'other'
+        };
+        return map[categoria] || 'other';
+      }
+
+      function montarCard(vaga) {
+        return '<div class="job-card hover-lift reveal" data-category="' + vaga.categoriaClass + '">' +
+          '<div class="job-card-header">' +
+            '<span class="job-category ' + vaga.categoriaClass + '">' + vaga.categoria + '</span>' +
+            '<span style="font-size:0.75rem;color:var(--text-light)">' + vaga.tipo + '</span>' +
+          '</div>' +
+          '<h3 class="job-title">' + vaga.title + '</h3>' +
+          '<p class="job-company">' + vaga.empresa + '</p>' +
+          '<div class="job-details">' +
+            '<div class="job-detail">' +
+              '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>' +
+              vaga.localizacao +
+            '</div>' +
+            '<div class="job-detail">' +
+              '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>' +
+              vaga.salario +
+            '</div>' +
+          '</div>' +
+          '<p class="job-date">Publicada há ' + vaga.data + '</p>' +
+          '<div class="job-card-footer">' +
+            '<a href="vaga-detalhes.html?id=' + vaga.id + '" class="btn btn-primary btn-job">Ver Detalhes</a>' +
+          '</div>' +
+        '</div>';
+      }
+
+      // === ACESSO A VAGAS (localStorage com fallback) ===
+      function getVagas() {
+        try {
+          var stored = localStorage.getItem('publicVagas');
+          if (stored) {
+            var parsed = JSON.parse(stored);
+            if (Array.isArray(parsed) && parsed.length > 0) {
+              return parsed;
+            }
+          }
+        } catch (e) {
+          console.warn('localStorage read error:', e);
+        }
+        // fallback: seed (tenta salvar, mas não falha se não der)
+        try {
+          localStorage.setItem('publicVagas', JSON.stringify(seedVagas));
+        } catch (e) {
+          console.warn('localStorage write error (quota?):', e);
+        }
+        return seedVagas;
+      }
+
+      function renderJobs() {
+        var vagas = getVagas();
+        var grid = document.getElementById('jobsGrid');
+
+        // Small delay for skeleton effect
+        setTimeout(function() {
+          grid.innerHTML = '';
+          vagas.forEach(function(v) {
+            grid.innerHTML += montarCard(v);
+          });
+          document.querySelector('.jobs-count').textContent = 'Mostrando ' + vagas.length + ' de ' + vagas.length + ' vagas';
+
+          // Reveal observer for new cards
+          if ('IntersectionObserver' in window) {
+            var obs = new IntersectionObserver(function(entries) {
+              entries.forEach(function(e) {
+                if (e.isIntersecting) { e.target.classList.add('revealed'); obs.unobserve(e.target); }
+              });
+            }, { threshold: 0.1 });
+            grid.querySelectorAll('.reveal').forEach(function(el) { obs.observe(el); });
+          }
+        }, 300);
+      }
+
+      function filterJobs() {
+        var searchTerm = document.getElementById('searchInput').value.toLowerCase();
+        var category = document.getElementById('categoryFilter').value;
+        var location = document.getElementById('locationFilter').value;
+
+        var vagas = getVagas();
+        var grid = document.getElementById('jobsGrid');
+
+        var filtered = vagas.filter(function(v) {
+          var matchSearch = v.title.toLowerCase().indexOf(searchTerm) !== -1 ||
+                            v.empresa.toLowerCase().indexOf(searchTerm) !== -1;
+          var matchCategory = !category || v.categoriaClass === category;
+          var matchLocation = !location ||
+            (location === 'salvador' && v.localizacao.toLowerCase().indexOf('salvador') !== -1) ||
+            (location === 'feira' && v.localizacao.toLowerCase().indexOf('feira') !== -1) ||
+            (location === 'remoto' && v.localizacao.toLowerCase().indexOf('remoto') !== -1);
+          return matchSearch && matchCategory && matchLocation;
+        });
+
+        grid.innerHTML = '';
+        if (filtered.length === 0) {
+          grid.innerHTML = '<div class="empty-state" style="grid-column:1/-1;text-align:center;padding:3rem;"><svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg><h3>Nenhuma vaga encontrada</h3><p style="color:var(--text-muted)">Tente ajustar os filtros ou buscar por outro termo.</p></div>';
+        } else {
+          filtered.forEach(function(v) { grid.innerHTML += montarCard(v); });
+        }
+
+        document.querySelector('.jobs-count').textContent = 'Mostrando ' + filtered.length + ' de ' + vagas.length + ' vagas';
+      }
+
+      function clearFilters() {
+        document.getElementById('searchInput').value = '';
+        document.getElementById('categoryFilter').value = '';
+        document.getElementById('locationFilter').value = '';
+        document.getElementById('salaryFilter').value = '';
+        renderJobs();
+      }
+
+      // Inicializar
+      document.addEventListener('DOMContentLoaded', function() {
+        // Page fade in
+        document.body.classList.add('page-fade-enter');
+
+        renderJobs();
+
+        document.getElementById('searchInput').addEventListener('input', filterJobs);
+        document.getElementById('categoryFilter').addEventListener('change', filterJobs);
+        document.getElementById('locationFilter').addEventListener('change', filterJobs);
+        document.getElementById('salaryFilter').addEventListener('change', filterJobs);
+
+        // Navbar links with loading transition (event delegation for dynamic .btn-job)
+        document.addEventListener('click', function(e) {
+          var link = e.target.closest('a');
+          if (!link) return;
+          var href = link.getAttribute('href');
+          if (href && href.indexOf('#') === -1 && href !== '' && href.indexOf('javascript:') === -1) {
+            if (link.classList.contains('nav-link') || link.classList.contains('nav-logo') || link.closest('.navbar') || link.classList.contains('btn-job')) {
+              e.preventDefault();
+              document.getElementById('loadingOverlay').style.display = 'flex';
+              setTimeout(function() { window.location.href = href; }, 300);
+            }
+          }
+        });
+      });
+    </script>
+  <!-- Scroll Reveal Observer -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      var reveals = document.querySelectorAll('.reveal, .reveal-scale');
+      if (reveals.length > 0 && 'IntersectionObserver' in window) {
+        var observer = new IntersectionObserver(function(entries) {
+          entries.forEach(function(entry) {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('revealed');
+              observer.unobserve(entry.target);
+            }
+          });
+        }, { threshold: 0.1 });
+        reveals.forEach(function(el) { observer.observe(el); });
+      } else {
+        reveals.forEach(function(el) { el.classList.add('revealed'); });
+      }
+    });
+  </script>
+  <!-- Mobile Menu JS -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      var menuBtn = document.querySelector('.mobile-menu-btn');
+      var navLinks = document.querySelector('.nav-links');
+      if (menuBtn && navLinks) {
+        menuBtn.addEventListener('click', function() {
+          navLinks.classList.toggle('active');
+        });
+        document.querySelectorAll('.nav-link').forEach(function(link) {
+          link.addEventListener('click', function() {
+            navLinks.classList.remove('active');
+          });
+        });
+      }
+    });
+  </script>
+</body>
+</html>

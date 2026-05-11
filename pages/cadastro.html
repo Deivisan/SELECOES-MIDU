@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Criar Conta - Portal do Candidato | Midu Group</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .cadastro-page {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, var(--primary) 0%, #1c0f2e 100%);
+      padding: 1rem;
+    }
+    .cadastro-card {
+      background: white;
+      border-radius: 20px;
+      padding: 2.5rem;
+      width: 100%;
+      max-width: 520px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      animation: cadastroIn 0.5s ease;
+    }
+    @keyframes cadastroIn {
+      from { opacity: 0; transform: translateY(20px) scale(0.96); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    .cadastro-logo {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 0.5rem;
+    }
+    .cadastro-logo img { width: 40px; height: 40px; }
+    .cadastro-card h1 {
+      font-size: 1.5rem;
+      color: var(--text-primary);
+      margin-bottom: 0.25rem;
+    }
+    .cadastro-card > p {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      margin-bottom: 1.5rem;
+    }
+    .cadastro-card .form-group { margin-bottom: 1.1rem; }
+    .cadastro-card .form-input { padding: 0.875rem 1rem; }
+    .cadastro-card .btn { width: 100%; justify-content: center; padding: 0.875rem; font-size: 1rem; }
+    .cadastro-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+    @media (max-width: 480px) {
+      .cadastro-row { grid-template-columns: 1fr; }
+    }
+    .termos {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      text-align: center;
+      margin: 1rem 0 1.5rem;
+      line-height: 1.5;
+    }
+    .termos a { color: var(--primary); }
+    .cadastro-back {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      margin-top: 1.25rem;
+      color: var(--text-secondary);
+      font-size: 0.85rem;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .cadastro-back:hover { color: var(--primary); }
+    .cadastro-success {
+      display: none;
+      text-align: center;
+      padding: 2rem 0;
+    }
+    .cadastro-success.show { display: block; }
+    .cadastro-success .checkmark {
+      width: 64px; height: 64px;
+      background: var(--success, #10b981);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1rem;
+    }
+    .cadastro-success .checkmark svg { width: 32px; height: 32px; color: white; }
+  </style>
+</head>
+<body>
+  <div id="loadingOverlay" class="page-loading-overlay" style="display:none;">
+    <div class="loading-spinner"></div>
+  </div>
+  <div class="cadastro-page">
+    <div class="cadastro-card">
+      <div class="cadastro-logo">
+        <img src="assets/logo.png" alt="Midu Group">
+      </div>
+      <h1>Criar Conta</h1>
+      <p>Preencha seus dados para acessar o portal de candidaturas.</p>
+
+      <!-- Formulário -->
+      <form id="cadastroForm" class="cadastro-form" novalidate>
+        <div class="cadastro-row">
+          <div class="form-group">
+            <label class="form-label" for="nome">Nome</label>
+            <input type="text" id="nome" class="form-input" placeholder="Seu nome completo">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="sobrenome">Sobrenome</label>
+            <input type="text" id="sobrenome" class="form-input" placeholder="Seu sobrenome">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="email">E-mail</label>
+          <input type="email" id="email" class="form-input" placeholder="seu@email.com">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="telefone">Telefone</label>
+          <input type="tel" id="telefone" class="form-input" placeholder="(71) 99999-0000">
+        </div>
+
+        <div class="cadastro-row">
+          <div class="form-group">
+            <label class="form-label" for="senha">Senha</label>
+            <input type="password" id="senha" class="form-input" placeholder="Sua senha">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="confirmar">Confirmar Senha</label>
+            <input type="password" id="confirmar" class="form-input" placeholder="Repita a senha">
+          </div>
+        </div>
+
+        <div class="termos">
+          Ao criar sua conta, você concorda com nossos <a href="#">Termos de Uso</a> e <a href="#">Política de Privacidade</a>.
+        </div>
+
+        <button type="submit" class="btn btn-primary">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+            <circle cx="8.5" cy="7" r="4"/>
+            <line x1="20" y1="8" x2="20" y2="14"/>
+            <line x1="23" y1="11" x2="17" y2="11"/>
+          </svg>
+          Criar minha conta
+        </button>
+      </form>
+
+      <!-- Sucesso -->
+      <div class="cadastro-success" id="cadastroSuccess">
+        <div class="checkmark">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+            <polyline points="20,6 9,17 4,12"/>
+          </svg>
+        </div>
+        <h2 style="margin-bottom:0.5rem;">Conta Criada! 🎉</h2>
+        <p style="color:var(--text-muted);margin-bottom:1.5rem;">Redirecionando para o portal...</p>
+        <div class="loading-spinner-sm" style="margin:0 auto;"></div>
+      </div>
+
+      <a href="portal-login.html" class="cadastro-back">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M19 12H5M12 19l-7-7 7-7"/>
+        </svg>
+        Já tenho conta — fazer login
+      </a>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('cadastroForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      var nome = document.getElementById('nome').value.trim();
+      var sobrenome = document.getElementById('sobrenome').value.trim();
+      var email = document.getElementById('email').value.trim();
+      var telefone = document.getElementById('telefone').value.trim();
+      var senha = document.getElementById('senha').value;
+      var confirmar = document.getElementById('confirmar').value;
+
+      // Save candidate data
+      var nomeCompleto = (nome || 'Candidato') + ' ' + (sobrenome || 'Midu');
+      var profile = {
+        nome: nomeCompleto,
+        email: email || 'candidato@midugroup.com.br',
+        telefone: telefone || '(71) 99999-0000',
+        linkedin: '',
+        cidade: 'Salvador, BA'
+      };
+      localStorage.setItem('candidateLoggedIn', 'true');
+      localStorage.setItem('candidateProfile', JSON.stringify(profile));
+      localStorage.setItem('candidateEmail', email);
+
+      // Redirecionar após breve loading
+      document.querySelector('.cadastro-form').style.display = 'none';
+      document.getElementById('cadastroSuccess').classList.add('show');
+
+      setTimeout(function() {
+        var overlay = document.getElementById('loadingOverlay');
+        overlay.style.display = 'flex';
+        setTimeout(function() {
+          window.location.href = 'portal.html';
+        }, 400);
+      }, 1200);
+    });
+  </script>
+</body>
+</html>

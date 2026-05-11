@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Candidatar-se - Midu Group</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    * { margin:0; padding:0; box-sizing: border-box; }
+    
+    body {
+      background: var(--bg-secondary);
+      min-height: 100vh;
+      font-family: var(--font-family);
+    }
+    
+    /* Header */
+    .header {
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+      padding: var(--spacing-md) 0;
+    }
+    
+    .header .container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+      font-size: var(--font-size-xl);
+      font-weight: 700;
+      color: var(--primary);
+      text-decoration: none;
+    }
+    
+    .logo img { width: 36px; height: 36px; }
+    
+    .breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+      font-size: var(--font-size-sm);
+      color: var(--text-muted);
+    }
+    
+    .breadcrumb a {
+      color: var(--primary);
+      text-decoration: none;
+    }
+    
+    .breadcrumb a:hover { text-decoration: underline; }
+    
+    /* Main */
+    .main-content {
+      max-width: 800px;
+      margin: var(--spacing-3xl) auto;
+      padding: 0 var(--spacing-lg);
+    }
+    
+    .page-title {
+      font-size: var(--font-size-2xl);
+      font-weight: 600;
+      margin-bottom: var(--spacing-xs);
+    }
+    
+    .page-subtitle {
+      font-size: var(--font-size-base);
+      color: var(--text-muted);
+      margin-bottom: var(--spacing-xl);
+    }
+    
+    /* Form Card */
+    .form-card {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: var(--spacing-xl);
+      margin-bottom: var(--spacing-xl);
+    }
+    
+    .form-card-title {
+      font-size: var(--font-size-lg);
+      font-weight: 600;
+      margin-bottom: var(--spacing-lg);
+      padding-bottom: var(--spacing-md);
+      border-bottom: 1px solid var(--border);
+    }
+    
+    .form-grid {
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-lg);
+    }
+    
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-sm);
+    }
+    
+    .form-label {
+      font-size: var(--font-size-sm);
+      font-weight: 500;
+      color: var(--text);
+    }
+    
+    .form-label .required { color: var(--error); margin-left: 2px; }
+    
+    .form-input {
+      padding: var(--spacing-md);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      font-size: var(--font-size-base);
+      font-family: var(--font-family);
+      transition: var(--transition);
+      width: 100%;
+    }
+    
+    .form-input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+    
+    /* Drop Zone */
+    .drop-zone {
+      border: 2px dashed var(--border);
+      border-radius: var(--radius-lg);
+      padding: var(--spacing-2xl) var(--spacing-lg);
+      text-align: center;
+      cursor: pointer;
+      transition: var(--transition);
+      background: var(--bg);
+    }
+    
+    .drop-zone:hover, .drop-zone.dragover {
+      border-color: var(--primary);
+      background: rgba(37, 99, 235, 0.05);
+    }
+    
+    .drop-zone-icon {
+      width: 48px;
+      height: 48px;
+      margin: 0 auto var(--spacing-md);
+      color: var(--text-muted);
+    }
+    
+    .drop-zone-text {
+      font-size: var(--font-size-base);
+      color: var(--text);
+      margin-bottom: var(--spacing-xs);
+    }
+    
+    .drop-zone-hint {
+      font-size: var(--font-size-sm);
+      color: var(--text-muted);
+    }
+    
+    .file-preview {
+      display: none;
+      align-items: center;
+      gap: var(--spacing-md);
+      padding: var(--spacing-md);
+      background: var(--bg-secondary);
+      border-radius: var(--radius);
+      margin-top: var(--spacing-md);
+    }
+    
+    .file-preview.active { display: flex; }
+    
+    .file-icon {
+      width: 40px;
+      height: 40px;
+      background: var(--primary);
+      border-radius: var(--radius);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+    }
+    
+    .file-info { flex: 1; }
+    
+    .file-name {
+      font-size: var(--font-size-sm);
+      font-weight: 500;
+      color: var(--text);
+      margin-bottom: var(--spacing-xs);
+    }
+    
+    .file-size {
+      font-size: var(--font-size-xs);
+      color: var(--text-muted);
+    }
+    
+    .btn-remove {
+      background: none;
+      border: 1px solid var(--error);
+      color: var(--error);
+      padding: var(--spacing-xs) var(--spacing-sm);
+      border-radius: var(--radius);
+      font-size: var(--font-size-xs);
+      cursor: pointer;
+    }
+    
+    .btn-remove:hover { background: rgba(239, 68, 68, 0.1); }
+    
+    /* Checkbox */
+    .checkbox-group {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--spacing-md);
+      margin-top: var(--spacing-lg);
+    }
+    
+    .checkbox-input {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--primary);
+      margin-top: 2px;
+    }
+    
+    .checkbox-label {
+      font-size: var(--font-size-sm);
+      color: var(--text);
+      line-height: 1.5;
+    }
+    
+    .checkbox-label a {
+      color: var(--primary);
+    }
+    
+    /* Actions */
+    .form-actions {
+      display: flex;
+      gap: var(--spacing-md);
+      margin-top: var(--spacing-xl);
+    }
+    
+    .btn {
+      padding: var(--spacing-sm) var(--spacing-xl);
+      border-radius: var(--radius);
+      font-weight: 500;
+      font-size: var(--font-size-sm);
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+      border: none;
+      transition: var(--transition);
+    }
+    
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+    }
+    
+    .btn-primary:hover {
+      background: var(--primary-dark);
+    }
+    
+    .btn-secondary {
+      background: var(--bg-secondary);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+    
+    .btn-secondary:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+    
+    /* Success Modal */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+    
+    .modal-overlay.active { display: flex; }
+    
+    .modal {
+      background: var(--bg);
+      border-radius: var(--radius-lg);
+      padding: var(--spacing-2xl);
+      max-width: 480px;
+      width: 90%;
+      text-align: center;
+    }
+    
+    .success-icon {
+      width: 80px;
+      height: 80px;
+      background: rgba(16, 185, 129, 0.1);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto var(--spacing-lg);
+      color: var(--success);
+    }
+    
+    .modal h2 {
+      font-size: var(--font-size-2xl);
+      font-weight: 600;
+      margin-bottom: var(--spacing-sm);
+    }
+    
+    .modal p {
+      font-size: var(--font-size-base);
+      color: var(--text-muted);
+      margin-bottom: var(--spacing-lg);
+      line-height: 1.6;
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+      .form-actions {
+        flex-direction: column;
+      }
+      
+      .form-actions .btn {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="container">
+      <a href="index.html" class="logo">
+        <img src="assets/logo.png" alt="Midu Group" class="nav-logo-img">
+      </a>
+      <div class="breadcrumb">
+        <a href="index.html">Home</a>
+        <span>›</span>
+        <a href="vagas.html">Vagas</a>
+        <span>›</span>
+        <a href="vaga-detalhes.html" id="breadcrumbVagaLink">Vaga</a>
+        <span>›</span>
+        <span>Candidatar-se</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <h1 class="page-title">Candidatar-se</h1>
+    <p class="page-subtitle" id="vagaSubtitle">Vaga: Carregando...</p>
+
+    <form id="candidaturaForm" onsubmit="enviarCandidatura(event)" novalidate>
+      <!-- Dados Pessoais -->
+      <div class="form-card">
+        <h2 class="form-card-title">Dados Pessoais</h2>
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="form-label">Nome Completo</label>
+            <input type="text" class="form-input" id="nome" placeholder="Seu nome completo">
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">Email</label>
+            <input type="email" class="form-input" id="email" placeholder="seu@email.com">
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">Telefone</label>
+            <input type="tel" class="form-input" id="telefone" placeholder="(71) 99999-9999">
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">LinkedIn</label>
+            <input type="url" class="form-input" id="linkedin" placeholder="https://linkedin.com/in/seuperfil">
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">Cidade</label>
+            <input type="text" class="form-input" id="cidade" placeholder="Ex: Salvador, BA">
+          </div>
+        </div>
+      </div>
+
+      <!-- Currículo -->
+      <div class="form-card">
+        <h2 class="form-card-title">Currículo</h2>
+        <div class="form-group">
+          <label class="form-label">Enviar Currículo (PDF)</label>
+          <div class="drop-zone" id="dropZone">
+            <svg class="drop-zone-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+              <polyline points="14,2 14,8 20,8"/>
+            </svg>
+            <div class="drop-zone-text">Arraste seu currículo aqui ou clique para selecionar</div>
+            <div class="drop-zone-hint">Formato: PDF | Máximo: 5MB</div>
+            <input type="file" id="curriculo" accept=".pdf" hidden>
+          </div>
+          
+          <div class="file-preview" id="filePreview">
+            <div class="file-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                <polyline points="14,2 14,8 20,8"/>
+              </svg>
+            </div>
+            <div class="file-info">
+              <div class="file-name" id="fileName">curriculo.pdf</div>
+              <div class="file-size" id="fileSize">2.4 MB</div>
+            </div>
+            <button type="button" class="btn-remove" onclick="removerArquivo()">Remover</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Termos -->
+      <div class="checkbox-group">
+        <input type="checkbox" class="checkbox-input" id="termos">
+        <label class="checkbox-label" for="termos">
+          Li e aceito os <a href="#" onclick="alert('Termos de Privacidade\n\nSeus dados serão utilizados apenas para fins de recrutamento.'); return false;">termos de privacidade</a>
+        </label>
+      </div>
+
+      <!-- Actions -->
+      <div class="form-actions">
+        <button type="button" class="btn btn-secondary" onclick="window.location.href='vaga-detalhes.html?id=' + getVagaId()">Cancelar</button>
+        <button type="submit" class="btn btn-primary" id="submitBtn">Enviar Candidatura</button>
+      </div>
+    </form>
+  </main>
+
+  <!-- Success Modal -->
+  <div class="modal-overlay" id="successModal">
+    <div class="modal">
+      <div class="success-icon">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+          <polyline points="22,4 12,14.01 9,11.01"/>
+        </svg>
+      </div>
+      <h2>Candidatura Enviada!</h2>
+      <p>Sua candidatura foi recebida com sucesso.<br>
+        Você será redirecionado para o WhatsApp do recrutador.</p>
+      <button class="btn btn-primary" onclick="irParaWhatsApp()" style="width: 100%; margin-bottom: var(--spacing-md);">Conversar no WhatsApp</button>
+      <button class="btn btn-secondary" onclick="window.location.href='vagas.html'" style="width: 100%;">Voltar às Vagas</button>
+    </div>
+  </div>
+
+  <script>
+    // Seed data (same as public)
+    const seedVagas = [
+      { id: 1, title: 'Desenvolvedor Frontend', empresa: 'Tech Solutions Bahia' },
+      { id: 2, title: 'Enfermeiro(a) Coordenador(a)', empresa: 'Hospital São Rafael' },
+      { id: 3, title: 'Gerente de Vendas', empresa: 'Grupo Pão de Açúcar' },
+      { id: 4, title: 'Professor(a) de Matemática', empresa: 'Colégio Integral' },
+      { id: 5, title: 'Analista de Recursos Humanos', empresa: 'Empresa XPTO' },
+      { id: 6, title: 'Desenvolvedor Full Stack', empresa: 'Startup Digital' },
+      { id: 7, title: 'Vendedor(a) Atacado', empresa: 'Distribuidora Brasil' },
+      { id: 8, title: 'Assistente Administrativo', empresa: 'Escritório Contábil' },
+      { id: 9, title: 'Analista de Sistemas', empresa: 'Banco do Brasil' },
+      { id: 10, title: 'Técnico(a) de Enfermagem', empresa: 'Clínica Saúde' }
+    ];
+
+    function getVagaById(id) {
+      const adminVagas = JSON.parse(localStorage.getItem('vagas')) || [];
+      return adminVagas.find(v => v.id == id) || seedVagas.find(v => v.id == id) || seedVagas[0];
+    }
+
+    function getVagaId() {
+      const params = new URLSearchParams(window.location.search);
+      return parseInt(params.get('id')) || 1;
+    }
+
+    function initPage() {
+      const id = getVagaId();
+      const vaga = getVagaById(id);
+      document.getElementById('vagaSubtitle').textContent = 'Vaga: ' + vaga.title;
+      document.getElementById('breadcrumbVagaLink').href = 'vaga-detalhes.html?id=' + vaga.id;
+      document.getElementById('breadcrumbVagaLink').textContent = vaga.title;
+    }
+
+    // Drop zone
+    const dropZone = document.getElementById('dropZone');
+    const fileInput = document.getElementById('curriculo');
+    const filePreview = document.getElementById('filePreview');
+    const fileName = document.getElementById('fileName');
+    const fileSize = document.getElementById('fileSize');
+
+    dropZone.addEventListener('click', () => fileInput.click());
+
+    dropZone.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      dropZone.classList.add('dragover');
+    });
+
+    dropZone.addEventListener('dragleave', () => {
+      dropZone.classList.remove('dragover');
+    });
+
+    dropZone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      dropZone.classList.remove('dragover');
+      const files = e.dataTransfer.files;
+      if (files.length > 0) {
+        handleFile(files[0]);
+      }
+    });
+
+    fileInput.addEventListener('change', (e) => {
+      if (e.target.files.length > 0) {
+        handleFile(e.target.files[0]);
+      }
+    });
+
+    function handleFile(file) {
+      if (!file.type.includes('pdf')) {
+        alert('Por favor, envie apenas arquivos PDF.');
+        return;
+      }
+
+      if (file.size > 5 * 1024 * 1024) {
+        alert('O arquivo deve ter no máximo 5MB.');
+        return;
+      }
+
+      fileName.textContent = file.name;
+      fileSize.textContent = (file.size / (1024 * 1024)).toFixed(2) + ' MB';
+      filePreview.classList.add('active');
+      dropZone.style.display = 'none';
+    }
+
+    function removerArquivo() {
+      fileInput.value = '';
+      filePreview.classList.remove('active');
+      dropZone.style.display = 'block';
+    }
+
+    function enviarCandidatura(e) {
+      e.preventDefault();
+      
+      const submitBtn = document.getElementById('submitBtn');
+      submitBtn.textContent = 'Enviando...';
+      submitBtn.disabled = true;
+      
+      // Collect form data
+      const formData = {
+        nome: document.getElementById('nome').value,
+        email: document.getElementById('email').value,
+        telefone: document.getElementById('telefone').value,
+        linkedin: document.getElementById('linkedin').value,
+        cidade: document.getElementById('cidade').value,
+        vagaId: getVagaId(),
+        vagaTitle: getVagaById(getVagaId()).title,
+        data: new Date().toLocaleDateString('pt-BR'),
+        status: 'Pendente'
+      };
+      
+      // Save to localStorage (candidatos)
+      const candidatos = JSON.parse(localStorage.getItem('candidatos')) || [];
+      formData.id = candidatos.length > 0 ? Math.max(...candidatos.map(c => c.id)) + 1 : 1;
+      candidatos.push(formData);
+      localStorage.setItem('candidatos', JSON.stringify(candidatos));
+      
+      // Simulate API call
+      setTimeout(() => {
+        document.getElementById('successModal').classList.add('active');
+        submitBtn.textContent = 'Enviar Candidatura';
+        submitBtn.disabled = false;
+      }, 1500);
+    }
+
+    function irParaWhatsApp() {
+      const vaga = getVagaById(getVagaId());
+      // Mock phone number - in real app, this would come from the job posting
+      const phone = '5571999999999';
+      const message = encodeURIComponent(`Olá! Meu nome é ${document.getElementById('nome').value || 'Candidato'}. Estou interessado na vaga "${vaga.title}" e acabei de candidatar-me pelo site. Gostaria de mais informações.`);
+      window.open('https://wa.me/' + phone + '?text=' + message, '_blank');
+      window.location.href = 'vagas.html';
+    }
+
+    document.addEventListener('DOMContentLoaded', initPage);
+  </script>
+</body>
+</html>
